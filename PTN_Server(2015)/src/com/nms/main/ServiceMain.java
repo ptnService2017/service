@@ -16,6 +16,8 @@ public class ServiceMain {
 	 * @param args
 	 */
 
+	
+	
 	public static void main(String[] args) {
 
 		//判断程序是否启动		
