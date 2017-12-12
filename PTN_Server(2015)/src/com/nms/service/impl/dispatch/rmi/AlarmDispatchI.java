@@ -44,5 +44,13 @@ public interface AlarmDispatchI extends Remote {
 	 * @throws Exception
 	 */
 	public String alarmSheild(Object object)throws RemoteException, Exception;
+
+	/**
+	 * 告警屏蔽
+	 * @param object
+	 * @throws RemoteException
+	 * @throws Exception
+	 */
+	public String alarmBlocking(Object object)throws RemoteException, Exception;
 	
 }

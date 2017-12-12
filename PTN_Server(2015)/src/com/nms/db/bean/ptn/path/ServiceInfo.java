@@ -67,6 +67,15 @@ public class ServiceInfo extends ViewDataObj{
 	//对于双规
 	private int branchMainSite =0;
 	private int branchProtectSite=0;
+	private String activatingTime;// 激活时间
+	
+	public String getActivatingTime() {
+		return activatingTime;
+	}
+
+	public void setActivatingTime(String activatingTime) {
+		this.activatingTime = activatingTime;
+	}
 	
 	public List<PwNniInfo> getPwNniList() {
 		return pwNniList;

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JTabbedPane;
 
+import com.nms.db.bean.alarm.CurrentAlarmBlock;
 import com.nms.db.bean.perform.Capability;
 import com.nms.db.bean.system.code.CodeGroup;
 import com.nms.db.bean.system.roleManage.RoleRelevance;
@@ -96,4 +97,5 @@ public class ConstantUtil {
 	public static List<EquipmentType> equipmentTypeList = null;	//所有设备类型。客户端启动后加载到内存中。
 	public static Map<String,Integer> mSiteMap = new HashMap<String,Integer>();//M网元信息
 	public static Map<Integer,HashMap<Integer,Integer>> m_aSiteMap = new HashMap<Integer, HashMap<Integer,Integer>>();//m-a对应关系
+	public static CurrentAlarmBlock alarmBlock = null;// 告警屏蔽配置
 }

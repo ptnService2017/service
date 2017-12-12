@@ -43,7 +43,6 @@ import com.nms.service.bean.OperationObject;
 import com.nms.service.impl.base.WHOperationBase;
 import com.nms.service.impl.util.SiteUtil;
 import com.nms.service.impl.util.WhImplUtil;
-import com.nms.ui.PerformanceThread;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
@@ -195,6 +194,7 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 			UiUtil.closeService_MB(siteService);
 		}
 		infos = expandCurrentPerforInfo(currentPerforInfoList);
+		addLTPerformance(infos);
 		return infos;
 	}
 
@@ -517,6 +517,53 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 		infos = expandHisPerformanceInfo(currentPerforInfoList);
 		return infos;
 	}
+	
+	/**
+	 * 添加tunnel和pw的LT性能
+	 */
+	private static void addLTPerformance(List<CurrentPerforInfo> perforInfoList){
+		if(perforInfoList.size() > 0){
+			List<CurrentPerforInfo> performanceList = new ArrayList<CurrentPerforInfo>();
+			for(CurrentPerforInfo info : perforInfoList){
+				int code = info.getPerformanceCode();
+				if(code == 136 || code == 137 || code == 138 || code == 139){
+					CurrentPerforInfo currInfo = new CurrentPerforInfo();
+					currInfo.setSlotId(info.getSlotId());
+					currInfo.setStartTime(info.getStartTime());
+					currInfo.setPerformanceEndTime(info.getPerformanceEndTime());
+					currInfo.setPerformanceCode(code+24);
+					currInfo.setPerformanceValue(info.getPerformanceValue());
+					currInfo.setPerformanceTime(info.getPerformanceTime());
+					currInfo.setMonitorCycle(info.getMonitorCycle());
+					currInfo.setSiteId(info.getSiteId());
+					currInfo.setSiteName(info.getSiteName());
+					currInfo.setObjectType(info.getObjectType());
+					currInfo.setObjectName(info.getObjectName());
+					currInfo.setIsCardOrSite(info.getIsCardOrSite());
+					performanceList.add(currInfo);
+				}
+				if(code == 140 || code == 141 || code == 142 || code == 143){
+					CurrentPerforInfo currInfo = new CurrentPerforInfo();
+					currInfo.setSlotId(info.getSlotId());
+					currInfo.setStartTime(info.getStartTime());
+					currInfo.setPerformanceEndTime(info.getPerformanceEndTime());
+					currInfo.setPerformanceCode(code+24);
+					currInfo.setPerformanceValue(info.getPerformanceValue());
+					currInfo.setPerformanceTime(info.getPerformanceTime());
+					currInfo.setMonitorCycle(info.getMonitorCycle());
+					currInfo.setSiteId(info.getSiteId());
+					currInfo.setSiteName(info.getSiteName());
+					currInfo.setObjectType(info.getObjectType());
+					currInfo.setObjectName(info.getObjectName());
+					currInfo.setIsCardOrSite(info.getIsCardOrSite());
+					performanceList.add(currInfo);
+				}
+			}
+			if(performanceList.size() > 0){
+				perforInfoList.addAll(performanceList);
+			}
+		}
+	}
 
 	/**
 	 * 添加网元cpu利用率性能
@@ -709,19 +756,23 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 		MsPwInfoService_MB msPwInfoService = null;
 		try {
 			if (codeType == 0) {
-				int codeType2 = Integer.parseInt(lineCode.substring(2, 4));
-				if(codeType2 == 5){// 电源
-					info.setObjectType(EObjectType.POWER);
-					info.setObjectName("POWERALM");
-				}else if(codeType2 == 8){// 主控卡温度
-					info.setObjectType(EObjectType.CI_TEMP);
-					info.setObjectName("CiTemperature");
-				}else if(codeType2 == 13){// 槽位2的温度
-					info.setObjectType(EObjectType.CARDSLOT2TEMP);
-					info.setObjectName("CardSlot2Temp");
-				}else if(codeType2 == 14){// 槽位3的温度
-					info.setObjectType(EObjectType.CARDSLOT3TEMP);
-					info.setObjectName("CardSlot3Temp");
+				try {
+					int codeType2 = Integer.parseInt(lineCode.substring(2, 4));
+					if(codeType2 == 5){// 电源
+						info.setObjectType(EObjectType.POWER);
+						info.setObjectName("POWERALM");
+					}else if(codeType2 == 8){// 主控卡温度
+						info.setObjectType(EObjectType.CI_TEMP);
+						info.setObjectName("CiTemperature");
+					}else if(codeType2 == 13){// 槽位2的温度
+						info.setObjectType(EObjectType.CARDSLOT2TEMP);
+						info.setObjectName("CardSlot2Temp");
+					}else if(codeType2 == 14){// 槽位3的温度
+						info.setObjectType(EObjectType.CARDSLOT3TEMP);
+						info.setObjectName("CardSlot3Temp");
+					}
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
 				}
 			} else if (codeType == 1) {// 时钟
 				info.setObjectType(EObjectType.CLOCK);

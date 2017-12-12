@@ -24,11 +24,12 @@
     <result column="branchProtectSite" property="branchProtectSite" jdbcType="INTEGER" />
     <result column="zmostAcIds" property="zmostAcId" jdbcType="VARCHAR" />
     <result column="amostAcIds" property="amostAcId" jdbcType="VARCHAR" />
+    <result column="activatingTime" property="activatingTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, serviceId, pwId, serviceType, name, aXcId, zXcId, activeStatus, rootSite, branchSite, 
     aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, jobstatus, 
-    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds
+    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds,activatingTime
   </sql>
   <select id="filterSelect" resultMap="BaseResultMap" parameterType="ElanInfo">
   SELECT * FROM serviceinfo s WHERE serviceType=2
@@ -74,9 +75,10 @@
   </delete>
   <insert id="insert" parameterType="ElanInfo" useGeneratedKeys="true" keyProperty="id">
   insert into serviceinfo(serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,aAcId, zAcId,
-   createUser , createTime , aSiteId , zSiteId,issingle,jobstatus ,clientId,amostAcIds,zmostAcIds)
+   createUser , createTime , aSiteId , zSiteId,issingle,jobstatus ,clientId,amostAcIds,zmostAcIds,activatingTime)
    values(#{serviceId},#{pwId},#{serviceType},#{name},#{axcId},#{zxcId},#{activeStatus},#{aAcId},#{zAcId},
-   #{createUser},#{createTime},#{aSiteId},#{zSiteId},#{isSingle},#{jobStatus},#{clientId},#{amostAcId},#{zmostAcId}
+   #{createUser},#{createTime},#{aSiteId},#{zSiteId},#{isSingle},#{jobStatus},#{clientId},#{amostAcId},#{zmostAcId},
+   #{activatingTime}
    )
   </insert>
   <select id="selectBySiteId" resultMap="BaseResultMap">
@@ -164,7 +166,8 @@
   <update id="update" parameterType="ElanInfo">
   update serviceinfo set serviceId=#{serviceId},pwId=#{pwId},name=#{name},aXcId=#{axcId},zXcId=#{zxcId},activeStatus=#{activeStatus},
   createUser=#{createUser},createTime=#{createTime},aSiteId=#{aSiteId},zSiteId=#{zSiteId},jobstatus=#{jobStatus},isSingle=#{isSingle},
-  aacid=#{aAcId},zacid=#{zAcId},clientId=#{clientId},amostAcIds=#{amostAcId},zmostAcIds=#{zmostAcId} where id=#{id} and serviceType=2
+  aacid=#{aAcId},zacid=#{zAcId},clientId=#{clientId},amostAcIds=#{amostAcId},zmostAcIds=#{zmostAcId},activatingTime = #{activatingTime}
+   where id=#{id} and serviceType=2
   </update>
   
   <select id="selectAll_ETHNorth" resultType="java.util.Map">

@@ -26,11 +26,12 @@
     <result column="branchProtectSite" property="branchProtectSite" jdbcType="INTEGER" />
     <result column="zmostAcIds" property="zmostAcId" jdbcType="VARCHAR" />
     <result column="amostAcIds" property="amostAcId" jdbcType="VARCHAR" />
+    <result column="activatingTime" property="activatingTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, serviceId, pwId, serviceType, name, aXcId, zXcId, activeStatus, rootSite, branchSite, 
     aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, jobstatus, 
-    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds
+    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds,activatingTime
   </sql>
   <select id="selectBySiteAndisSingle" resultMap="BaseResultMap" >
   select * from serviceinfo where serviceType = 3 
@@ -49,7 +50,7 @@
       createUser, createTime, aSiteId, 
       zSiteId, isSingle, cestype, 
       jobstatus, clientId, branchMainSite, 
-      branchProtectSite, zmostAcIds, amostAcIds
+      branchProtectSite, zmostAcIds, amostAcIds,activatingTime
       )
     values (#{serviceId,jdbcType=INTEGER}, #{pwId,jdbcType=INTEGER}, 
       #{serviceType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{aXcId,jdbcType=INTEGER}, 
@@ -58,7 +59,9 @@
       #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{aSiteId,jdbcType=INTEGER}, 
       #{zSiteId,jdbcType=INTEGER}, #{isSingle,jdbcType=INTEGER}, #{cestype,jdbcType=INTEGER}, 
       #{jobStatus,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER}, #{branchMainSite,jdbcType=INTEGER}, 
-      #{branchProtectSite,jdbcType=INTEGER}, #{zmostAcId,jdbcType=VARCHAR}, #{amostAcId,jdbcType=VARCHAR}
+      #{branchProtectSite,jdbcType=INTEGER}, #{zmostAcId,jdbcType=VARCHAR}, #{amostAcId,jdbcType=VARCHAR},
+      #{activatingTime,jdbcType=TIMESTAMP}
+      
       )
   </insert>
   <select id="queryByPwId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -174,7 +177,7 @@
   <update id="update" parameterType="EtreeInfo">
   update serviceinfo set serviceId=#{serviceId},pwId=#{pwId},name=#{name},aXcId=#{aXcId},zXcId=#{zXcId},activeStatus=#{activeStatus},
   rootSite=#{rootSite},branchSite=#{branchSite},createUser=#{createUser} ,createTime=#{createTime} , jobstatus=#{jobStatus} ,isSingle=#{isSingle},
-  clientId=#{clientId},aAcId=#{aAcId},zAcId=#{zAcId},amostAcIds=#{amostAcId},zmostAcIds=#{zmostAcId} where id=#{id} and serviceType=3
+  clientId=#{clientId},aAcId=#{aAcId},zAcId=#{zAcId},amostAcIds=#{amostAcId},zmostAcIds=#{zmostAcId},activatingTime = #{activatingTime} where id=#{id} and serviceType=3
   </update>
   
   <select id="isRelatedPW" resultMap="BaseResultMap" parameterType="java.lang.Integer">

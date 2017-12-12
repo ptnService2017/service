@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.nms.db.bean.alarm.CurrentAlarmBlock;
 import com.nms.db.bean.alarm.CurrentAlarmInfo;
 import com.nms.db.enums.EManufacturer;
 import com.nms.drive.service.bean.AlarmObject;
@@ -193,6 +194,13 @@ public class AlarmDispatch extends DispatchBase implements AlarmDispatchI{
 		}
 		return "";
 	}
-	
-	
+
+	/**
+	 * 设置告警屏蔽功能
+	 */
+	@Override
+	public String alarmBlocking(Object object) throws RemoteException, Exception {
+		ConstantUtil.alarmBlock = (CurrentAlarmBlock) object;
+		return ResultString.CONFIG_SUCCESS;
+	}
 }	

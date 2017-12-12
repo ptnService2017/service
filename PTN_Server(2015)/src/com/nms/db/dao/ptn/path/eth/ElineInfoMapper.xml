@@ -21,11 +21,12 @@
     <result column="showaSiteName" property="ASiteName" jdbcType="VARCHAR" />
     <result column="showzSiteName" property="ZSiteName" jdbcType="VARCHAR" />
     <result column="clientId" property="clientId" jdbcType="INTEGER" />
+    <result column="activatingTime" property="activatingTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, serviceId, pwId, serviceType, name, aXcId, zXcId, activeStatus, rootSite, branchSite, 
     aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, jobstatus, 
-    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds
+    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds,activatingTime
   </sql>
   <select id="queryByCondition" resultMap="BaseResultMap" parameterType="ElineInfo" >
     select s.jobstatus, s.issingle, s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, 
@@ -64,14 +65,14 @@
       zXcId, activeStatus,  aAcId, zAcId, 
       createUser, createTime, aSiteId, 
       zSiteId, isSingle,  
-      jobstatus, clientId
+      jobstatus, clientId,activatingTime
       )
     values (#{id,jdbcType=INTEGER}, #{serviceId,jdbcType=INTEGER}, #{pwId,jdbcType=INTEGER}, 
       #{serviceType,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{aXcId,jdbcType=INTEGER}, 
       #{zXcId,jdbcType=INTEGER}, #{activeStatus,jdbcType=INTEGER}, #{aAcId,jdbcType=INTEGER}, #{zAcId,jdbcType=INTEGER}, 
       #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{aSiteId,jdbcType=INTEGER}, 
       #{zSiteId,jdbcType=INTEGER}, #{isSingle,jdbcType=INTEGER},
-      #{jobStatus,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER}
+      #{jobStatus,jdbcType=VARCHAR}, #{clientId,jdbcType=INTEGER},#{activatingTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="ElineInfo" >
@@ -317,7 +318,8 @@
       zSiteId = #{zSiteId,jdbcType=INTEGER},
       isSingle = #{isSingle,jdbcType=INTEGER},
       jobstatus = #{jobStatus,jdbcType=VARCHAR},
-      clientId = #{clientId,jdbcType=INTEGER}
+      clientId = #{clientId,jdbcType=INTEGER},
+      activatingTime = #{activatingTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

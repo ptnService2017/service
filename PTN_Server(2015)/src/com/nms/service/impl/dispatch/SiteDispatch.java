@@ -33,6 +33,7 @@ import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysLbl;
 import com.nms.ui.manager.keys.StringKeysTip;
 
 public class SiteDispatch extends DispatchBase implements SiteDispatchI {
@@ -852,5 +853,10 @@ public class SiteDispatch extends DispatchBase implements SiteDispatchI {
 	}
   
    
-  
+	@Override
+	public String getVersion() throws RemoteException, Exception {
+		String version=ResourceUtil.srcStr(StringKeysLbl.LBL_JLABTL2_VERSIONS);
+		return version;
+	}
+
 }
