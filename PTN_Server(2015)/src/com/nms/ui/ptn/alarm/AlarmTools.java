@@ -15,16 +15,25 @@ import com.nms.db.bean.alarm.AlarmInfo;
 import com.nms.db.bean.alarm.CurrentAlarmInfo;
 import com.nms.db.bean.alarm.HisAlarmInfo;
 import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.db.bean.equipment.port.E1Info;
 import com.nms.db.bean.equipment.port.PortInst;
 import com.nms.db.bean.equipment.shelf.SiteInst;
 import com.nms.db.bean.equipment.slot.SlotInst;
+import com.nms.db.bean.path.Segment;
 import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.ServiceInfo;
+import com.nms.db.bean.ptn.path.ces.CesInfo;
 import com.nms.db.bean.ptn.path.eth.DualInfo;
+import com.nms.db.bean.ptn.path.eth.ElanInfo;
+import com.nms.db.bean.ptn.path.eth.ElineInfo;
+import com.nms.db.bean.ptn.path.eth.EtreeInfo;
 import com.nms.db.bean.ptn.path.protect.PwProtect;
 import com.nms.db.bean.ptn.path.pw.PwInfo;
+import com.nms.db.bean.ptn.path.tunnel.Lsp;
 import com.nms.db.bean.ptn.path.tunnel.Tunnel;
 import com.nms.db.bean.system.user.UserInst;
 import com.nms.db.enums.EObjectType;
+import com.nms.db.enums.EServiceType;
 import com.nms.drive.service.bean.AlarmInfoObject;
 import com.nms.drive.service.bean.AlarmLineObject;
 import com.nms.drive.service.bean.AlarmMasterCardObject;
@@ -32,6 +41,7 @@ import com.nms.drive.service.bean.AlarmObject;
 import com.nms.drive.service.impl.CoderUtils;
 import com.nms.model.alarm.CurAlarmService_MB;
 import com.nms.model.alarm.HisAlarmService_MB;
+import com.nms.model.equipment.port.E1InfoService_MB;
 import com.nms.model.equipment.port.PortService_MB;
 import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.equipment.slot.SlotService_MB;
@@ -45,6 +55,7 @@ import com.nms.service.bean.ActionObject;
 import com.nms.service.bean.OperationObject;
 import com.nms.ui.frame.RowIDRenderer;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
@@ -464,6 +475,7 @@ public class AlarmTools {
 										info.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
 										info.setWarningLevel_temp(warningLevel.getWarninglevel());
 										currentAlarmInfoList = curAlarmService.select(info);
+										this.filterByAlarmBlocking(currentAlarmInfoList);
 										if (currentAlarmInfoList != null && currentAlarmInfoList.size() > 0) {// 判断当前告警是否存在
 											curAlarmService.delete(currentAlarmInfoList.get(0).getId());
 											currentAlarmInfoList.get(0).setAlarmTime(infoObject.getAlarmDate());
@@ -475,6 +487,19 @@ public class AlarmTools {
 											curAlarmService.saveOrUpdate(info);// 不存在，直接入库
 											currentAlarmInfoListToCorba.add(info);
 										}
+										HisAlarmInfo northAlarm = new HisAlarmInfo();
+										northAlarm.setRaisedTime(sdf.parse(infoObject.getAlarmDate()));
+										northAlarm.setSiteId(siteInst.getSite_Inst_Id());
+										northAlarm.setSiteName(siteInst.getCellId() + "");
+										northAlarm.setSlotId(slotInst.getId());
+										northAlarm.setSlotNumber(slotInst.getNumber());
+										northAlarm.setSiteAddress(alarmObject.getNeAddress());
+										northAlarm.setAlarmCode(infoObject.getAlarmCode());
+										northAlarm.setAlarmLevel(info.getAlarmLevel());// 确定告警等级
+										northAlarm.setWarningLevel(warningLevel);
+										northAlarm.setAlarmTime(infoObject.getAlarmDate());
+										northAlarm.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+//										hisAlarmService.saveNorth(northAlarm);//北向告警流水
 									} else {
 										hisAlarmInfo = new HisAlarmInfo();
 										
@@ -554,7 +579,6 @@ public class AlarmTools {
 	 * @throws Exception
 	 */
 	public void operateCurrentAlarm(List<AlarmObject> alarmObjectList) throws Exception {
-		
 		SiteService_MB siteService = null;
 		SiteInst siteInst = null;
 		SlotInst slotInst = null;
@@ -618,7 +642,8 @@ public class AlarmTools {
 								}
 							}
 						}
-						curAlarmService.insertList(currentAlarmInfoList,siteInst.getSite_Inst_Id());
+						this.filterByAlarmBlocking(currentAlarmInfoList);
+						curAlarmService.insertList(currentAlarmInfoList, siteInst.getSite_Inst_Id());
 					 }
 					}
 				}
@@ -636,6 +661,188 @@ public class AlarmTools {
 			info = null;
 			currentAlarmInfoList = null;
 		}
+	}
+	
+	/**
+	 * 根据告警屏蔽配置过滤当前告警
+	 * @param alarmList
+	 */
+	private void filterByAlarmBlocking(List<CurrentAlarmInfo> curAlarmList){
+		if(curAlarmList != null && ConstantUtil.alarmBlock != null){
+			List<CurrentAlarmInfo> alarmList = new ArrayList<CurrentAlarmInfo>();
+			List<SiteInst> siteList = ConstantUtil.alarmBlock.getSiteList();
+			for(CurrentAlarmInfo alarm : curAlarmList){
+				for(SiteInst site : siteList){
+				int siteId = site.getSite_Inst_Id();
+					if(alarm.getSiteId() == siteId && ConstantUtil.alarmBlock.getAlarmLevel().contains(alarm.getWarningLevel())){
+						WarningLevel level = alarm.getWarningLevel();
+						if(level != null){
+							if(ConstantUtil.alarmBlock.getWarningType() == level.getWarningtype()){
+								long alarmTime = DateUtil.updateTimeToLong(alarm.getHappenedtime(), DateUtil.FULLTIME);
+								long startTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenTime(), DateUtil.FULLTIME);
+								long endTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenEndTime(), DateUtil.FULLTIME);
+								if(alarmTime >= startTime && alarmTime <= endTime && filterByAlarmSrc(alarm)){
+									alarmList.add(alarm);
+								}
+							}
+						}
+					}
+				}
+			}
+			if(alarmList.size() > 0){
+				curAlarmList.removeAll(alarmList);
+			}
+		}
+	}
+	
+	private boolean filterByAlarmSrc(CurrentAlarmInfo alarm){
+		//根据告警源过滤
+		if(ConstantUtil.alarmBlock.getAlarmSrc() != 0){
+			int alarmSrc = ConstantUtil.alarmBlock.getAlarmSrc();
+			Object alarmBusi = ConstantUtil.alarmBlock.getAlarmBusiness();
+			E1InfoService_MB e1Service = null;
+			PortService_MB portService = null;
+			try {
+				portService = (PortService_MB) ConstantUtil.serviceFactory.newService_MB(Services.PORT);
+				e1Service = (E1InfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.E1Info);
+				if(alarmSrc == 1){// 端口
+					if((alarm.getObjectType().getValue() == EObjectType.PORT.getValue())){
+						if(alarmBusi != null){
+							PortInst port = (PortInst)alarmBusi;
+							if(alarm.getObjectId() == port.getNumber()){
+								return true;
+							}
+						}else{
+							return true;
+						}
+					}else if(alarm.getObjectType().getValue() == EObjectType.E1.getValue()){
+						if(alarmBusi != null){
+							PortInst port = (PortInst)alarmBusi;
+							E1Info e1Con = new E1Info();
+							e1Con.setPortId(port.getPortId());
+							try {
+								e1Con = e1Service.selectByCondition(e1Con).get(0);
+							} catch (Exception e) {
+								ExceptionManage.dispose(e, this.getClass());
+							}
+							if(("E1线路"+e1Con.getLegId()).equals(alarm.getObjectName())){
+								return true;
+							}
+						}else{
+							return true;
+						}
+					}
+				}else if(alarmSrc == 2){// 段
+					if((alarm.getObjectType().getValue() == EObjectType.TMS_OAM.getValue())){
+						if(alarmBusi != null){
+							PortInst portCon = new PortInst();
+							portCon.setSiteId(alarm.getSiteId());
+							portCon.setNumber(alarm.getObjectId());
+							List<PortInst> portList = portService.select(portCon);
+							if(portList != null && portList.size() == 1){
+								Segment segment = (Segment)alarmBusi;
+								portCon = portList.get(0);
+								if((segment.getASITEID() == portCon.getSiteId() && segment.getAPORTID() == portCon.getPortId()) || 
+										segment.getZSITEID() == portCon.getSiteId() && segment.getZPORTID() == portCon.getPortId()){
+									return true;
+								}
+							}
+						}else{
+							return true;
+						}
+					}
+				}else if(alarmSrc == 3){// Tunnel
+					if((alarm.getObjectType().getValue() == EObjectType.TUNNEL.getValue())){
+						if(alarmBusi != null){
+							Tunnel tunnel = (Tunnel) alarmBusi;
+							for(Lsp lsp : tunnel.getLspParticularList()){
+								if((lsp.getASiteId() == alarm.getSiteId() && lsp.getAtunnelbusinessid() == alarm.getObjectId()) ||
+										(lsp.getZSiteId() == alarm.getSiteId() && lsp.getZtunnelbusinessid() == alarm.getObjectId())){
+									return true;
+								}
+							}
+						}else{
+							return true;
+						}
+					}
+					if(alarm.getObjectType().getValue() == EObjectType.LSP.getValue()){
+						if(alarmBusi != null){
+							Tunnel tunnel = (Tunnel) alarmBusi;
+							if(tunnel.getProtectTunnelId() > 0){
+								Tunnel pTunnel = tunnel.getProtectTunnel();
+								if((pTunnel.getASiteId() == alarm.getSiteId() && pTunnel.getAprotectId() == alarm.getObjectId()) ||
+										(pTunnel.getZSiteId() == alarm.getSiteId() && pTunnel.getZprotectId() == alarm.getObjectId())){
+									return true;
+								}
+							}
+						}else{
+							return true;
+						}
+					}
+				}else if(alarmSrc == 4){// Pw
+					if((alarm.getObjectType().getValue() == EObjectType.PW.getValue())){
+						if(alarmBusi != null){
+							PwInfo pw = (PwInfo) alarmBusi;
+							if((pw.getASiteId() == alarm.getSiteId() && pw.getApwServiceId() == alarm.getObjectId()) ||
+									(pw.getZSiteId() == alarm.getSiteId() && pw.getZpwServiceId() == alarm.getObjectId())){
+								return true;
+							}
+						}else{
+							return true;
+						}
+					}
+				}else if(alarmSrc == 5){// vpws业务
+					if(alarm.getObjectType().getValue() == EObjectType.VPWS.getValue()){
+						if(alarmBusi != null){
+							if(alarmBusi instanceof ElineInfo){
+								ElineInfo eline = (ElineInfo) alarmBusi;
+								if((eline.getaSiteId() == alarm.getSiteId() && eline.getaXcId() == alarm.getObjectId()) ||
+								(eline.getzSiteId() == alarm.getSiteId() && eline.getzXcId() == alarm.getObjectId())){
+									return true;
+								}
+							}else if(alarmBusi instanceof CesInfo){
+								CesInfo ces = (CesInfo) alarmBusi;
+								if((ces.getaSiteId() == alarm.getSiteId() && ces.getAxcId() == alarm.getObjectId()) ||
+								(ces.getzSiteId() == alarm.getSiteId() && ces.getZxcId() == alarm.getObjectId())){
+									return true;
+								}
+							}
+						}else{
+							return true;
+						}
+					}
+				}else if(alarmSrc == 6){// vpls业务
+					if((alarm.getObjectType().getValue() == EObjectType.VPLS.getValue())){
+						if(alarmBusi != null){
+							List<ServiceInfo> serviceList = (List<ServiceInfo>) alarmBusi;
+							for(ServiceInfo serviceInfo : serviceList){
+								if(serviceInfo.getServiceType() == EServiceType.ETREE.getValue()){
+									EtreeInfo etree = (EtreeInfo) serviceInfo;
+									if((etree.getRootSite() == alarm.getSiteId() && etree.getaXcId() == alarm.getObjectId()) ||
+											(etree.getBranchSite() == alarm.getSiteId() && etree.getzXcId() == alarm.getObjectId())){
+										return true;
+									}
+								}else if(serviceInfo.getServiceType() == EServiceType.ELAN.getValue()){
+									ElanInfo elan = (ElanInfo) serviceInfo;
+									if((elan.getaSiteId() == alarm.getSiteId() && elan.getAxcId() == alarm.getObjectId()) ||
+											(elan.getzSiteId() == alarm.getSiteId() && elan.getZxcId() == alarm.getObjectId())){
+										return true;
+									}
+								}
+							}
+						}else{
+							return true;
+						}
+					}
+				}
+			} catch (Exception e) {
+				ExceptionManage.dispose(e, this.getClass());
+			} finally {
+				UiUtil.closeService_MB(e1Service);
+				UiUtil.closeService_MB(portService);
+			}
+		}
+		return false;
 	}
 	
 	/**
