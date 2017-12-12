@@ -76,7 +76,7 @@ import com.nms.drive.service.bean.status.SiteStatusObject;
 public class ActionObject {
 
 	private int actionId = 0;//操作ID
-	private String status = "";//设备返回值
+	private String status = "配置成功";//设备返回值
 	private NEObject neObject = new NEObject();
 	private int servicetType = 0;//类型 tunnel pw等
 	private String type = "";// 类型 tunnel pw等

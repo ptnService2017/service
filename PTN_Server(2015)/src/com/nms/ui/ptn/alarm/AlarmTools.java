@@ -499,7 +499,7 @@ public class AlarmTools {
 										northAlarm.setWarningLevel(warningLevel);
 										northAlarm.setAlarmTime(infoObject.getAlarmDate());
 										northAlarm.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
-//										hisAlarmService.saveNorth(northAlarm);//北向告警流水
+										hisAlarmService.saveNorth(northAlarm);//北向告警流水
 									} else {
 										hisAlarmInfo = new HisAlarmInfo();
 										

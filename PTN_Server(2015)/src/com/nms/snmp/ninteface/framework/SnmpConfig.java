@@ -42,13 +42,17 @@ public class SnmpConfig {
 	private String SerialNumber;//单板序列号
 	private String installedPartNumber;//单板硬件版本
 	private String installedVersion;//单板软件版本
-	
+	private PropertyUtil propUtil = new PropertyUtil();
 	public static SnmpConfig getInstanse() {
+		snmpConfig.init();
 		return snmpConfig;
 	}
 
+	public String getValue(String param){
+		return propUtil.getProperty("snmp.emsname", snmpConfigFile);
+	}
 	public void init() {
-		PropertyUtil propUtil = new PropertyUtil();
+		
 		String strTemp = propUtil.getProperty("snmp.agentIpAndPort", "127.0.0.1/161",snmpConfigFile);
 		if (null != strTemp) {
 			this.strLocalIp = strTemp;

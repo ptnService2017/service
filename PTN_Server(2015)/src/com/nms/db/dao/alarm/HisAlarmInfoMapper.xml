@@ -33,6 +33,18 @@
     #{alarmLevel},#{happenedtime},#{confirmtime},#{cleanTime},#{ackUser},#{commonts},
     #{warningLevel_temp},#{isClear},#{alarmId})
   </insert>
+  
+  <insert id="saveNorth" parameterType="HisAlarmInfo" useGeneratedKeys="true" keyProperty="id" > 
+    insert into 
+    alarm_north
+    (siteid,slotId,objectid,objecttype,objectname ,alarmcode,alarmlevel,happenedtime,
+    confirmtime,clearedtime,ackuser,comments,alarmlevel_temp,isCleared,alarmId)
+    values(#{siteId},#{slotId},#{objectId},#{objectType,typeHandler=com.nms.db.enums.IntEnumTypeHandler},
+    #{objectName},#{alarmCode},
+    #{alarmLevel},#{happenedtime},#{confirmtime},#{cleanTime},#{ackUser},#{commonts},
+    #{warningLevel_temp},#{isClear},#{alarmId})
+  </insert>
+  
   <update id="update" parameterType="HisAlarmInfo" >
   update  history_alarm as p set p.confirmtime=#{confirmtime},p.happenedtime=#{happenedtime},
   p.clearedtime=#{cleanTime},p.ackuser=#{ackUser}, p.comments=#{commonts},p.alarmlevel=#{alarmLevel},

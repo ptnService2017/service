@@ -57,4 +57,6 @@ public interface HisAlarmInfoMapper {
 	public List<HisAlarmInfo> selectHisAlarmByCond(Map<String, Object> map);
     
 	public void deleteBySiteId(int siteInstId);
+	
+	public int saveNorth(HisAlarmInfo hisInfo);
 }
