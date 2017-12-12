@@ -105,7 +105,6 @@ public class MonitorCallbackThread extends Thread {
 				try {
 					
 					uuid = (String) it.next();
-					ExceptionManage.infor("UUID"+uuid, this.getClass());
 					driveUtilObject = driveUtilObjectList.get(uuid);
 					ptnDataObject = analysisPtnDataObject(driveUtilObject, uuid);
 					driveUtilObject.getOperationObject().returnResult(Integer.valueOf(driveUtilObject.getOperID()), ptnDataObject);

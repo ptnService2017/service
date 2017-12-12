@@ -475,6 +475,19 @@ public class AlarmTools {
 											curAlarmService.saveOrUpdate(info);// 不存在，直接入库
 											currentAlarmInfoListToCorba.add(info);
 										}
+										HisAlarmInfo northAlarm = new HisAlarmInfo();
+										northAlarm.setRaisedTime(sdf.parse(infoObject.getAlarmDate()));
+										northAlarm.setSiteId(siteInst.getSite_Inst_Id());
+										northAlarm.setSiteName(siteInst.getCellId() + "");
+										northAlarm.setSlotId(slotInst.getId());
+										northAlarm.setSlotNumber(slotInst.getNumber());
+										northAlarm.setSiteAddress(alarmObject.getNeAddress());
+										northAlarm.setAlarmCode(infoObject.getAlarmCode());
+										northAlarm.setAlarmLevel(info.getAlarmLevel());// 确定告警等级
+										northAlarm.setWarningLevel(warningLevel);
+										northAlarm.setAlarmTime(infoObject.getAlarmDate());
+										northAlarm.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+										hisAlarmService.saveNorth(northAlarm);//北向告警流水
 									} else {
 										hisAlarmInfo = new HisAlarmInfo();
 										
