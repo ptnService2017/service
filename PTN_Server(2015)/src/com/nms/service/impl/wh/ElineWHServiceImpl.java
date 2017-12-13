@@ -61,7 +61,7 @@ public class ElineWHServiceImpl extends WHOperationBase implements OperationServ
 		if(siteIdList.size() > 0){
 			for (Integer siteId : siteIdList) {
 				try {
-					if (true) {
+					if ("0".equals(siteUtil.SiteTypeUtil(siteId) + "")) {
 						ActionObject actionObj = this.getActionObject(siteId);
 						operationObjectAfter.getActionObjectList().add(actionObj);
 					}
