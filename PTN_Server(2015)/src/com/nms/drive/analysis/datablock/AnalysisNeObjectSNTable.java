@@ -36,6 +36,7 @@ public class AnalysisNeObjectSNTable extends AnalysisBase {
 	 */
 	 
 	public List<NEObject> analysisCommandInfoToNEObjectS(byte[] commands,String configXml) throws Exception{
+		CoderUtils.print16String(commands);
 		List<NEObject> neObjects = null;
 		AnalysisCommandByDriveXml analysisCommandByDriveXml = new AnalysisCommandByDriveXml();
 		neObjects = new ArrayList<NEObject>();

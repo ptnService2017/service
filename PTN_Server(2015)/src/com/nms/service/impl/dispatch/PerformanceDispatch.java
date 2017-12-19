@@ -125,11 +125,11 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 						if (info.getObjectName() != null) {
 							info.setTaskId(taskInfo.getId());
 						}
-					    if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
+//					    if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
 							capability = performanceMap.get(1 + "/" + info.getPerformanceCode());// 1表示武汉
-						} else {
-							capability = performanceMap.get(2 + "/" + info.getPerformanceCode()); // 2表示晨晓
-						}
+//						} else {
+//							capability = performanceMap.get(2 + "/" + info.getPerformanceCode()); // 2表示晨晓
+//						}
 					    info.setCapability(capability);
 						// 保存数据库中
 						if( null !=info.getObjectName() 
@@ -137,7 +137,8 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 							&& info.getCapability()!= null
 							&&performanceType.contains(info.getCapability().getCapabilitytype()))
 						{
-						  hisPerformanceService.saveOrUpdate(info);	
+							info.setMonitor(info.getMonitorCycle() != null ? info.getMonitorCycle().getValue() : 1);
+							hisPerformanceService.saveOrUpdate(info);	
 						}
 					} catch (Exception e) {
 						ExceptionManage.dispose(e,this.getClass());
@@ -378,6 +379,7 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 			hisPerformanceService = (HisPerformanceService_Mb) ConstantUtil.serviceFactory.newService_MB(Services.HisPerformance);
 			for (HisPerformanceInfo hisPerforInfo : hisPerforInfoList) {
 //				if (!isExit(hisPerforInfo))
+					hisPerforInfo.setMonitor(hisPerforInfo.getMonitorCycle() != null ? hisPerforInfo.getMonitorCycle().getValue() : 1);
 					hisPerformanceService.saveOrUpdate(hisPerforInfo);
 			}
 		} catch (Exception e) {

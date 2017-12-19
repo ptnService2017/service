@@ -5,8 +5,13 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +19,13 @@ import java.util.Properties;
 
 import com.nms.service.impl.dispatch.rmi.DispatchInterface;
 import com.nms.ui.manager.ExceptionManage;
-//import com.sun.management.OperatingSystemMXBean;
+import com.sun.management.OperatingSystemMXBean;
 
 public class ServiceDispatch implements DispatchInterface{
 
 	/**
-	 * 获取相应的CPU/内存/硬盘容量
-	 * CPU=1/内存=2/硬盘=3
+	 * 获取相应的CPU/内存/硬盘容量/网卡信息
+	 * CPU=1/内存=2/硬盘=3/网卡=4
 	 */
 	@Override
 	public Object consistence(int siteId) throws RemoteException, Exception {
@@ -31,6 +36,8 @@ public class ServiceDispatch implements DispatchInterface{
 		serviceValue.put(2, getMemoryValue());
 		//硬盘的性能参数
 		serviceValue.put(3, getDiscValue());
+		// 网卡信息
+		serviceValue.put(4, getNetWorkCardValue());
 		return serviceValue;
 	}
 
@@ -273,23 +280,22 @@ public class ServiceDispatch implements DispatchInterface{
     private List<Long> getMemoryValue() {
     	int kb = 1024;
     	List<Long> memoryList = new ArrayList<Long>();
-//    	OperatingSystemMXBean osmxb = null;
+    	OperatingSystemMXBean osmxb = null;
     	try {
-//    		SystemMXBean) ManagementFactory .getOperatingSystemMXBean(); 
-//    		//// 总的物理内存 
-//    		long totalMemorySize = osmxb.getTotalPhysicalMemorySize() / kb; 
-//    		memoryList.add(totalMemorySize);
-//    		// 已使用的物理内存 
-//    		long usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb .getFreePhysicalMemorySize())  / kb; 
-//    		memoryList.add(usedMemory);
-//    		// 剩余的物理内存 
-//    		long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / kb;
-//    		memoryList.add(freePhysicalMemorySize);
-//    		osmxb = (Operating
+    		osmxb = (OperatingSystemMXBean) ManagementFactory .getOperatingSystemMXBean(); 
+    		// 总的物理内存 
+    		long totalMemorySize = osmxb.getTotalPhysicalMemorySize() / kb; 
+    		memoryList.add(totalMemorySize);
+    		// 已使用的物理内存 
+    		long usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb .getFreePhysicalMemorySize())  / kb; 
+    		memoryList.add(usedMemory);
+    		// 剩余的物理内存 
+    		long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / kb;
+    		memoryList.add(freePhysicalMemorySize);
 		} catch (Exception e) {
 			 ExceptionManage.dispose(e, getClass());
 		}finally{
-//			osmxb = null;
+			osmxb = null;
 		}
 		return memoryList;
 	}
@@ -301,25 +307,65 @@ public class ServiceDispatch implements DispatchInterface{
 	 */
 	private Object getDiscValue() {
 		try {
-			return  File.listRoots();
+			return File.listRoots();
 		} catch (Exception e) {
 			ExceptionManage.dispose(e, getClass());
 		}
 		return null;
 	}
 	
-	public static void main(String[] args) {
-		ServiceDispatch x = new ServiceDispatch();
+	/**
+	 * 获取网卡信息
+	 * @return
+	 */
+	private Object getNetWorkCardValue() {
 		try {
-//			System.out.println("ccc=="+x.consistence(1));
-			System.out.println(x.synchro(0));
-		} catch (RemoteException e) {
-			e.printStackTrace();
+			List<String> netWorkList = new ArrayList<String>();
+			Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+			for (NetworkInterface netint : Collections.list(nets)){
+				Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+				for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+					StringBuffer sb = new StringBuffer();
+					sb.append(netint.getDisplayName()).append("@").append(netint.getName()).append("@").append(inetAddress);
+					netWorkList.add(sb.toString());
+				}
+			}
+			return netWorkList;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ExceptionManage.dispose(e, getClass());
 		}
+		return null;
 	}
+	
+	public static void main(String args[]) throws SocketException {
+		Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+		for (NetworkInterface netint : Collections.list(nets))
+			displayInterfaceInformation(netint);
+	}
+
+
+	public static void displayInterfaceInformation(NetworkInterface netint) throws SocketException {
+		System.out.printf("Display name: %s\n", netint.getDisplayName());
+		System.out.printf("Name: %s\n", netint.getName());
+		Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+		for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+			System.out.printf("InetAddress: %s\n", inetAddress);
+		}
+		System.out.printf("\n");
+	}
+	
+//	public static void main(String[] args) {
+//		ServiceDispatch x = new ServiceDispatch();
+//		try {
+////			System.out.println("ccc=="+x.consistence(1));
+//			System.out.println(x.synchro(0));
+//		} catch (RemoteException e) {
+//			e.printStackTrace();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 	
 }
 

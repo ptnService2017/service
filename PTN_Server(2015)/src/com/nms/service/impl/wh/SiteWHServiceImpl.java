@@ -1580,8 +1580,6 @@ public class SiteWHServiceImpl extends WHOperationBase implements OperationServi
 				portWHServiceImpl.excutionUpdate(aportinst);								
 				portWHServiceImpl.excutionUpdate(zportinst);
 				
-			
-				
 				segmentService.saveOrUpdate(segment, qosQueues, null);
 			}
 		} catch (Exception e) {
