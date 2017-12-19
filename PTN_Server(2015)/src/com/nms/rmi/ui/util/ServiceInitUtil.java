@@ -10,6 +10,7 @@ import java.util.Map;
 import com.nms.db.bean.equipment.shelf.SiteInst;
 import com.nms.db.bean.perform.PerformanceTaskInfo;
 import com.nms.db.bean.system.Field;
+import com.nms.db.bean.system.SystemLog;
 import com.nms.db.enums.EManufacturer;
 import com.nms.db.enums.ERunStates;
 import com.nms.drive.service.DriveService;
@@ -17,6 +18,7 @@ import com.nms.drivechenxiao.service.CXDriveService;
 import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.perform.PerformanceTaskService_MB;
 import com.nms.model.system.FieldService_MB;
+import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.util.CodeConfigItem;
 import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
@@ -115,7 +117,9 @@ import com.nms.snmp.ninteface.impl.ftp.FtpTransThread;
 import com.nms.ui.PerforTaskThreadFactory;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysLbl;
 import com.nms.ui.ptn.alarm.controller.CirculateCurrectTime;
 import com.nms.ui.ptn.alarm.controller.CurAlarmTimerTask;
 import com.nms.ui.ptn.alarm.controller.OperateCurrAlarmTask;
@@ -156,9 +160,8 @@ public class ServiceInitUtil {
 	public void initDate() throws Exception {
 		ServiceFactory serviceFactory = null;
 //		Properties properties = null;
-		
+		SystemLogService_MB sys=null;
 		try {
-
 			// 初始化工厂类
 			serviceFactory = new ServiceFactory();
 //			properties = new Properties();
@@ -166,7 +169,15 @@ public class ServiceInitUtil {
 //			properties.put(ServiceFactory.PTNUSER, "admin");
 //			serviceFactory.startup(properties);
 			ConstantUtil.serviceFactory = serviceFactory;
-
+			
+			SystemLog sysLog=null;
+			sys=(SystemLogService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SYSTEMLOG);
+			
+			sysLog=new SystemLog();
+			sysLog.setOperationResult(1);
+			sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_START_MYSQL_SERVER));
+			sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_MYSQL5_SERVER));
+			sys.insertSystemLog(sysLog);
 			// 初始化告警
 			ConstantUtil.alarmObjectService = new AlarmObjectService();
 			ConstantUtil.PerformanceObjectService = new PerformanceObjectService();
@@ -183,6 +194,8 @@ public class ServiceInitUtil {
 			ExceptionManage.infor("加载驱动信息", this.getClass());
 		} catch (Exception e) {
 			throw e;
+		}finally{
+			UiUtil.closeService_MB(sys);
 		}
 
 	}

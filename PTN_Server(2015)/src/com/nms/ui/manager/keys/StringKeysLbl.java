@@ -2700,5 +2700,8 @@ public class StringKeysLbl {
 	public static final String LBL_START_NORTH_SERVER="LBL_START_NORTH_SERVER";
 	public static final String LBL_END_NORTH_SERVER="LBL_END_NORTH_SERVER";	
 	public static final String LBL_RMI_PROCESS_CONFIG="LBL_RMI_PROCESS_CONFIG";
+	public static final String LBL_MYSQL5_SERVER="LBL_MYSQL5_SERVER";
+	public static final String LBL_START_MYSQL_SERVER="LBL_START_MYSQL_SERVER";
+	public static final String LBL_END_MYSQL_SERVER="LBL_END_MYSQL_SERVER";
 	
 }
