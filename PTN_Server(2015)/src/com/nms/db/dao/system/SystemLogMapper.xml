@@ -12,7 +12,7 @@
     id, startTime,operationType, operationResult,operationObjName
   </sql>
   <insert id="insert" parameterType="SystemLog"  useGeneratedKeys="true" keyProperty="id">
-    insert into systemLog (startTime, operationObjName, , operationResult, operationType)
+    insert into systemLog (startTime, operationObjName,  operationResult, operationType)
     values ( #{startTime,jdbcType=VARCHAR}, #{operationObjName,jdbcType=VARCHAR}, #{operationResult,jdbcType=INTEGER}, 
   #{operationType,jdbcType=VARCHAR})
   </insert>
