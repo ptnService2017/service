@@ -129,6 +129,15 @@ public class PtnDirveService {
 			monitorCallbackThread.stop();
 			monitorCallbackThread = null;
 
+			monitorSendCommandThread_copy1.destroy();
+			monitorSendCommandThread_copy1.stop();
+			monitorSendCommandThread_copy1 = null;
+			
+			monitorResponseThread_copy1.destroy();
+			monitorResponseThread_copy1.stop();
+			monitorResponseThread_copy1 = null;
+			
+			uDPNetworkServer_copy1.close();
 			uDPNetworkServer.close();
 		} catch (Exception e) {
 		}

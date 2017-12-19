@@ -2,12 +2,18 @@ package com.nms.rmi.thread;
 
 import java.rmi.server.UnicastRemoteObject;
 
+import com.nms.db.bean.system.SystemLog;
+import com.nms.model.system.SystemLogService_MB;
+import com.nms.model.util.Services;
 import com.nms.rmi.ui.ServiceStartPanel;
 import com.nms.rmi.ui.util.ServerConstant;
 import com.nms.rmi.ui.util.ThreadUtil;
 import com.nms.service.impl.dispatch.SiteDispatch;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysLbl;
 
 /**
  * 服务端一键关闭线程
@@ -25,7 +31,17 @@ public class StopThread implements Runnable {
 
 	@Override
 	public void run() {
+		SystemLogService_MB sys=null;
 		try {
+			SystemLog sysLog=null;
+			sys=(SystemLogService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SYSTEMLOG);
+			
+			sysLog=new SystemLog();
+			sysLog.setOperationResult(1);
+			sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_END_MYSQL_SERVER));
+			sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_MYSQL5_SERVER));
+			sys.insertSystemLog(sysLog);
+			
 			
 			stopThread();
 			
@@ -70,7 +86,10 @@ public class StopThread implements Runnable {
 
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			UiUtil.closeService_MB(sys);
 		}
+		
 	}
 
 	/**

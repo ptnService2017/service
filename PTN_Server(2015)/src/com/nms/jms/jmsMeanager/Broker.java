@@ -17,22 +17,25 @@ import com.nms.ui.manager.ExceptionManage;
 public class Broker {
     private static BrokerService broker;
     public static void init(String path) throws Exception { 
-        ApplicationContext ctx = new ClassPathXmlApplicationContext(new String[] { path });  
-        broker = (BrokerService) ctx.getBean("broker");  
-        try {  
-        	InetAddress addr = InetAddress.getLocalHost();
-            String serverIp = addr.getHostAddress().toString();
-            String jmsIp = "tcp://" + serverIp + ":61616";
-            broker.setBrokerName("myBroker");  
-            broker.setUseJmx(true);  
-            broker.setSchedulerSupport(false);
-            broker.addConnector(jmsIp);  
-            broker.start();  
-            ExceptionManage.infor("DATAX:   broker start", Broker.class);
-        } catch (InterruptedException e) {  
-        	ExceptionManage.dispose(e, Broker.class);
-        } catch (Exception e) {  
-        	ExceptionManage.dispose(e, Broker.class);
-        }  
+    	if(broker == null){
+    		 ApplicationContext ctx = new ClassPathXmlApplicationContext(new String[] { path });  
+    	        broker = (BrokerService) ctx.getBean("broker");  
+    	        try {  
+    	        	InetAddress addr = InetAddress.getLocalHost();
+    	            String serverIp = addr.getHostAddress().toString();
+    	            String jmsIp = "tcp://" + serverIp + ":61616";
+    	            broker.setBrokerName("myBroker");  
+    	            broker.setUseJmx(true);  
+    	            broker.setSchedulerSupport(false);
+    	            broker.addConnector(jmsIp);  
+    	            broker.start();  
+    	            ExceptionManage.infor("DATAX:   broker start", Broker.class);
+    	        } catch (InterruptedException e) {  
+    	        	ExceptionManage.dispose(e, Broker.class);
+    	        } catch (Exception e) {  
+    	        	ExceptionManage.dispose(e, Broker.class);
+    	        }  
+    	}
+       
     }  
 }

@@ -9,9 +9,12 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Date;
 
 import com.champor.license.Features;
+import com.nms.db.bean.system.SystemLog;
 import com.nms.jms.common.ApplicationBeanFactory;
 import com.nms.jms.jmsMeanager.Broker;
+import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.util.CodeConfigItem;
+import com.nms.model.util.Services;
 import com.nms.rmi.ui.ServiceStartPanel;
 import com.nms.rmi.ui.util.LicenseClientUtil;
 import com.nms.rmi.ui.util.ServerConstant;
@@ -103,7 +106,6 @@ public class StartThread implements Runnable {
 						Thread.sleep(1000);
 					}
 				}
-
 			} catch (IOException e) {
 				resultStr =  ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_RUNMSQL);
 				serviceStartPanel.buttonResult(true, false, resultStr);
