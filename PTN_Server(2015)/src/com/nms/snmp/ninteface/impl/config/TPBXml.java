@@ -50,7 +50,7 @@ public class TPBXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-TPB-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TPB-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -147,9 +147,9 @@ public class TPBXml {
 		for (Tunnel tunnel :tunnelList) {
 			
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCRD1"+tunnel.getProtectTunnelId());
-			this.createElementNode(doc, "N", "3301EBCRD1"+tunnel.getProtectTunnelId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCRD1"+tunnel.getName(), Object, "i", "2");
+			Object.setAttribute("rmUID","3301EBCS1CRD"+tunnel.getProtectTunnelId());
+			this.createElementNode(doc, "N", "3301EBCS1CRD"+tunnel.getProtectTunnelId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1CRD"+tunnel.getName(), Object, "i", "2");
 			this.createElementNode(doc, "N", "RM_REVERTIVE", Object, "i", "3");
 			this.createElementNode(doc, "N", "1:1", Object, "i", "4");
 			FieldValue.appendChild(Object);

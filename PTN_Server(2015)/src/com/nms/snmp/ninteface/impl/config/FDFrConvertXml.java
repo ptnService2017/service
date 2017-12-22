@@ -27,6 +27,7 @@ import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.snmp.ninteface.util.TransmissionParamsUtil;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
@@ -42,7 +43,7 @@ public class FDFrConvertXml {
 	}
 	public void getFDFrXml(){
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CMCC-PTN-NRM-FDFr-"+version+"-"+this.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CMCC-PTN-NRM-FDFr-"+version+"-"+this.getTime()+".xml"};
 		FileTools fileTools = new FileTools();
 	    try {
 			String filePath = fileTools.createFile(xmlPath);

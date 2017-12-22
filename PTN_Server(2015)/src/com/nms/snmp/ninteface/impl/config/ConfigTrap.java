@@ -4,13 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nms.ui.manager.DateUtil;
+
 public class ConfigTrap {
 	/**
 	 * 获取所有配置文件列表
 	 */
 	public List<String> getCmFileList(){
 		List<String> fileList = new ArrayList<String>();
-		this.getCmFileList("snmpData\\NRM", fileList);
+		this.getCmFileList("snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), fileList);
 		return fileList;
 	}
 	
@@ -31,7 +33,7 @@ public class ConfigTrap {
 	 * 获取单个文件信息
 	 */
 	public String getCmFile(String fileName){
-		File dir = new File("snmpData\\NRM\\"+fileName);
+		File dir = new File("snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+fileName);
 		if(dir.exists()){
 			return dir.getAbsolutePath();
 		}

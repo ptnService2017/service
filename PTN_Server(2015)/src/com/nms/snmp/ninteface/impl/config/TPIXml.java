@@ -7,6 +7,7 @@ import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.DispatchUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
@@ -39,7 +40,7 @@ public class TPIXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-TPI-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TPI-A1-" + version + "-" + getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -143,9 +144,9 @@ public class TPIXml
     for (Tunnel tunnel : tunnelList)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCRD1" + tunnel.getAprotectId());
-      createElementNode(doc, "N", "3301EBCRD1" + tunnel.getAprotectId(), Object, "i", "1");
-      createElementNode(doc, "N", "3301EBCRD1" + tunnel.getName(), Object, "i", "2");
+      Object.setAttribute("rmUID", "3301EBCS1CRD" + tunnel.getAprotectId());
+      createElementNode(doc, "N", "3301EBCS1CRD" + tunnel.getAprotectId(), Object, "i", "1");
+      createElementNode(doc, "N", "3301EBCS1CRD" + tunnel.getName(), Object, "i", "2");
       createElementNode(doc, "N", "RM_REVERTIVE", Object, "i", "3");
       createElementNode(doc, "N", "1:1", Object, "i", "4");
       FieldValue.appendChild(Object);

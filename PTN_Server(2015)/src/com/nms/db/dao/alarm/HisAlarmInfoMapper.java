@@ -59,4 +59,6 @@ public interface HisAlarmInfoMapper {
 	public void deleteBySiteId(int siteInstId);
 	
 	public int saveNorth(HisAlarmInfo hisInfo);
+
+	public List<Map<String, String>> sysNorthAlarm(@Param("params")Map<String, String> params);
 }

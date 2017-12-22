@@ -31,6 +31,7 @@ import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.framework.TableHandler;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
@@ -149,7 +150,7 @@ public class FlowDomainFragmentTable extends TableHandler {
 	 */
 	private void crateFlowDomainFragmentFile(Map<Integer, Object> flowDomainFragmentMap) {
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CMCC-PTN-NRM-FDFr-"+version+"-"+this.getTime()+"-P00.xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CMCC-PTN-NRM-FDFr-"+version+"-"+this.getTime()+"-P00.xml"};
 		FileTools fileTools = new FileTools();
 	    try {
 			String filePath = fileTools.createFile(xmlPath);

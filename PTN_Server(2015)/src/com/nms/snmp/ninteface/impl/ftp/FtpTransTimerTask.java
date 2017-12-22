@@ -39,14 +39,15 @@ import com.nms.snmp.ninteface.impl.config.TPBXml;
 import com.nms.snmp.ninteface.impl.config.TPIXml;
 import com.nms.snmp.ninteface.impl.config.TPLXml;
 import com.nms.snmp.ninteface.impl.config.TopologicalLinkConvertXml;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 
 /**
  * 每隔24小时上传当天的文件,并且删除7天前的数据
  */
 public class FtpTransTimerTask extends TimerTask {
-	String[] filePathArr = new String[]{"snmpData\\NRM"};
-	String[] fileDeletePathArr = new String[]{"snmpData\\NRM", "snmpData\\PM", "snmpData\\FM"};
+	String[] filePathArr = new String[]{"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd")};
+	String[] fileDeletePathArr = new String[]{"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "snmpData\\PM", "snmpData\\FM"};
 	private String collectTime = "";//如: 20140821
 //	public FtpTransTimerTask(String time) {
 //		this.collectTime = time;

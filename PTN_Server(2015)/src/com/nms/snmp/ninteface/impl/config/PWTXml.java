@@ -52,7 +52,7 @@ public class PWTXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-PWT-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-PWT-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -143,9 +143,9 @@ public class PWTXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PwInfo pwInfo :pwList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBPSW"+pwInfo.getPwId());
-			this.createElementNode(doc, "N", "3301EBPSW"+pwInfo.getPwId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBTNL"+pwInfo.getTunnelId(), Object, "i", "2");
+			Object.setAttribute("rmUID","3301EBCS1PSW"+pwInfo.getPwId());
+			this.createElementNode(doc, "N", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1TNL"+pwInfo.getTunnelId(), Object, "i", "2");
 			this.createElementNode(doc, "N", "1", Object, "i", "3");
 			this.createElementNode(doc, "N", "1", Object, "i", "4");
 			FieldValue.appendChild(Object);

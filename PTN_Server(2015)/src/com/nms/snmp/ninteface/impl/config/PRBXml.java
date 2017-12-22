@@ -50,7 +50,7 @@ public class PRBXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-PRB-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-PRB-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -143,11 +143,11 @@ public class PRBXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PortInst portInst :portInstList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBPRT1"+portInst.getPortId());
-			this.createElementNode(doc, "N", "3301EBPRT1"+portInst.getPortId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBNEL1"+portInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBCRD1"+portInst.getCardId(), Object, "i", "3");
-			this.createElementNode(doc, "N", "3301EBCRD1"+portInst.getEquipId(), Object, "i", "4");
+			Object.setAttribute("rmUID","3301EBCS1PRT"+portInst.getPortId());
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
+			this.createElementNode(doc, "N", "3301EBCS1CRD"+portInst.getEquipId(), Object, "i", "4");
 			this.createElementNode(doc, "N", portInst.getNumber()+"", Object, "i", "5");
 			this.createElementNode(doc, "N", portInst.getPortName(), Object, "i", "6");
 			this.createElementNode(doc, "N", "ptp", Object, "i", "7");

@@ -45,7 +45,7 @@ public class NELXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-NEL-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-NEL-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -146,8 +146,8 @@ public class NELXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (SiteInst siteInst :siteList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBNEL"+siteInst.getSite_Inst_Id());
-			this.createElementNode(doc, "N", "3301EBNEL"+siteInst.getSite_Inst_Id(), Object, "i", "1");
+			Object.setAttribute("rmUID","3301EBCS1NEL"+siteInst.getSite_Inst_Id());
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+siteInst.getSite_Inst_Id(), Object, "i", "1");
 			this.createElementNode(doc, "N", siteInst.getCellId(), Object, "i", "2");
 			this.createElementNode(doc, "N", siteInst.getSiteLocation(), Object, "i", "3");
 			this.createElementNode(doc, "N", siteInst.getCellType(), Object, "i", "4");

@@ -54,7 +54,7 @@ public class ESIXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-ESI-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-ESI-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -146,11 +146,11 @@ public class ESIXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Map<String,Object> map :mapList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBESI"+map.get("id"));
-			this.createElementNode(doc, "N", "3301EBESI"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBPWT"+map.get("pwId"), Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBNEL"+map.get("aSiteId"), Object, "i", "3");
-			this.createElementNode(doc, "N", "3301EBNEL"+map.get("zSiteId"), Object, "i", "4");
+			Object.setAttribute("rmUID","3301EBCS1ESI"+map.get("id"));
+			this.createElementNode(doc, "N", "3301EBCS1ESI"+map.get("id"), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1PWT"+map.get("pwId"), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("aSiteId"), Object, "i", "3");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("zSiteId"), Object, "i", "4");
 			this.createElementNode(doc, "N", "NA", FieldName, "i", "5");
 			FieldValue.appendChild(Object);
 		}

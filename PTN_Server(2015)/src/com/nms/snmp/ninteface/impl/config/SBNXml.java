@@ -7,6 +7,7 @@ import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.DispatchUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
@@ -38,7 +39,7 @@ public class SBNXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-SBN-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-SBN-A1-" + version + "-" + getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -138,8 +139,8 @@ public class SBNXml
     for (Field field : mapList)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBSBN" + field.getId());
-      createElementNode(doc, "N", "3301EBSBN" + field.getId(), Object, "i", "1");
+      Object.setAttribute("rmUID", "3301EBCS1SBN" + field.getId());
+      createElementNode(doc, "N", "3301EBCS1SBN" + field.getId(), Object, "i", "1");
       createElementNode(doc, "N", field.getFieldName(), Object, "i", "2");
       createElementNode(doc, "N", "", Object, "i", "3");
       createElementNode(doc, "N", field.getFieldX()+"", Object, "i", "4");

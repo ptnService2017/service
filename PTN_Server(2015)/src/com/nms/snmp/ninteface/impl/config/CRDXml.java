@@ -48,7 +48,7 @@ public class CRDXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-CRD-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-CRD-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		try {
 			List<CardInst> cardList = this.getCardList();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
@@ -144,10 +144,10 @@ public class CRDXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (CardInst cardInst :cardList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCRD1"+cardInst.getId());
-			this.createElementNode(doc, "N", "3301EBCRD1"+cardInst.getId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBNEL1"+cardInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBEQHSLOT1"+cardInst.getSlotId(), Object, "i", "3");
+			Object.setAttribute("rmUID","3301EBCS1CRD"+cardInst.getId());
+			this.createElementNode(doc, "N", "3301EBCS1CRD"+cardInst.getId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+cardInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBCS1EQH"+cardInst.getSlotId(), Object, "i", "3");
 			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "4");
 			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "5");
 			this.createElementNode(doc, "N", "", Object, "i", "6");

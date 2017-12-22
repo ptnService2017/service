@@ -7,6 +7,7 @@ import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.DispatchUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
@@ -37,7 +38,7 @@ public class TDMXml{
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-TDM-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TDM-A1-" + version + "-" + getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -157,8 +158,8 @@ public class TDMXml{
     for (CesInfo cesInfo : cesinfos)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBTDM" + cesInfo.getId());
-      createElementNode(doc, "N", "3301EBTDM" + cesInfo.getId(), Object, "i", "1");
+      Object.setAttribute("rmUID", "3301EBCS1TDM" + cesInfo.getId());
+      createElementNode(doc, "N", "3301EBCS1TDM" + cesInfo.getId(), Object, "i", "1");
       createElementNode(doc, "N", cesInfo.getName(), Object, "i", "2");
       createElementNode(doc, "N", "2M", Object, "i", "3");
       createElementNode(doc, "N", "CD_UNI", Object, "i", "4");
@@ -181,7 +182,7 @@ public class TDMXml{
       createElementNode(doc, "N", "", Object, "i", "21");
       createElementNode(doc, "N", "", Object, "i", "22");
       createElementNode(doc, "N", "", Object, "i", "23");
-      createElementNode(doc, "N", "3301EBPSW" + cesInfo.getPwId(), Object, "i", "24");
+      createElementNode(doc, "N", "3301EBCS1PSW" + cesInfo.getPwId(), Object, "i", "24");
       createElementNode(doc, "N", "PW2rmUI", Object, "i", "25");
       FieldValue.appendChild(Object);
     }

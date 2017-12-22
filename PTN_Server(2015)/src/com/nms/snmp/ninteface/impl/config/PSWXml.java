@@ -52,7 +52,7 @@ public class PSWXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-PSW-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-PSW-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -157,16 +157,16 @@ public class PSWXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PwInfo pwInfo :pwList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBPSW"+pwInfo.getPwId());
-			this.createElementNode(doc, "N", "3301EBPSW"+pwInfo.getPwId(), Object, "i", "1");
+			Object.setAttribute("rmUID","3301EBCS1PSW"+pwInfo.getPwId());
+			this.createElementNode(doc, "N", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
 			this.createElementNode(doc, "N", "CD_UNI", Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBPRT"+pwInfo.getShowaSiteName(), Object, "i", "3");
-			this.createElementNode(doc, "N", "3301EBNEL"+pwInfo.getASiteId(), Object, "i", "4");
-			this.createElementNode(doc, "N", "3301EBPRT"+pwInfo.getShowzSiteName(), Object,"i", "5");
-			this.createElementNode(doc, "N", "3301EBNEL"+pwInfo.getZSiteId(), Object, "i", "6");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+pwInfo.getShowaSiteName(), Object, "i", "3");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+pwInfo.getASiteId(), Object, "i", "4");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+pwInfo.getShowzSiteName(), Object,"i", "5");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+pwInfo.getZSiteId(), Object, "i", "6");
 			this.createElementNode(doc, "N", pwInfo.getPwName(), Object, "i", "7");
-			this.createElementNode(doc, "N", "3301EBPRT"+pwInfo.getShowaSiteName(), Object, "i", "8");
-			this.createElementNode(doc, "N", "3301EBPRT"+pwInfo.getShowzSiteName(), Object, "i", "9");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+pwInfo.getShowaSiteName(), Object, "i", "8");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+pwInfo.getShowzSiteName(), Object, "i", "9");
 			this.createElementNode(doc, "N", pwInfo.getPwStatus()==1?"ACTIVE":"PENDING", Object, "i", "10");
 			this.createElementNode(doc, "N", "aEndIngressCIR", Object, "i", "11");
 			this.createElementNode(doc, "N", "aEndIngressPIR", Object, "i", "12");
