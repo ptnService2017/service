@@ -7,6 +7,7 @@ import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.DispatchUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
@@ -38,7 +39,7 @@ public class EPUXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-EPU-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-EPU-A1-" + version + "-" + getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -137,7 +138,7 @@ public class EPUXml
     for (SiteInst siteInst : siteList)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBEPU" + siteInst.getSite_Inst_Id());
+      Object.setAttribute("rmUID", "3301EBCS1EPU" + siteInst.getSite_Inst_Id());
       createElementNode(doc, "N", "rmUID", Object, "i", "1");
       createElementNode(doc, "N", "grouprmUID", Object, "i", "2");
       createElementNode(doc, "N", "cardrmUID", Object, "i", "3");

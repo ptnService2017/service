@@ -1,14 +1,28 @@
 package com.nms.snmp.ninteface.impl.alarm;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.nms.drive.service.bean.TunnelObject;
 import com.nms.drive.service.impl.CoderUtils;
+import com.nms.model.alarm.HisAlarmService_MB;
+import com.nms.model.util.Services;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
+import com.nms.snmp.ninteface.util.FileTools;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
 
 public class AlarmTcpTracpRun implements Runnable{
 	private Socket socket;
@@ -36,7 +50,7 @@ public class AlarmTcpTracpRun implements Runnable{
 					}else if(tempBytes[2] ==3){//请求同步告警
 						ackSyncAlarmMsg(outputStream,tempBytes);
 					}else if(tempBytes[2] ==5){//请求批量同步告警
-						
+						ackSyncAlarmFile(outputStream,tempBytes);
 					}else if(tempBytes[2] ==8){//心跳请求
 						ackHeartBeat(outputStream,tempBytes);
 					}else if(tempBytes[2] ==10){//关闭连接通知
@@ -54,12 +68,110 @@ public class AlarmTcpTracpRun implements Runnable{
 				outputStream.close();
 				socket.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				ExceptionManage.dispose(e, this.getClass());
 			}
 			
 		}
 	}
 
+	private void ackSyncAlarmFile(OutputStream outputStream, byte[] tempBytes) {
+		String[] reqboby = this.reqBoby(tempBytes);
+		HisAlarmService_MB hisAlarmService_MB = null;
+		Map<String,String> param = new HashMap<String,String>();
+		List<Map<String,String>> list = null;
+		String re = "";
+		try {
+			hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
+			if(reqboby[2].contains("alarmSeq")){
+				param.put("alarmSeq", reqboby[2].split("=")[1]);
+			}else{
+				String startTime = "";
+				String endTime = "";
+				if(reqboby[2].split("=").length>1){
+					startTime = reqboby[2].split("=")[1];
+				}
+				if(reqboby[3].split("=").length>1){
+					endTime = reqboby[3].split("=")[1];
+				}
+				param.put("startTime", startTime);
+				param.put("endTime", endTime);
+				param.put("syncSource", reqboby[3].split("=")[1]);
+			}
+			list = hisAlarmService_MB.sysNorthAlarm(param);
+			if(list.size() == 0){
+				re = "reqSyncAlarmFile;reqId="+reqboby[1].split("=")[1]+";result=success;resDesc=null";
+				outputStream.write(res(6, re));
+			}else{
+				String fileName = "snmpData\\ZJ\\CS\\EB\\OMC\\FM\\"+DateUtil.getDate("yyyyMMdd")+"\\FM-OMC-1A-V1.1.0-"+DateUtil.getDate("yyyyMMdd-HHmm")+".txt";
+				this.createFile(fileName, list);
+				re = "ackSyncAlarmFileResult;reqId="+reqboby[1].split("=")[1]+";filename="+fileName+";result=success;resDesc=null";
+				outputStream.write(res(7, re));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			UiUtil.closeService_MB(hisAlarmService_MB);
+		}
+	}
+
+	private void createFile(String fileName,List<Map<String,String>> list){
+		StringBuilder stringBuilder = new StringBuilder();
+		for(Map<String,String> map : list){
+			stringBuilder.append("{");
+			stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
+			stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
+			stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
+			stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
+			stringBuilder.append("\"eventTime\":\""+map.get("eventTime")+"\",");
+			stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
+			stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
+			stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
+			stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
+			stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
+			stringBuilder.append("\"neType\":\""+map.get("neType")+"\",");
+			stringBuilder.append("\"objectUID\":\""+map.get("objectUID")+"\",");
+			stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
+			stringBuilder.append("\"objectType\":\""+map.get("objectType")+"\",");
+			stringBuilder.append("\"locationInfo\":\""+map.get("locationInfo")+"\",");
+			stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
+			stringBuilder.append("\"holderType\":\""+map.get("holderType")+"\"");
+			stringBuilder.append("}\r\n");
+		}
+		OutputStreamWriter  output = null;
+		try {
+			File f = new File(fileName);
+			if(!f.exists()){
+				f.createNewFile();// 不存在则创建
+			}
+			output = new OutputStreamWriter (new FileOutputStream(fileName),"UTF-8");
+			output.write(stringBuilder.toString());
+			output.flush();
+			
+			FileTools fileTools = new FileTools();
+			fileTools.zipFile(fileName, fileName+".zip");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				output.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private int getLevel(String origSeverity){
+		int l = 1;
+		if(origSeverity.equals("4")){
+			l=2;
+		}if(origSeverity.equals("3")){
+			l=3;
+		}if(origSeverity.equals("2")){
+			l=4;
+		}
+		return l;
+	}
+	
 	/**
 	 * 请求同步告警答复
 	 * @param outputStream
@@ -194,19 +306,17 @@ public class AlarmTcpTracpRun implements Runnable{
 	}
 	
 	public static void main(String[] args) {
-		String s = "reqLoginAlarm;user=yiy;key=qw#$@;type=msg";
-		try {
-			byte[] b = s.getBytes("utf-8");
-			byte[] head = new byte[9];
-			for (int i = 0; i < head.length; i++) {
-				head[i] = 0;
-			}
-			head[8] = (byte) b.length;
-			AlarmTcpTracpRun alarmTcpTracpRun = new AlarmTcpTracpRun(null, null);
-			System.out.println(alarmTcpTracpRun.reqBoby(CoderUtils.arraycopy(head, b)));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String s = "{\"reqLoginAlarm\":\"user\",\"key\":\"qw#$@;type=msg\"}";
+			TunnelObject object = new TunnelObject();
+			object.setTunnelId(1);
+			TunnelObject object2 = new TunnelObject();
+			object2.setTunnelId(2);
+			List<TunnelObject> list = new ArrayList<TunnelObject>();
+			list.add(object);
+			list.add(object2);
+			String str = "aaa";
+//			JsonMapper.toJsonString(list).replace("}", "}\r\n");
+			System.out.println(DateUtil.getDate("yyyyMMdd"));
+//			AlarmTcpTracpRun.contentToTxt("C:\\Users\\peng\\test22.txt", str);
 		}
-	}
 }

@@ -37,7 +37,7 @@ public class OMCXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-OMC-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-OMC-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -115,8 +115,8 @@ public class OMCXml {
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		Element Object = doc.createElement("Object");
-		Object.setAttribute("rmUID","3301EBCS1");
-		this.createElementNode(doc, "N", "3301EBCS1", Object, "i", "1");
+		Object.setAttribute("rmUID","3301EBCS1OMC");
+		this.createElementNode(doc, "N", "3301EBCS1OMC", Object, "i", "1");
 		this.createElementNode(doc, "N", "EBNG –EMS-Client", Object, "i", "2");
 		String ip = "";
 		try {

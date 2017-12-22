@@ -12,7 +12,7 @@ public class AlarmTcpTracpMainThread extends Thread{
 	private ServerSocket serverSocket;
 	private boolean isRun = true;
 	private ConcurrentHashMap<String,Long> alarmTrapHeart = new ConcurrentHashMap<String,Long>();
-	private ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(10);
+	private ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(20);
 	private ConcurrentHashMap<String,Boolean> alarmTrapRun = new ConcurrentHashMap<String,Boolean>();
 	
 	@Override

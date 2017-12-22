@@ -554,4 +554,10 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 		}
 		return resultcesId;
 	}
+	
+	public List<Map<String,String>> sysNorthAlarm(Map<String,String> param){
+		List<Map<String,String>> list = this.mapper.sysNorthAlarm(param);
+		
+		return list;
+	}
 }

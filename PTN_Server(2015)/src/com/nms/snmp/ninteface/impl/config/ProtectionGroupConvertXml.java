@@ -21,6 +21,7 @@ import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
@@ -37,7 +38,7 @@ public class ProtectionGroupConvertXml {
 	public String getProtectionGroupXml(){
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlFile = {"snmpData\\NRM", "CMCC-PTN-NRM-PG-"+version+"-"+this.getTime()+".xml"};
+		String[] xmlFile = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CMCC-PTN-NRM-PG-"+version+"-"+this.getTime()+".xml"};
 		FileTools fileTools = null;
 		filePath = xmlFile[0]+File.separator+xmlFile[1];
 		this.createFile(xmlFile);//创建xml文件

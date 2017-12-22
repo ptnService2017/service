@@ -2703,5 +2703,11 @@ public class StringKeysLbl {
 	public static final String LBL_MYSQL5_SERVER="LBL_MYSQL5_SERVER";
 	public static final String LBL_START_MYSQL_SERVER="LBL_START_MYSQL_SERVER";
 	public static final String LBL_END_MYSQL_SERVER="LBL_END_MYSQL_SERVER";
-	
+	public static final String LBL_NOR_PROVINCES="LBL_NOR_PROVINCES";
+	public static final String LBL_NOR_MANUFACTURER="LBL_NOR_MANUFACTURER";
+	public static final String LBL_NOR_MAJORS="LBL_NOR_MAJORS";
+	public static final String LBL_NOR_NUMBERING="LBL_NOR_NUMBERING";
+	public static final String LBL_NOR_OBJECTTYPE="LBL_NOR_OBJECTTYPE";
+	public static final String LBL_NOR_OBJECTNUM="LBL_NOR_OBJECTNUM";
+	public static final String LBL_NOR_RMUIDERROR="LBL_NOR_RMUIDERROR";
 }

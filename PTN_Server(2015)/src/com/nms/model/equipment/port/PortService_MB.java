@@ -1,5 +1,4 @@
-﻿package com.nms.model.equipment.port;
-
+package com.nms.model.equipment.port;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -607,3 +606,4 @@ public class PortService_MB extends ObjectService_Mybatis {
 		return siteIdPortMap;
 	}
 }
+

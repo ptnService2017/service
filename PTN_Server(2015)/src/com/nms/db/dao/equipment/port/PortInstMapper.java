@@ -1,5 +1,4 @@
-﻿package com.nms.db.dao.equipment.port;
-
+package com.nms.db.dao.equipment.port;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -81,5 +80,4 @@ public interface PortInstMapper {
 	public int delete(PortInst portInst);
 	
 	List<PortInst> selectAlarmReversal();
-
 }

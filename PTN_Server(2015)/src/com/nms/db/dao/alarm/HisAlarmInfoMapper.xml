@@ -328,4 +328,27 @@
    <delete id="deleteBySiteId" parameterType="java.lang.Integer">
    delete from history_alarm where siteid=#{0}
    </delete>
+   
+   <select id="sysNorthAlarm" resultType="Map">
+   	select *from alarm_north where 1=1 
+   	<if test="params.alarmSeq != null "></if>
+   		and alarmID &gt;= #{params.alarmSeq}
+   	<if test="params.syncSource !=null and params.syncSource==0">
+   	<if test="params.startTime != null">
+   		and happenedtime &gt;= #{params.startTime}
+   	</if>
+   	<if test="params.endTime != null">
+   		and happenedtime &lt;= #{params.endTime}
+   	</if>
+   	</if>
+   	<if test="params.syncSource !=null and params.syncSource==1">
+   	<if test="params.startTime != null">
+   		and confirmtime &gt;= #{params.startTime}
+   	</if>
+   	<if test="params.endTime != null">
+   		and confirmtime &lt;= #{params.endTime}
+   	</if>
+   	</if>
+   	
+   </select>
 </mapper>

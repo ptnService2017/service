@@ -50,7 +50,7 @@ public class LSBXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-LSB-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-LSB-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -154,7 +154,7 @@ public class LSBXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Tunnel tunnel :tunnelList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBLSB"+tunnel.getTunnelId());
+			Object.setAttribute("rmUID","3301EBCS1LSB"+tunnel.getTunnelId());
 			this.createElementNode(doc, "N", "rmUID", Object, "i", "1");
 			this.createElementNode(doc, "N", "nativeName", Object, "i", "2");
 			this.createElementNode(doc, "N", "direction", Object, "i", "3");

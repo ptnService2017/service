@@ -1,5 +1,4 @@
-﻿package com.nms.ui.ptn.alarm;
-
+package com.nms.ui.ptn.alarm;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1242,3 +1241,4 @@ public class AlarmTools {
 		}
 	}
 }
+

@@ -1,5 +1,4 @@
-﻿package com.nms.service.impl.wh;
-
+package com.nms.service.impl.wh;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1176,3 +1175,4 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 		return false;
 	}
 }
+

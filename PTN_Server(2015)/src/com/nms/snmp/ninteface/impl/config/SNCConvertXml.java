@@ -22,6 +22,7 @@ import com.nms.model.util.Services;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.UiUtil;
@@ -39,7 +40,7 @@ public class SNCConvertXml {
 			 Map<Integer,Object> allSubNetWorkConnData = this.getSNCMap();
 //			 if(allSubNetWorkConnData.size() >0){
 				 String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-				 String[] xmlPath = {"snmpData\\NRM", "CMCC-PTN-NRM-SNC-"+version+"-"+this.getTime()+".xml"};
+				 String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CMCC-PTN-NRM-SNC-"+version+"-"+this.getTime()+".xml"};
 				 String filePath = fileTool.createFile(xmlPath);
 				 Document doc = fileTool.getDocument();
 				 this.createXml(doc,allSubNetWorkConnData);
