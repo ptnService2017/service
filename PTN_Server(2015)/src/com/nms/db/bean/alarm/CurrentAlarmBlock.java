@@ -31,6 +31,17 @@ public class CurrentAlarmBlock implements Serializable{
     // 告警源
     private Object alarmBusiness;
     
+    // 关闭告警屏蔽
+    private boolean close;
+    
+    public boolean isClose() {
+		return close;
+	}
+
+	public void setClose(boolean close) {
+		this.close = close;
+	}
+    
     public CurrentAlarmBlock() {
     	siteList = new ArrayList<SiteInst>();
     	slotList = new ArrayList<SlotInst>();

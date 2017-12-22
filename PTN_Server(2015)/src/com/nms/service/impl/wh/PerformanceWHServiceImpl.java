@@ -174,7 +174,9 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 										info.setStartTime(lineObject.getDateTime());
 										info.setPerformanceEndTime(lineObject.getEndTime());
 										info.setPerformanceTime(time);
-										currentPerforInfoList.add(info);
+										if(info.getObjectId() != 0){
+											currentPerforInfoList.add(info);
+										}
 									}
 								}
 							}
@@ -477,6 +479,7 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 										for (PerformanceInfoObject performanceInfoObject : infoObject.getPerformanceInfoObjectList()) {
 											info = new HisPerformanceInfo();
 											info.setMonitorCycle(EMonitorCycle.forms((performanceObject.getPerformanceDataType() == 0) ? 1 : 2));
+											info.setMonitor(performanceObject.getPerformanceDataType() == 0 ? 1 : 2);
 											info.setSiteId(siteInst.getSite_Inst_Id());
 											info.setSiteName(siteInst.getCellId());
 											info.setSlotId(slotInst.getId());
@@ -494,7 +497,9 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 											} else {
 												info.setIsCardOrSite(2);
 											}
-											currentPerforInfoList.add(info);
+											if(info.getObjectId() != 0){
+												currentPerforInfoList.add(info);
+											}
 										}
 									}
 								}
@@ -515,7 +520,42 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 			UiUtil.closeService_MB(siteService);
 		}
 		infos = expandHisPerformanceInfo(currentPerforInfoList);
+		addLTHisPerformance(infos);
 		return infos;
+	}
+	
+	/**
+	 * 添加tunnel和pw的LT性能
+	 */
+	private static void addLTHisPerformance(List<HisPerformanceInfo> perforInfoList){
+		if(perforInfoList.size() > 0){
+			List<HisPerformanceInfo> performanceList = new ArrayList<HisPerformanceInfo>();
+			for(HisPerformanceInfo info : perforInfoList){
+				int code = info.getPerformanceCode();
+				if(code == 136 || code == 137 || code == 138 || code == 139 ||
+						code == 140 || code == 141 || code == 142 || code == 143){
+					HisPerformanceInfo currInfo = new HisPerformanceInfo();
+					currInfo.setSlotId(info.getSlotId());
+					currInfo.setStartTime(info.getStartTime());
+					currInfo.setPerformanceEndTime(info.getPerformanceEndTime());
+					currInfo.setPerformanceCode(code+24);
+					currInfo.setPerformanceValue(info.getPerformanceValue());
+					currInfo.setPerformanceTime(info.getPerformanceTime());
+					currInfo.setMonitorCycle(info.getMonitorCycle());
+					currInfo.setMonitor(info.getMonitor());
+					currInfo.setSiteId(info.getSiteId());
+					currInfo.setSiteName(info.getSiteName());
+					currInfo.setObjectType(info.getObjectType());
+					currInfo.setObjectName(info.getObjectName());
+					currInfo.setIsCardOrSite(info.getIsCardOrSite());
+					currInfo.setObjectId(info.getObjectId());
+					performanceList.add(currInfo);
+				}
+			}
+			if(performanceList.size() > 0){
+				perforInfoList.addAll(performanceList);
+			}
+		}
 	}
 	
 	/**
@@ -526,7 +566,8 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 			List<CurrentPerforInfo> performanceList = new ArrayList<CurrentPerforInfo>();
 			for(CurrentPerforInfo info : perforInfoList){
 				int code = info.getPerformanceCode();
-				if(code == 136 || code == 137 || code == 138 || code == 139){
+				if(code == 136 || code == 137 || code == 138 || code == 139 ||
+						code == 140 || code == 141 || code == 142 || code == 143){
 					CurrentPerforInfo currInfo = new CurrentPerforInfo();
 					currInfo.setSlotId(info.getSlotId());
 					currInfo.setStartTime(info.getStartTime());
@@ -540,22 +581,7 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 					currInfo.setObjectType(info.getObjectType());
 					currInfo.setObjectName(info.getObjectName());
 					currInfo.setIsCardOrSite(info.getIsCardOrSite());
-					performanceList.add(currInfo);
-				}
-				if(code == 140 || code == 141 || code == 142 || code == 143){
-					CurrentPerforInfo currInfo = new CurrentPerforInfo();
-					currInfo.setSlotId(info.getSlotId());
-					currInfo.setStartTime(info.getStartTime());
-					currInfo.setPerformanceEndTime(info.getPerformanceEndTime());
-					currInfo.setPerformanceCode(code+24);
-					currInfo.setPerformanceValue(info.getPerformanceValue());
-					currInfo.setPerformanceTime(info.getPerformanceTime());
-					currInfo.setMonitorCycle(info.getMonitorCycle());
-					currInfo.setSiteId(info.getSiteId());
-					currInfo.setSiteName(info.getSiteName());
-					currInfo.setObjectType(info.getObjectType());
-					currInfo.setObjectName(info.getObjectName());
-					currInfo.setIsCardOrSite(info.getIsCardOrSite());
+					currInfo.setObjectId(info.getObjectId());
 					performanceList.add(currInfo);
 				}
 			}

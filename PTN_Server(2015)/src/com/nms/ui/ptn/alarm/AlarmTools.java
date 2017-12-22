@@ -41,6 +41,7 @@ import com.nms.drive.service.bean.AlarmObject;
 import com.nms.drive.service.impl.CoderUtils;
 import com.nms.model.alarm.CurAlarmService_MB;
 import com.nms.model.alarm.HisAlarmService_MB;
+import com.nms.model.alarm.WarningLevelService_MB;
 import com.nms.model.equipment.port.E1InfoService_MB;
 import com.nms.model.equipment.port.PortService_MB;
 import com.nms.model.equipment.shlef.SiteService_MB;
@@ -422,7 +423,9 @@ public class AlarmTools {
 		List<CurrentAlarmInfo> currentAlarmInfoListToCorba = null;//將设备报上来的数据转给COrBA
 		SlotService_MB slotService = null;
 		long delayTime = 0l;
+		Map<String, WarningLevel> levelMap = null;
 		try {
+			levelMap = getWarningLevelMap();
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			siteService = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE);
 			curAlarmService = (CurAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.CurrentAlarm);
@@ -470,13 +473,14 @@ public class AlarmTools {
 										WarningLevel warningLevel = new WarningLevel();
 										warningLevel.setWarningcode(infoObject.getAlarmCode());
 										warningLevel.setWarninglevel(getAlarmLevel(infoObject.getAlarmStatus()));
+										this.updateCode(info, warningLevel);
 										info.setAlarmSeverity(this.getAlarmSeverity(warningLevel.getWarninglevel()));
 										info.setWarningLevel(warningLevel);
 										info.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
 										info.setWarningLevel_temp(warningLevel.getWarninglevel());
 										currentAlarmInfoList = curAlarmService.select(info);
-										this.filterByAlarmBlocking(currentAlarmInfoList);
 										if (currentAlarmInfoList != null && currentAlarmInfoList.size() > 0) {// 判断当前告警是否存在
+											this.filterByAlarmBlocking(currentAlarmInfoList, levelMap);
 											curAlarmService.delete(currentAlarmInfoList.get(0).getId());
 											currentAlarmInfoList.get(0).setAlarmTime(infoObject.getAlarmDate());
 											currentAlarmInfoList.get(0).setAlarmLevel(info.getAlarmLevel());
@@ -484,8 +488,13 @@ public class AlarmTools {
 											curAlarmService.saveOrUpdate(currentAlarmInfoList.get(0));// 存在，先删除，再入库
 											currentAlarmInfoListToCorba.add(currentAlarmInfoList.get(0));
 										} else {
-											curAlarmService.saveOrUpdate(info);// 不存在，直接入库
-											currentAlarmInfoListToCorba.add(info);
+											List<CurrentAlarmInfo> list = new ArrayList<CurrentAlarmInfo>();
+											list.add(info);
+											this.filterByAlarmBlocking(list, levelMap);
+											for(CurrentAlarmInfo cInfo : list){
+												curAlarmService.saveOrUpdate(cInfo);// 不存在，直接入库
+												currentAlarmInfoListToCorba.add(cInfo);
+											}
 										}
 										HisAlarmInfo northAlarm = new HisAlarmInfo();
 										northAlarm.setRaisedTime(sdf.parse(infoObject.getAlarmDate()));
@@ -518,6 +527,7 @@ public class AlarmTools {
 										WarningLevel warningLevel = new WarningLevel();
 										warningLevel.setWarningcode(infoObject.getAlarmCode());
 										warningLevel.setWarninglevel(getAlarmLevel(infoObject.getAlarmStatus()));
+										this.updateCode(hisAlarmInfo, warningLevel);
 										hisAlarmInfo.setAlarmSeverity(this.getAlarmSeverity(warningLevel.getWarninglevel()));
 										hisAlarmInfo.setWarningLevel(warningLevel);
 										
@@ -588,7 +598,9 @@ public class AlarmTools {
 		List<CurrentAlarmInfo> currentAlarmInfoList = null;
 		long delayTime =0l;
 		SlotService_MB slotService = null;
+		Map<String, WarningLevel> levelMap = null;
 		try {
+			levelMap = getWarningLevelMap();
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			siteService = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE);
 			curAlarmService = (CurAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.CurrentAlarm);
@@ -634,6 +646,7 @@ public class AlarmTools {
 										WarningLevel warningLevel = new WarningLevel();
 										warningLevel.setWarningcode(infoObject.getAlarmCode());
 										warningLevel.setWarninglevel(getAlarmLevel(infoObject.getAlarmStatus()));
+										this.updateCode(info, warningLevel);
 										info.setAlarmSeverity(this.getAlarmSeverity(warningLevel.getWarninglevel()));
 										info.setWarningLevel(warningLevel);
 										info.setWarningLevel_temp(warningLevel.getWarninglevel());
@@ -642,7 +655,7 @@ public class AlarmTools {
 								}
 							}
 						}
-						this.filterByAlarmBlocking(currentAlarmInfoList);
+						this.filterByAlarmBlocking(currentAlarmInfoList, levelMap);
 						curAlarmService.insertList(currentAlarmInfoList, siteInst.getSite_Inst_Id());
 					 }
 					}
@@ -663,34 +676,97 @@ public class AlarmTools {
 		}
 	}
 	
+	private Map<String, WarningLevel> getWarningLevelMap(){
+		WarningLevelService_MB warningLevelService = null;
+		Map<String, WarningLevel> map = null;
+		try {
+			warningLevelService = (WarningLevelService_MB) ConstantUtil.serviceFactory.newService_MB(Services.WarningLevel);
+			//获取告警级别map
+			List<WarningLevel> warningLevels = warningLevelService.select();
+			map = new HashMap<String, WarningLevel>();
+			for(WarningLevel level:warningLevels){
+				map.put(level.getManufacturer()+":"+level.getWarningcode()+":"+level.getWarninglevel(), level);
+			}
+		}catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			UiUtil.closeService_MB(warningLevelService);
+		}
+		return map;
+	}
+	
+	private void updateCode(AlarmInfo alarm, WarningLevel warningLevel){
+		int code = alarm.getAlarmCode();
+		if(code == 216){
+			// port
+			alarm.setObjectType(EObjectType.PORT);
+			alarm.setAlarmLevel(5);
+			warningLevel.setWarninglevel(5);
+		}else if(code == 217){
+			// tmp
+			alarm.setObjectType(EObjectType.TUNNEL);
+			alarm.setAlarmLevel(5);
+			warningLevel.setWarninglevel(5);
+		}else if(code == 218){
+			// tmc
+			alarm.setObjectType(EObjectType.PW);
+			alarm.setAlarmLevel(5);
+			warningLevel.setWarninglevel(5);
+		}else if(code == 219){
+			// vpws
+			alarm.setObjectType(EObjectType.VPWS);
+			alarm.setAlarmLevel(5);
+			warningLevel.setWarninglevel(5);
+		}else if(code == 220){
+			// vpls
+			alarm.setObjectType(EObjectType.VPLS);
+			alarm.setAlarmLevel(5);
+			warningLevel.setWarninglevel(5);
+		}	
+	}
+	
 	/**
 	 * 根据告警屏蔽配置过滤当前告警
 	 * @param alarmList
 	 */
-	private void filterByAlarmBlocking(List<CurrentAlarmInfo> curAlarmList){
+	private void filterByAlarmBlocking(List<CurrentAlarmInfo> curAlarmList, Map<String, WarningLevel> levelMap){
 		if(curAlarmList != null && ConstantUtil.alarmBlock != null){
-			List<CurrentAlarmInfo> alarmList = new ArrayList<CurrentAlarmInfo>();
-			List<SiteInst> siteList = ConstantUtil.alarmBlock.getSiteList();
-			for(CurrentAlarmInfo alarm : curAlarmList){
-				for(SiteInst site : siteList){
-				int siteId = site.getSite_Inst_Id();
-					if(alarm.getSiteId() == siteId && ConstantUtil.alarmBlock.getAlarmLevel().contains(alarm.getWarningLevel())){
-						WarningLevel level = alarm.getWarningLevel();
-						if(level != null){
-							if(ConstantUtil.alarmBlock.getWarningType() == level.getWarningtype()){
-								long alarmTime = DateUtil.updateTimeToLong(alarm.getHappenedtime(), DateUtil.FULLTIME);
-								long startTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenTime(), DateUtil.FULLTIME);
-								long endTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenEndTime(), DateUtil.FULLTIME);
-								if(alarmTime >= startTime && alarmTime <= endTime && filterByAlarmSrc(alarm)){
+			if(!ConstantUtil.alarmBlock.isClose()){
+				List<CurrentAlarmInfo> alarmList = new ArrayList<CurrentAlarmInfo>();
+				List<SiteInst> siteList = ConstantUtil.alarmBlock.getSiteList();
+				for(CurrentAlarmInfo alarm : curAlarmList){
+					for(SiteInst site : siteList){
+						int siteId = site.getSite_Inst_Id();
+						if(alarm.getSiteId() == siteId && ConstantUtil.alarmBlock.getAlarmLevel().contains(alarm.getAlarmLevel())){
+							WarningLevel level = levelMap.get("1:"+alarm.getAlarmCode()+":"+alarm.getAlarmLevel());
+							if(level != null){
+								if(ConstantUtil.alarmBlock.getWarningType() == 0){
+									// 屏蔽所有类型的告警
 									alarmList.add(alarm);
+								}else{
+									if(ConstantUtil.alarmBlock.getWarningType() == level.getWarningtype() && 
+											ConstantUtil.alarmBlock.getAlarmLevel().contains(alarm.getAlarmLevel())){
+										if(filterByAlarmSrc(alarm)){
+											long alarmTime = DateUtil.updateTimeToLong(alarm.getHappenedtime(), DateUtil.FULLTIME);
+											long startTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenTime(), DateUtil.FULLTIME);
+											long endTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenEndTime(), DateUtil.FULLTIME);
+											if(startTime != 0){
+												if(alarmTime >= startTime && alarmTime <= endTime){
+													alarmList.add(alarm);
+												}
+											}else{
+												alarmList.add(alarm);
+											}
+										}
+									}
 								}
 							}
 						}
 					}
 				}
-			}
-			if(alarmList.size() > 0){
-				curAlarmList.removeAll(alarmList);
+				if(alarmList.size() > 0){
+					curAlarmList.removeAll(alarmList);
+				}
 			}
 		}
 	}
@@ -841,6 +917,8 @@ public class AlarmTools {
 				UiUtil.closeService_MB(e1Service);
 				UiUtil.closeService_MB(portService);
 			}
+		}else{
+			return true;
 		}
 		return false;
 	}

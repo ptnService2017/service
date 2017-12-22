@@ -597,4 +597,8 @@
     delete from port_inst
     where cardId = #{cardId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="selectAlarmReversal" resultMap="BaseResultMap" >
+  	select siteId, number from port_inst where alarmReversalEnabled = 1
+  </select>
 </mapper>

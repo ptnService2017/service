@@ -78,11 +78,11 @@ public class SiteDispatch extends DispatchBase implements SiteDispatchI {
 			siteCXServiceImpl = new SiteCXServiceImpl();
 			for (SiteInst siteInst : siteInstLoginList) {
 				manufacturer = UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName();
-				if ("700+系列".equals(manufacturer) || "700+Series".equals(manufacturer)) {
+//				if ("700+系列".equals(manufacturer) || "700+Series".equals(manufacturer)) {
 					siteInst_wh.add(siteInst);
-				} else {
-					siteInst_cx.add(siteInst);
-				}
+//				} else {
+//					siteInst_cx.add(siteInst);
+//				}
 			}
 
 			if (siteInst_cx.size() > 0) {
@@ -120,12 +120,12 @@ public class SiteDispatch extends DispatchBase implements SiteDispatchI {
 				}
 			if(null!=siteInstLoginList){
 				for (SiteInst siteInst : siteInstLoginList) {
-					manufacturer = UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName();
-					if ("700+系列".equals(manufacturer) || "700+series".equals(manufacturer)) {
+//					manufacturer = UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName();
+//					if ("700+系列".equals(manufacturer) || "700+series".equals(manufacturer)) {
 						siteInst_wh.add(siteInst);
-					} else {
-						siteInst_cx.add(siteInst);
-					}
+//					} else {
+//						siteInst_cx.add(siteInst);
+//					}
 				}
 
 				if (siteInst_cx.size() > 0) {
@@ -386,13 +386,13 @@ public class SiteDispatch extends DispatchBase implements SiteDispatchI {
 			}
 			
 			manufacturer = UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName();
-			if (manufacturer.equals("700+系列")) {
+//			if (manufacturer.equals("700+系列")) {
 				operationServiceI = new SiteWHServiceImpl();
 				result = operationServiceI.clearSite(siteInst);
-			} else {
-				siteCXServiceImpl=new SiteCXServiceImpl();
-				result = siteCXServiceImpl.initialize(siteInst);
-			}
+//			} else {
+//				siteCXServiceImpl=new SiteCXServiceImpl();
+//				result = siteCXServiceImpl.initialize(siteInst);
+//			}
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		} finally {

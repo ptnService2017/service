@@ -80,6 +80,6 @@ public interface PortInstMapper {
 	
 	public int delete(PortInst portInst);
 	
-	
+	List<PortInst> selectAlarmReversal();
 
 }
