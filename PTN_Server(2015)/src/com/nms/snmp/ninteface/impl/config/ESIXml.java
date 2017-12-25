@@ -148,7 +148,7 @@ public class ESIXml {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1ESI"+map.get("id"));
 			this.createElementNode(doc, "N", "3301EBCS1ESI"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1PWT"+map.get("pwId"), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBCS1PSW"+map.get("pwId"), Object, "i", "2");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("aSiteId"), Object, "i", "3");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("zSiteId"), Object, "i", "4");
 			this.createElementNode(doc, "N", "NA", FieldName, "i", "5");

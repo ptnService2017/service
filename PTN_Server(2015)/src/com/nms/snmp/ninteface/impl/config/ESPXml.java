@@ -21,6 +21,7 @@ import com.nms.db.bean.equipment.card.CardInst;
 import com.nms.db.bean.equipment.shelf.SiteInst;
 import com.nms.db.bean.ptn.path.pw.PwInfo;
 import com.nms.db.bean.ptn.path.tunnel.Tunnel;
+import com.nms.db.bean.ptn.port.AcPortInfo;
 import com.nms.drive.service.impl.CoderUtils;
 import com.nms.model.equipment.card.CardService_MB;
 import com.nms.model.equipment.shlef.SiteService_MB;
@@ -60,10 +61,10 @@ public class ESPXml {
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
-			List<Map<String,Object>> mapList = this.getETHList();
+			List<Map<String,Object>> list = this.getACList();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
-		    this.createXML(doc,mapList);//生成xml文件内容
+		    this.createXML(doc,list);//生成xml文件内容
 		    XmlUtil.createFile(doc, "CM-PTN-ESP-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
@@ -71,19 +72,19 @@ public class ESPXml {
 		return filePath;
 	}
 
-    private List<Map<String,Object>> getETHList() {
+    private List<Map<String,Object>> getACList() {
     	AcPortInfoService_MB acPortInfoService_MB = null;
     	ElanInfoService_MB elanInfoService_MB = null;
-    	List<Map<String,Object>> mapList = null;
+    	List<Map<String,Object>> list = null;
     	try {
-    		elanInfoService_MB = (ElanInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.ElanInfo);
-    		mapList = elanInfoService_MB.selectAll_ETHNorth();
+    		acPortInfoService_MB = (AcPortInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.AcInfo);
+    		list = acPortInfoService_MB.northList();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{
 			UiUtil.closeService_MB(elanInfoService_MB);
 		}
-    	return mapList;
+    	return list;
 	}
     
 	private String getTime() {
@@ -122,7 +123,7 @@ public class ESPXml {
     /**
      * 根据需求生成相应的xml文件
      */
-	private void createXML(Document doc,List<Map<String,Object>> mapList){
+	private void createXML(Document doc,List<Map<String,Object>> list){
 		doc.setXmlVersion("1.0");
 		doc.setXmlStandalone(true);
 		Element root = doc.createElement("DataFile");
@@ -130,45 +131,42 @@ public class ESPXml {
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
 		root.appendChild(XmlUtil.fileHeader(doc,"EthSPInfo"));
-		Element emsList = this.createFileContent(doc,mapList);
+		Element emsList = this.createFileContent(doc,list);
 		root.appendChild(emsList);
 		doc.appendChild(root);
 	}
 	
-	private Element createFileContent(Document doc,List<Map<String,Object>> mapList) {
+	private Element createFileContent(Document doc,List<Map<String,Object>> list) {
 		Element Objects = doc.createElement("Objects");
 		
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "serviceType", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "direction", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "owner", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "owneSserviceType", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "activeState", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "CIR", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "PIR", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "servicermUID", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "portrmUID", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "CVID", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "SVID", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "ingressCIR", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "ingressPIR", FieldName, "i", "8");
+		this.createElementNode(doc, "N", "egressCIR", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "egressPIR", FieldName, "i", "10");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
-		for (Map<String,Object> map :mapList) {
+		for (Map<String,Object> map :list) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1ESP"+map.get("id"));
 			this.createElementNode(doc, "N", "3301EBCS1ESP"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "N", map.get("name").toString(), Object, "i", "2");
-			String type = "E-LINE";
-			if("2".equals(map.get("name").toString())){
-				type = "E-LAN";
-			}else if("3".equals(map.get("name").toString())){
-				type = "E-TREE";
-			}
-			this.createElementNode(doc, "N", type, Object, "i", "3");
-			this.createElementNode(doc, "N", "CD_UNI", Object, "i", "4");
-			this.createElementNode(doc, "N", map.get("name").toString(), FieldName, "i", "5");
-			this.createElementNode(doc, "N", "", FieldName, "i", "6");
-			this.createElementNode(doc, "N", map.get("activeStatus").toString().equals("1")?"ACTIVE":"PENDING", FieldName, "i", "7");
-			this.createElementNode(doc, "N", "", FieldName, "i", "8");
-			this.createElementNode(doc, "N", "", FieldName, "i", "9");
+			this.createElementNode(doc, "N", "3301EBCS1ETH"+map.get("servicermUID"), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("siteId"), Object, "i", "3");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+map.get("portId"), Object, "i", "4");
+			this.createElementNode(doc, "N", "", Object, "i", "5");
+			this.createElementNode(doc, "N", "", Object, "i", "6");
+			this.createElementNode(doc, "N", map.get("cir").toString(), Object, "i", "7");
+			this.createElementNode(doc, "N", map.get("pir").toString(), Object, "i", "8");
+			this.createElementNode(doc, "N", map.get("cir").toString(), Object, "i", "9");
+			this.createElementNode(doc, "N", map.get("pir").toString(), Object, "i", "10");
+			
 			FieldValue.appendChild(Object);
 		}
 		

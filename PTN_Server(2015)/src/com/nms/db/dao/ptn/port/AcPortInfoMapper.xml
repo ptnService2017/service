@@ -404,4 +404,24 @@
   <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
     delete from acinfo where siteId= #{siteId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="northList"  resultType="java.util.Map">
+SELECT
+	a.id,
+	s.id AS "servicermUID",
+	a.siteId,
+	a.portId,
+	a.vlanId,
+ac.cir,
+ac.pir
+FROM
+	acinfo a
+INNER JOIN serviceinfo s ON s.zAcId = a.id
+OR s.aAcId = a.id
+OR s.amostAcIds = a.id
+OR s.zmostAcIds = a.id
+INNER JOIN acbuffer ac on a.id = ac.acId
+GROUP BY
+	a.id;
+  </select>
 </mapper>

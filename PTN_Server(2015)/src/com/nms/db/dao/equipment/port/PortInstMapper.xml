@@ -597,4 +597,19 @@
     delete from port_inst
     where cardId = #{cardId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="northPort" parameterType="map">
+  	SELECT
+	p.portId,
+	p.cardId,
+	p.siteId,
+	p.portName,
+	p.portType,
+	p.number,
+	c.slotId AS "slotnumber",
+	p.imagePath
+FROM
+	`port_inst` p
+INNER JOIN card_inst c ON p.cardId = c.id;
+  </select>
 </mapper>

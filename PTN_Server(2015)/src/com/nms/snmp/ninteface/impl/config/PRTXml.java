@@ -71,7 +71,7 @@ public class PRTXml {
 		try {
 			portService = (PortService_MB)ConstantUtil.serviceFactory.newService_MB(Services.PORT);
 			PortInst portInst = new PortInst();
-			portList = portService.select(portInst);
+			portList = portService.northPort();
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		} finally {
@@ -158,7 +158,7 @@ public class PRTXml {
 			this.createElementNode(doc, "N", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "1");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
 			this.createElementNode(doc, "N", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
-			this.createElementNode(doc, "N", "3301EBCS1CRD"+portInst.getEquipId(), Object, "i", "4");
+			this.createElementNode(doc, "N", "3301EBCS1CEQH"+portInst.getSlotNumber(), Object, "i", "4");
 			this.createElementNode(doc, "N", portInst.getNumber()+"", Object, "i", "5");
 			this.createElementNode(doc, "N", portInst.getPortName(), Object, "i", "6");
 			this.createElementNode(doc, "N", "ptp", Object, "i", "7");

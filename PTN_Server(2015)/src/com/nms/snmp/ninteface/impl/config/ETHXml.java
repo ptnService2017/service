@@ -154,18 +154,18 @@ public class ETHXml {
 			this.createElementNode(doc, "N", "3301EBCS1ETH"+map.get("id"), Object, "i", "1");
 			this.createElementNode(doc, "N", map.get("name").toString(), Object, "i", "2");
 			String type = "E-LINE";
-			if("2".equals(map.get("name").toString())){
+			if("2".equals(map.get("serviceType").toString())){
 				type = "E-LAN";
-			}else if("3".equals(map.get("name").toString())){
+			}else if("3".equals(map.get("serviceType").toString())){
 				type = "E-TREE";
 			}
 			this.createElementNode(doc, "N", type, Object, "i", "3");
 			this.createElementNode(doc, "N", "CD_UNI", Object, "i", "4");
-			this.createElementNode(doc, "N", map.get("name").toString(), FieldName, "i", "5");
-			this.createElementNode(doc, "N", "", FieldName, "i", "6");
-			this.createElementNode(doc, "N", map.get("activeStatus").toString().equals("1")?"ACTIVE":"PENDING", FieldName, "i", "7");
-			this.createElementNode(doc, "N", "", FieldName, "i", "8");
-			this.createElementNode(doc, "N", "", FieldName, "i", "9");
+			this.createElementNode(doc, "N", map.get("name").toString(), Object, "i", "5");
+			this.createElementNode(doc, "N", "", Object, "i", "6");
+			this.createElementNode(doc, "N", map.get("activeStatus").toString().equals("1")?"ACTIVE":"PENDING", Object, "i", "7");
+			this.createElementNode(doc, "N", "", Object, "i", "8");
+			this.createElementNode(doc, "N", "", Object, "i", "9");
 			FieldValue.appendChild(Object);
 		}
 		

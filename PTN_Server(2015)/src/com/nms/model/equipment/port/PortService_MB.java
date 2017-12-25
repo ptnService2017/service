@@ -580,4 +580,9 @@ public class PortService_MB extends ObjectService_Mybatis {
 		}
 		return flag;
 	}
+	
+	public List<PortInst> northPort(){
+		List<PortInst> list = this.mapper.northPort();
+		return list;
+	}
 }

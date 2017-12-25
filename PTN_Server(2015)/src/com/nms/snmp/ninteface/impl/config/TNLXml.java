@@ -156,26 +156,32 @@ public class TNLXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Tunnel tunnel :tunnelList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1CRD"+tunnel.getTunnelId());
-			this.createElementNode(doc, "N", "rmUID", Object, "i", "1");
-			this.createElementNode(doc, "N", "nativeName", Object, "i", "2");
-			this.createElementNode(doc, "N", "direction", Object, "i", "3");
-			this.createElementNode(doc, "N", "activeState", Object, "i", "4");
-			this.createElementNode(doc, "N", "aEndTprmUID", Object, "i", "5");
-			this.createElementNode(doc, "N", "aEndNermUID", Object, "i", "6");
-			this.createElementNode(doc, "N", "aEndPortrmUID", Object, "i", "7");
-			this.createElementNode(doc, "N", "aEndOutLabel", Object, "i", "8");
-			this.createElementNode(doc, "N", "aEndRevInLabel", Object, "i", "9");
-			this.createElementNode(doc, "N", "zEndTprmUID", Object, "i", "10");
-			this.createElementNode(doc, "N", "zEndNermUID", Object, "i", "11");
-			this.createElementNode(doc, "N", "zEndPortrmUID", Object, "i", "12");
-			this.createElementNode(doc, "N", "zEndInLabel", Object, "i", "13");
-			this.createElementNode(doc, "N", "zEndRevOutLabel", Object, "i", "14");
-			this.createElementNode(doc, "N", "CIR", Object, "i", "15");
-			this.createElementNode(doc, "N", "RevCIR", Object, "i", "16");
-			this.createElementNode(doc, "N", "PIR", Object, "i", "17");
-			this.createElementNode(doc, "N", "RevPIR", Object, "i", "18");
-			this.createElementNode(doc, "N", "isOverlay", Object, "i", "19");
+			Object.setAttribute("rmUID","3301EBCS1TNL"+tunnel.getTunnelId());
+			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getTunnelId(), Object, "i", "1");
+			this.createElementNode(doc, "N", tunnel.getTunnelName(), Object, "i", "2");
+			this.createElementNode(doc, "N", "CD_UNI", Object, "i", "3");
+			this.createElementNode(doc, "N", tunnel.getTunnelStatus()==1?"ACTIVE":"PENDING", Object, "i", "4");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "5");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "6");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+tunnel.getAPortId(), Object, "i", "7");
+			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(0).getFrontLabelValue()+"", Object, "i", "8");
+			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(0).getBackLabelValue()+"", Object, "i", "9");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "10");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "11");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+tunnel.getZPortId(), Object, "i", "12");
+			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(1).getFrontLabelValue()+"", Object, "i", "13");
+			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(1).getBackLabelValue()+"", Object, "i", "14");
+			if(tunnel.getQosList().size()>0){
+				this.createElementNode(doc, "N", tunnel.getQosList().get(0).getCir()+"", Object, "i", "15");
+				this.createElementNode(doc, "N", tunnel.getQosList().get(0).getPir()+"", Object, "i", "17");
+			}else{
+				this.createElementNode(doc, "N", "", Object, "i", "15");
+				
+				this.createElementNode(doc, "N", "", Object, "i", "17");
+			}
+			this.createElementNode(doc, "N", "", Object, "i", "16");
+			this.createElementNode(doc, "N", "", Object, "i", "18");
+			this.createElementNode(doc, "N", "false", Object, "i", "19");
 			FieldValue.appendChild(Object);
 		}
 		

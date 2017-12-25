@@ -2,6 +2,7 @@ package com.nms.model.ptn.port;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -669,6 +670,12 @@ public class AcPortInfoService_MB extends ObjectService_Mybatis{
 		int result = this.mapper.updateLanId(acInfo.getLanId(), acInfo.getId());
 		this.sqlSession.commit();
 		return result;
+	}
+
+	
+	public List<Map<String,Object>> northList() {
+		List<Map<String,Object>> list = this.mapper.northList();
+		return list;
 	}
 	
 }

@@ -147,12 +147,21 @@ public class TPBXml {
 		for (Tunnel tunnel :tunnelList) {
 			
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1CRD"+tunnel.getProtectTunnelId());
-			this.createElementNode(doc, "N", "3301EBCS1CRD"+tunnel.getProtectTunnelId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1CRD"+tunnel.getName(), Object, "i", "2");
-			this.createElementNode(doc, "N", "RM_REVERTIVE", Object, "i", "3");
-			this.createElementNode(doc, "N", "1:1", Object, "i", "4");
+			Object.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getProtectTunnelId());
+			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getProtectTunnelId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getTunnelId(), Object, "i", "2");
+			this.createElementNode(doc, "N", "Master", Object, "i", "3");
 			FieldValue.appendChild(Object);
+			
+			Element ObjectPro = doc.createElement("Object");
+			ObjectPro.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getProtectTunnelId());
+			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getProtectTunnelId(), ObjectPro, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getProtectTunnelId(), ObjectPro, "i", "2");
+			this.createElementNode(doc, "N", "Backup", ObjectPro, "i", "3"); 
+			FieldValue.appendChild(ObjectPro);
+			
+			
+			
 		}
 		
 		Objects.appendChild(FieldValue);

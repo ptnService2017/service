@@ -16,7 +16,7 @@ import com.nms.jms.common.OpviewMessage;
 public class JmsSender {
 	private JmsTemplate template;
 	private Destination serverOtherNotify;
-	
+	private Destination alarmNotify;
 	
 	
 	/**
@@ -25,6 +25,10 @@ public class JmsSender {
 	 */
 	public void sendToServer(OpviewMessage message){
 		template.convertAndSend(serverOtherNotify, message);
+	}
+	
+	public void sendNorthAlarm(OpviewMessage message){
+		template.convertAndSend(alarmNotify, message);
 	}
 	
 	public JmsTemplate getTemplate() {
@@ -43,5 +47,14 @@ public class JmsSender {
 	public void setServerOtherNotify(Destination serverOtherNotify) {
 		this.serverOtherNotify = serverOtherNotify;
 	}
+
+	public Destination getAlarmNotify() {
+		return alarmNotify;
+	}
+
+	public void setAlarmNotify(Destination alarmNotify) {
+		this.alarmNotify = alarmNotify;
+	}
+	
 	
 }

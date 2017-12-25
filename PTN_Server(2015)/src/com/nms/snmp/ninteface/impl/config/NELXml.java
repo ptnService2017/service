@@ -155,7 +155,7 @@ public class NELXml {
 			this.createElementNode(doc, "N", siteInst.getSiteType()==369?"real":"virtual", Object, "i", "6");
 			this.createElementNode(doc, "N", siteInst.getCellDescribe(), Object, "i", "7");
 			this.createElementNode(doc, "N", "", Object, "i", "8");
-			this.createElementNode(doc, "N", siteInst.getHardEdition(), Object, "i", "9");
+			this.createElementNode(doc, "N", getHardEdition(siteInst), Object, "i", "9");
 			this.createElementNode(doc, "N", "V1.2", Object, "i", "10");
 			this.createElementNode(doc, "N", "", Object, "i", "11");
 			this.createElementNode(doc, "N", siteInst.getLoginstatus()==1?"available":"unavaliable", Object, "i", "12");
@@ -165,7 +165,17 @@ public class NELXml {
 		Objects.appendChild(FieldValue);
 		return Objects;
 	}
-
+	private String getHardEdition(SiteInst siteInst){
+		String type = "EB204.002V03";
+		if(siteInst.getCellType().equals("ETN-5000")){
+			type = "EB5000.003V01";
+		}else if(siteInst.getCellType().equals("ETN-200-204E")){
+			type = "EB204E.002V03";
+		}
+			
+		return type;
+	}
+	
 	/**
 	 * 根据名称创建元素,并赋值
 	 */

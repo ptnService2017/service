@@ -79,6 +79,8 @@ public interface PortInstMapper {
 	public int deleteBySiteId(@Param("siteId")int siteId);
 	
 	public int delete(PortInst portInst);
+
+	List<PortInst> northPort();
 	
 	
 

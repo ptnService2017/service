@@ -1,6 +1,7 @@
 package com.nms.db.dao.ptn.port;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -44,4 +45,6 @@ public interface AcPortInfoMapper {
 	public int updateLanId(int lanId, int id);
 
 	public int deleteBySiteId(@Param("siteId")int siteId);
+
+	List<Map<String,Object>> northList();
 }

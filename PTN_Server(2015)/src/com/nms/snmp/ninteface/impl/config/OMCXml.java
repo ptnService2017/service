@@ -115,9 +115,9 @@ public class OMCXml {
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		Element Object = doc.createElement("Object");
-		Object.setAttribute("rmUID","3301EBCS1OMC");
-		this.createElementNode(doc, "N", "3301EBCS1OMC", Object, "i", "1");
-		this.createElementNode(doc, "N", "EBNG –EMS-Client", Object, "i", "2");
+		Object.setAttribute("rmUID","3301EBCS1");
+		this.createElementNode(doc, "N", "3301EBCS1", Object, "i", "1");
+		this.createElementNode(doc, "N", "EBNG–EMS-Client", Object, "i", "2");
 		String ip = "";
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();

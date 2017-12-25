@@ -135,10 +135,10 @@ public class TPLXml
     createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "3");
     createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "4");
     createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "5");
-    createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "5");
-    createElementNode(doc, "N", "rate", FieldName, "i", "5");
-    createElementNode(doc, "N", "direction", FieldName, "i", "5");
-    createElementNode(doc, "N", "reality", FieldName, "i", "5");
+    createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "6");
+    createElementNode(doc, "N", "rate", FieldName, "i", "7");
+    createElementNode(doc, "N", "direction", FieldName, "i", "8");
+    createElementNode(doc, "N", "reality", FieldName, "i", "9");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
@@ -151,10 +151,10 @@ public class TPLXml
       createElementNode(doc, "N", "3301EBCS1NEL" + segment.getASITEID(), Object, "i", "3");
       createElementNode(doc, "N", "3301EBCS1NEL" + segment.getZSITEID(), Object, "i", "4");
       createElementNode(doc, "N", "3301EBCS1PRT" + segment.getAPORTID(), Object, "i", "5");
-      createElementNode(doc, "N", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "5");
-      createElementNode(doc, "N", "rate", Object, "i", "5");
-      createElementNode(doc, "N", "CD_UNI", Object, "i", "5");
-      createElementNode(doc, "N", "real", Object, "i", "5");
+      createElementNode(doc, "N", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "6");
+      createElementNode(doc, "N", "rate", Object, "i", "7");
+      createElementNode(doc, "N", "CD_UNI", Object, "i", "8");
+      createElementNode(doc, "N", "real", Object, "i", "9");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

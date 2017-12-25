@@ -5,19 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import javax.management.AttributeValueExp;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.nms.db.bean.equipment.shelf.SiteInst;
-import com.nms.drive.service.impl.CoderUtils;
-import com.nms.model.equipment.shlef.SiteService_MB;
+import com.nms.db.bean.equipment.slot.SlotInst;
+import com.nms.model.equipment.slot.SlotService_MB;
 import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.RmiKeys;
@@ -49,10 +46,10 @@ public class EQHXml {
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
-			List<SiteInst> siteList = this.getAllSites();
+			List<SlotInst> slotList = this.getAllSites();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
-		    this.createXML(doc,siteList);//生成xml文件内容
+		    this.createXML(doc,slotList);//生成xml文件内容
 		    XmlUtil.createFile(doc, "CM-PTN-EQH-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
@@ -60,12 +57,12 @@ public class EQHXml {
 		return filePath;
 	}
 
-	private List<SiteInst> getAllSites()
+	private List<SlotInst> getAllSites()
 	{
-		List<SiteInst> siteList = null;
-		SiteService_MB siteService = null;
+		List<SlotInst> siteList = null;
+		SlotService_MB siteService = null;
 		try {
-			siteService = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE);
+			siteService = (SlotService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SLOT);
 			siteList = siteService.select();
 		}
 	 catch (Exception e) {
@@ -112,7 +109,7 @@ public class EQHXml {
     /**
      * 根据需求生成相应的xml文件
      */
-	private void createXML(Document doc,List<SiteInst> siteList){
+	private void createXML(Document doc,List<SlotInst> slotList){
 		doc.setXmlVersion("1.0");
 		doc.setXmlStandalone(true);
 		Element root = doc.createElement("DataFile");
@@ -120,12 +117,12 @@ public class EQHXml {
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
 		root.appendChild(XmlUtil.fileHeader(doc,"Holder"));
-		Element emsList = this.createFileContent(doc,siteList);
+		Element emsList = this.createFileContent(doc,slotList);
 		root.appendChild(emsList);
 		doc.appendChild(root);
 	}
 	
-	private Element createFileContent(Document doc,List<SiteInst> siteList) {
+	private Element createFileContent(Document doc,List<SlotInst> slotInstList) {
 		Element Objects = doc.createElement("Objects");
 		
 		Element FieldName = doc.createElement("FieldName");
@@ -139,21 +136,16 @@ public class EQHXml {
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
-		for (SiteInst siteInst :siteList) {
+		for (SlotInst slotInst :slotInstList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1CS"+siteInst.getSite_Inst_Id());
-			this.createElementNode(doc, "N", "3301EBCS1CS"+siteInst.getSite_Inst_Id(), Object, "i", "1");
-			this.createElementNode(doc, "N", siteInst.getCellId(), Object, "i", "2");
-			this.createElementNode(doc, "N", siteInst.getSiteLocation(), Object, "i", "3");
-			this.createElementNode(doc, "N", siteInst.getCellType(), Object, "i", "4");
+			Object.setAttribute("rmUID","3301EBCS1EQH"+slotInst.getId());
+			this.createElementNode(doc, "N", "3301EBCS1EQH"+slotInst.getId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+slotInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "N", getSlotName(slotInst.getSlotType()), Object, "i", "3");
+			this.createElementNode(doc, "N", "INSTALLED_AND_NOT_EXPECTED", Object, "i", "4");
 			this.createElementNode(doc, "N", "EBANG", Object, "i", "5");
-			this.createElementNode(doc, "N", siteInst.getSiteType()==369?"real":"virtual", Object, "i", "6");
-			this.createElementNode(doc, "N", siteInst.getCellDescribe(), Object, "i", "7");
-			this.createElementNode(doc, "N", "", Object, "i", "8");
-			this.createElementNode(doc, "N", "V1.1", Object, "i", "9");
-			this.createElementNode(doc, "N", "V1.2", Object, "i", "10");
-			this.createElementNode(doc, "N", "", Object, "i", "11");
-			this.createElementNode(doc, "N", siteInst.getLoginstatus()==1?"available":"unavaliable", Object, "i", "12");
+			this.createElementNode(doc, "N", "slot", Object, "i", "6");
+			this.createElementNode(doc, "N", "1", Object, "i", "7");
 			FieldValue.appendChild(Object);
 		}
 		
@@ -161,6 +153,16 @@ public class EQHXml {
 		return Objects;
 	}
 
+	private String getSlotName(String oldName){
+		String name = "ETN-200-204E";
+		if("703-2C".equals(oldName)){
+			name = "ETN-200-204E";
+		}else if(oldName.contains("710")){
+			name.replace("710", "ETN-5000");
+		}
+		return name;
+	}
+	
 	/**
 	 * 根据名称创建元素,并赋值
 	 */

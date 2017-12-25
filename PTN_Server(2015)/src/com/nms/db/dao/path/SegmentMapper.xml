@@ -115,22 +115,7 @@
   
   <select id="select_north" resultMap="BaseResultMap">
   SELECT
-	s.id,s.`NAME`,s.ASITEID,s.ZSITEID, (
-		SELECT
-			portName
-		FROM
-			port_inst p
-		WHERE
-			s.APORTID = p.portId
-	) AS "ShowPortAname",
-	(
-		SELECT
-			portName
-		FROM
-			port_inst p
-		WHERE
-			s.ZPORTID = p.portId
-	) AS "ShowPortZname"
+	s.id,s.`NAME`,s.ASITEID,s.ZSITEID, s.APORTID,s.ZPORTID
 FROM
 	`segment` s
   </select>

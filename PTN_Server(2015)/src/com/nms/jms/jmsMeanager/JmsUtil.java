@@ -21,4 +21,9 @@ import com.nms.jms.common.OpviewMessage;
 		 jmsSender.sendToServer(opviewMessage);
 	 }
 	 
+	 
+	 public static void sendNorthAlarm(OpviewMessage opviewMessage){
+		 JmsSender jmsSender = (JmsSender) ApplicationBeanFactory.getBean("JmsSender2");
+		 jmsSender.sendNorthAlarm(opviewMessage);
+	 }
  }

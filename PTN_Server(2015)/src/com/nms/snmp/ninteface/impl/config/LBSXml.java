@@ -5,24 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.management.AttributeValueExp;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.nms.db.bean.equipment.card.CardInst;
-import com.nms.db.bean.equipment.shelf.SiteInst;
-import com.nms.db.bean.ptn.path.tunnel.Tunnel;
-import com.nms.drive.service.impl.CoderUtils;
-import com.nms.model.equipment.card.CardService_MB;
-import com.nms.model.equipment.shlef.SiteService_MB;
-import com.nms.model.ptn.path.tunnel.TunnelService_MB;
+import com.nms.db.bean.ptn.path.tunnel.Lsp;
+import com.nms.model.ptn.path.tunnel.LspInfoService_MB;
 import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.RmiKeys;
@@ -38,12 +30,12 @@ import com.nms.ui.manager.UiUtil;
 import com.nms.ui.manager.keys.StringKeysLbl;
 import com.nms.util.Mybatis_DBManager;
 
-public class LSBXml {
+public class LBSXml {
 	public static void main(String[] args) {
 		Mybatis_DBManager.init("127.0.0.1");
 		ConstantUtil.serviceFactory = new ServiceFactory();
 		SnmpConfig.getInstanse().init();
-		new LSBXml().getLSBXml();
+		new LBSXml().getLSBXml();
 	}
 	
 	public String getLSBXml() {
@@ -54,10 +46,10 @@ public class LSBXml {
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
-			List<Tunnel> tunnelList = this.getTunnelList();
+			List<Lsp> lspList = this.getLspList();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
-		    this.createXML(doc,tunnelList);//生成xml文件内容
+		    this.createXML(doc,lspList);//生成xml文件内容
 		    XmlUtil.createFile(doc, "CM-PTN-LSB-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
@@ -65,18 +57,18 @@ public class LSBXml {
 		return filePath;
 	}
 
-    private List<Tunnel> getTunnelList() {
-    	TunnelService_MB tunnelService = null;
-    	List<Tunnel> tunnelList = null;
+    private List<Lsp> getLspList() {
+    	LspInfoService_MB tunnelService = null;
+    	List<Lsp> lspList = null;
     	try {
-    		tunnelService = (TunnelService_MB) ConstantUtil.serviceFactory.newService_MB(Services.Tunnel);
-    		tunnelList = tunnelService.selectAllData();
+    		tunnelService = (LspInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.LSPINFO);
+    		lspList = tunnelService.select(new Lsp());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{
 			UiUtil.closeService_MB(tunnelService);
 		}
-    	return tunnelList;
+    	return lspList;
 	}
     
 	private String getTime() {
@@ -115,7 +107,7 @@ public class LSBXml {
     /**
      * 根据需求生成相应的xml文件
      */
-	private void createXML(Document doc,List<Tunnel> tunnelList){
+	private void createXML(Document doc,List<Lsp> lspList){
 		doc.setXmlVersion("1.0");
 		doc.setXmlStandalone(true);
 		Element root = doc.createElement("DataFile");
@@ -123,17 +115,17 @@ public class LSBXml {
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
 		root.appendChild(XmlUtil.fileHeader(doc,"LabelSwitch"));
-		Element emsList = this.createFileContent(doc,tunnelList);
+		Element emsList = this.createFileContent(doc,lspList);
 		root.appendChild(emsList);
 		doc.appendChild(root);
 	}
 	
-	private Element createFileContent(Document doc,List<Tunnel> tunnelList) {
+	private Element createFileContent(Document doc,List<Lsp> lspList) {
 		Element Objects = doc.createElement("Objects");
 		
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "tunnelrmUID", FieldName, "i", "2");
 		this.createElementNode(doc, "N", "direction", FieldName, "i", "3");
 		this.createElementNode(doc, "N", "routingGroup", FieldName, "i", "4");
 		this.createElementNode(doc, "N", "routingNo", FieldName, "i", "5");
@@ -144,7 +136,6 @@ public class LSBXml {
 		this.createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "10");
 		this.createElementNode(doc, "N", "aUVID", FieldName, "i", "11");
 		this.createElementNode(doc, "N", "zEndTprmUID", FieldName, "i", "12");
-		
 		this.createElementNode(doc, "N", "zEndInLabel", FieldName, "i", "13");
 		this.createElementNode(doc, "N", "zEndRevOutLabel", FieldName, "i", "14");
 		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "15");
@@ -152,28 +143,25 @@ public class LSBXml {
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
-		for (Tunnel tunnel :tunnelList) {
+		for (Lsp lsp :lspList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1LSB"+tunnel.getTunnelId());
-			this.createElementNode(doc, "N", "rmUID", Object, "i", "1");
-			this.createElementNode(doc, "N", "nativeName", Object, "i", "2");
-			this.createElementNode(doc, "N", "direction", Object, "i", "3");
-			this.createElementNode(doc, "N", "activeState", Object, "i", "4");
-			this.createElementNode(doc, "N", "aEndTprmUID", Object, "i", "5");
-			this.createElementNode(doc, "N", "aEndNermUID", Object, "i", "6");
-			this.createElementNode(doc, "N", "aEndPortrmUID", Object, "i", "7");
-			this.createElementNode(doc, "N", "aEndOutLabel", Object, "i", "8");
-			this.createElementNode(doc, "N", "aEndRevInLabel", Object, "i", "9");
-			this.createElementNode(doc, "N", "zEndTprmUID", Object, "i", "10");
-			this.createElementNode(doc, "N", "zEndNermUID", Object, "i", "11");
-			this.createElementNode(doc, "N", "zEndPortrmUID", Object, "i", "12");
-			this.createElementNode(doc, "N", "zEndInLabel", Object, "i", "13");
-			this.createElementNode(doc, "N", "zEndRevOutLabel", Object, "i", "14");
-			this.createElementNode(doc, "N", "CIR", Object, "i", "15");
-			this.createElementNode(doc, "N", "RevCIR", Object, "i", "16");
-			this.createElementNode(doc, "N", "PIR", Object, "i", "17");
-			this.createElementNode(doc, "N", "RevPIR", Object, "i", "18");
-			this.createElementNode(doc, "N", "isOverlay", Object, "i", "19");
+			Object.setAttribute("rmUID","3301EBCS1LBS"+lsp.getId());
+			this.createElementNode(doc, "N", "3301EBCS1LBS"+lsp.getId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1TNL"+lsp.getTunnelId(), Object, "i", "2");
+			this.createElementNode(doc, "N", "CD_BI", Object, "i", "3");
+			this.createElementNode(doc, "N", "1", Object, "i", "4");
+			this.createElementNode(doc, "N", "1", Object, "i", "5");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+lsp.getASiteId(), Object, "i", "6");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+lsp.getAPortId(), Object, "i", "7");
+			this.createElementNode(doc, "N", lsp.getFrontLabelValue()+"", Object, "i", "8");
+			this.createElementNode(doc, "N", lsp.getBackLabelValue()+"", Object, "i", "9");
+			this.createElementNode(doc, "N", "3301EBCS1LBS"+lsp.getId(), Object, "i", "10");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+lsp.getZSiteId(), Object, "i", "11");
+			this.createElementNode(doc, "N", "3301EBCS1PRT"+lsp.getZPortId(), Object, "i", "12");
+			this.createElementNode(doc, "N", lsp.getBackLabelValue()+"", Object, "i", "13");
+			this.createElementNode(doc, "N", lsp.getBackLabelValue()+"", Object, "i", "14");
+			this.createElementNode(doc, "N", "3301EBCS1NEL"+lsp.getASiteId(), Object, "i", "15");
+			this.createElementNode(doc, "N", "", Object, "i", "16");
 			FieldValue.appendChild(Object);
 		}
 		

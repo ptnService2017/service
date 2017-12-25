@@ -143,6 +143,7 @@ public class CRDXml {
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (CardInst cardInst :cardList) {
+			getsoftType(cardInst);
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1CRD"+cardInst.getId());
 			this.createElementNode(doc, "N", "3301EBCS1CRD"+cardInst.getId(), Object, "i", "1");
@@ -152,7 +153,7 @@ public class CRDXml {
 			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "5");
 			this.createElementNode(doc, "N", "", Object, "i", "6");
 			this.createElementNode(doc, "N", cardInst.getSnmpName(), Object, "i", "7");
-			this.createElementNode(doc, "N", "V1.2", Object, "i", "8");
+			this.createElementNode(doc, "N", cardInst.getInstalledSerialNumber(), Object, "i", "8");
 			this.createElementNode(doc, "N", "", Object, "i", "9");
 			this.createElementNode(doc, "N", "IN_SERVICE", Object, "i", "10");
 			this.createElementNode(doc, "N", "NA", Object, "i", "11");
@@ -163,6 +164,22 @@ public class CRDXml {
 		return Objects;
 	}
 
+	private void getsoftType(CardInst cardInst){
+		String type = "";
+		String hid = "";
+		if("ETN-200-204E".equals(cardInst.getCardName())){
+			type = "V2.1.3";
+			hid = "EB204E.002V03";
+		}else if("ETN-200-204".equals(cardInst.getCardName())){
+			type = "V2.1.3";
+			hid = "EB204.002V03";
+		}else if("ESMC".equals(cardInst.getCardName())){
+			type = "V3.2.5";
+			hid = "EB5000.003V01";
+		}
+		cardInst.setSnmpName(type);
+		cardInst.setInstalledSerialNumber(hid);
+	}
 	/**
 	 * 根据名称创建元素,并赋值
 	 */
