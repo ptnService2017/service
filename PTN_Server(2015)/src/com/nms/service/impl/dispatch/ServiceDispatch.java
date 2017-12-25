@@ -17,8 +17,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.nms.db.bean.perform.PerformanceTaskInfo;
+import com.nms.db.bean.system.LogManager;
+import com.nms.model.perform.PerformanceTaskService_MB;
+import com.nms.model.system.LogManagerService_MB;
+import com.nms.model.system.OperationLogService_MB;
+import com.nms.model.system.loginlog.LoginLogServiece_Mb;
+import com.nms.model.util.Services;
 import com.nms.service.impl.dispatch.rmi.DispatchInterface;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysLbl;
+import com.nms.ui.manager.keys.StringKeysObj;
 import com.sun.management.OperatingSystemMXBean;
 
 public class ServiceDispatch implements DispatchInterface{
@@ -38,7 +51,223 @@ public class ServiceDispatch implements DispatchInterface{
 		serviceValue.put(3, getDiscValue());
 		// 网卡信息
 		serviceValue.put(4, getNetWorkCardValue());
+		// 系统进程信息
+		serviceValue.put(5, getProgress());
+		// 其他信息
+		serviceValue.put(6, getOtherInfo());
 		return serviceValue;
+	}
+	
+	private List<String> getOtherInfo(){
+		List<String> otherList = new ArrayList<String>();
+		String omcState = "running";// omc运行状态
+		String perforDelay = "无时延";// 性能数据处理时延
+		String hardDiskSpeed = "7200转/min";// 硬盘读取速率
+		String perforTaskCount = this.getPerforTaskCount()+"";// 性能测量任务数
+		String onlineCount = "1500";// 同时在线用户数
+		String maxOnlineCount = "2000";// 最大在线用户数
+		String processCount = "7";// 应用进程数量
+		String loginLogInfo = this.getLoginLogCount()+"";// 登录日志数量
+		String loginLogCapacity = this.getLogLimit(2)+"M";// 登录日志容量
+		String operationLogInfo = this.getoperationLogCount()+"";// 操作日志数量
+		String operationLogCapacity = this.getLogLimit(1)+"M";// 操作日志容量
+		otherList.add(omcState);
+		otherList.add(perforDelay);
+		otherList.add(hardDiskSpeed);
+		otherList.add(perforTaskCount);
+		otherList.add(onlineCount);
+		otherList.add(maxOnlineCount);
+		otherList.add(processCount);
+		otherList.add(loginLogInfo);
+		otherList.add(loginLogCapacity);
+		otherList.add(operationLogInfo);
+		otherList.add(operationLogCapacity);
+		return otherList;
+	}
+	
+	private int getLogLimit(int type){
+		LogManagerService_MB service = null;
+		int count = 0;
+		try {
+			service = (LogManagerService_MB) ConstantUtil.serviceFactory.newService_MB(Services.LOGMANAGER);
+			List<LogManager> logManagerList = service.selectAll();
+			if(logManagerList != null){
+				for(LogManager log : logManagerList){
+					if(type == 1 && log.getLogType() == 3){
+						// 操作日志
+						count = log.getVolumeLimit();
+						break;
+					}else if(type == 2 && log.getLogType() == 4){
+						// 登录日志
+						count = log.getVolumeLimit();
+					}
+				}
+			}	
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, null);
+		}finally{
+			UiUtil.closeService_MB(service);
+		}				
+		return count;
+	}
+	
+	private int getLoginLogCount(){
+		int count = 0;
+		LoginLogServiece_Mb service = null;
+		try {
+			service = (LoginLogServiece_Mb) ConstantUtil.serviceFactory.newService_MB(Services.LOGINLOGSERVIECE);
+			count = service.selectLogCount();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			UiUtil.closeService_MB(service);
+		}
+		return count;
+	}
+	
+	private int getoperationLogCount(){
+		int count = 0;
+		OperationLogService_MB service = null;
+		try {
+			service = (OperationLogService_MB) ConstantUtil.serviceFactory.newService_MB(Services.OPERATIONLOGSERVIECE);
+			count = service.selectCount();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			UiUtil.closeService_MB(service);
+		}
+		return count;
+	}
+	
+	private int getPerforTaskCount() {
+		PerformanceTaskService_MB service = null;
+		int taskCount = 0;
+		try {
+			service = (PerformanceTaskService_MB) ConstantUtil.serviceFactory.newService_MB(Services.PerformanceTask);
+			List<PerformanceTaskInfo> taskInfoList = service.select();
+			if(taskInfoList != null){
+				taskCount = taskInfoList.size();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			UiUtil.closeService_MB(service);
+		}
+		return taskCount;
+	}
+
+	private List<String[]> getProgress(){
+		List<String[]> progressList = new ArrayList<String[]>();
+		int size = 9;
+		for(int i = 0; i < size; i++){
+			int j = 0;
+			String[] strArr = new String[7];
+			strArr[j++] = this.getProcessName(i);// 进程名
+			strArr[j++] = this.getDescription(i);// 进程描述
+			strArr[j++] = this.getProcessRunState(i);// 运行状态
+			strArr[j++] = this.getStartTime(i);// 开始时间
+			strArr[j++] = this.getEndTime(i);// 停止时间
+			strArr[j++] = System.getProperties().getProperty("os.name");// 运行主机
+			strArr[j++] = "系统进程";// 进程类型
+			progressList.add(strArr);
+		}
+		return progressList;
+	}
+
+	private String getProcessName(int flag) {
+		if(flag == 0){
+			return "QueryServer-AlarmPolling";
+		}else if(flag == 1){
+			return "QueryServer-SNMP";
+		}else if(flag == 2){
+			return "QueryServer-AlarmMonitor";
+		}else if(flag == 3){
+			return "CfgServer";
+		}else if(flag == 4){
+			return "NeCfgService";
+		}else if(flag == 5){
+			return "MSMPServer";
+		}else if(flag == 6){
+			return "DtServer";
+		}else if(flag == 7){
+			return "DispServer";
+		}else if(flag == 8){
+			return "MySQL5";
+		}
+		return "";
+	}
+
+	private String getDescription(int flag) {
+		if(flag == 0){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_QUERYSERVER);
+		}else if(flag == 1){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_QUERYSERVER);
+		}else if(flag == 2){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_QUERYSERVER);
+		}else if(flag == 3){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_CFGSERVER);
+		}else if(flag == 4){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_NECFGSERVICE);
+		}else if(flag == 5){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_MSMPSERVER);
+		}else if(flag == 6){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_DTSERVER);
+		}else if(flag == 7){
+			return ResourceUtil.srcStr(StringKeysObj.OBJ_DISPSERVER);
+		}else if(flag == 8){
+			return "MySQL Server";
+		}
+		return "";
+	}
+
+	private String getProcessRunState(int flag) {
+		if(flag == 0){
+			return ConstantUtil.alarmPolling == 1 ? ResourceUtil.srcStr(StringKeysLbl.LBL_START_ALARM_POLLING):ResourceUtil.srcStr(StringKeysLbl.LBL_END_ALARM_POLLING);
+		}else if(flag == 1){
+			return ConstantUtil.snmpTrap == 1 ? ResourceUtil.srcStr(StringKeysLbl.LBL_START_SNMP_SERVER):ResourceUtil.srcStr(StringKeysLbl.LBL_END_SNMP_SERVER);
+		}else if(flag == 2){
+			return ConstantUtil.alarmMonitor == 1 ? ResourceUtil.srcStr(StringKeysLbl.LBL_START_NORTH_SERVER):ResourceUtil.srcStr(StringKeysLbl.LBL_END_NORTH_SERVER);
+		}else{
+			return "running";
+		}
+	}
+
+	private String getStartTime(int flag) {
+		if(flag == 0){
+			if(ConstantUtil.alarmPollingTime[0] > 0){
+				return DateUtil.updateTimeToString(ConstantUtil.alarmPollingTime[0], DateUtil.FULLTIME);
+			}
+		}else if(flag == 1){
+			if(ConstantUtil.snmpTrapTime[0] > 0){
+				return DateUtil.updateTimeToString(ConstantUtil.snmpTrapTime[0], DateUtil.FULLTIME);
+			}
+		}else if(flag == 2){
+			if(ConstantUtil.alarmMonitorTime[0] > 0){
+				return DateUtil.updateTimeToString(ConstantUtil.alarmMonitorTime[0], DateUtil.FULLTIME);
+			}
+		}else{
+			return DateUtil.updateTimeToString(System.currentTimeMillis(), DateUtil.FULLTIME);
+		}
+		return "";
+	}
+
+	private String getEndTime(int flag) {
+		if(flag == 0){
+			if(ConstantUtil.alarmPollingTime[1] > 0){
+				return DateUtil.updateTimeToString(ConstantUtil.alarmPollingTime[1], DateUtil.FULLTIME);
+			}
+		}else if(flag == 1){
+			if(ConstantUtil.snmpTrapTime[1] > 0){
+				return DateUtil.updateTimeToString(ConstantUtil.snmpTrapTime[1], DateUtil.FULLTIME);
+			}
+		}else if(flag == 2){
+			if(ConstantUtil.alarmMonitorTime[1] > 0){
+				return DateUtil.updateTimeToString(ConstantUtil.alarmMonitorTime[1], DateUtil.FULLTIME);
+			}
+		}else{
+			return "";
+		}
+		return "";
 	}
 
 	@Override

@@ -18,6 +18,7 @@
     <result column="performanceCount" property="performanceCount" jdbcType="INTEGER" />
     <result column="performanceBeginCount" property="performanceBeginCount" jdbcType="INTEGER" />
     <result column="performanceType" property="performanceType" jdbcType="INTEGER" />
+    <result column="isReported" property="isReported" jdbcType="INTEGER" />
     <collection property="siteInst" ofType="SiteInst" >
     	<result column="siteId" property="Site_Inst_Id" jdbcType="INTEGER" />
 	</collection>
@@ -25,7 +26,7 @@
   <sql id="Base_Column_List" >
     id, siteId, objectid, objecttype, threadname, taskname, perfortype, monitorcycle, 
     createtime, endtime, runstates, creater, taskDescribe, slotCard, performanceCount, 
-    performanceBeginCount, performanceType
+    performanceBeginCount, performanceType, isReported
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -43,13 +44,13 @@
       perfortype, monitorcycle, createtime, 
       endtime, runstates, creater, 
       taskDescribe, slotCard, performanceCount, 
-      performanceBeginCount, performanceType)
+      performanceBeginCount, performanceType, isReported)
     values (#{id,jdbcType=INTEGER}, #{siteInst.Site_Inst_Id,jdbcType=INTEGER}, #{objectId,jdbcType=INTEGER}, 
       #{objectType,jdbcType=VARCHAR,typeHandler=com.nms.db.enums.IntEnumTypeHandler}, #{threadName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
       #{perforType,jdbcType=VARCHAR}, #{monitorCycle,jdbcType=INTEGER,typeHandler=com.nms.db.enums.IntEnumTypeHandler}, #{createTime,jdbcType=VARCHAR}, 
       #{endTime,jdbcType=VARCHAR}, #{runstates,jdbcType=INTEGER,typeHandler=com.nms.db.enums.IntEnumTypeHandler}, #{creater,jdbcType=VARCHAR}, 
       #{describe,jdbcType=VARCHAR}, #{slotCard,jdbcType=VARCHAR}, #{performanceCount,jdbcType=INTEGER}, 
-      #{performanceBeginCount,jdbcType=INTEGER}, #{performanceType,jdbcType=INTEGER})
+      #{performanceBeginCount,jdbcType=INTEGER}, #{performanceType,jdbcType=INTEGER}, #{isReported,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="PerformanceTaskInfo" >
     insert into performance_task
@@ -231,7 +232,8 @@
       slotCard = #{slotCard,jdbcType=VARCHAR},
       performanceCount = #{performanceCount,jdbcType=INTEGER},
       performanceBeginCount = #{performanceBeginCount,jdbcType=INTEGER},
-      performanceType = #{performanceType,jdbcType=INTEGER}
+      performanceType = #{performanceType,jdbcType=INTEGER},
+      isReported = #{isReported,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

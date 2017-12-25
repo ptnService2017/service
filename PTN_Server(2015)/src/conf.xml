@@ -137,6 +137,7 @@
       <typeAlias alias="ARPInfo" type="com.nms.db.bean.ptn.ARPInfo"/>
       <typeAlias alias="OperationDataLog" type="com.nms.db.bean.system.OperationDataLog"/>
       <typeAlias alias="OSPFinfo_wh" type="com.nms.db.bean.ptn.ecn.OSPFinfo_wh"/>
+      <typeAlias alias="LogManager" type="com.nms.db.bean.system.LogManager"/>
       <typeAlias alias="SystemLog" type="com.nms.db.bean.system.SystemLog"/>
  </typeAliases>
 
@@ -273,6 +274,7 @@
         <mapper resource="com/nms/db/dao/ptn/ARPMapper.xml"/>
         <mapper resource="com/nms/db/dao/system/OperationDataLogMapper.xml"/> 
         <mapper resource="com/nms/db/dao/ptn/ecn/OSPFinfo_whMapper.xml"/> 
+        <mapper resource="com/nms/db/dao/system/LogManagerMapper.xml"/>
         <mapper resource="com/nms/db/dao/system/SystemLogMapper.xml"/>
       </mappers>
 </configuration>
