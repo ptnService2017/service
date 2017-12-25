@@ -98,4 +98,10 @@ public class ConstantUtil {
 	public static Map<String,Integer> mSiteMap = new HashMap<String,Integer>();//M网元信息
 	public static Map<Integer,HashMap<Integer,Integer>> m_aSiteMap = new HashMap<Integer, HashMap<Integer,Integer>>();//m-a对应关系
 	public static CurrentAlarmBlock alarmBlock = null;// 告警屏蔽配置
+	public static int alarmPolling = 1;// 告警轮询开关 0/1 = 关闭/开启
+	public static long[] alarmPollingTime = new long[]{System.currentTimeMillis(), 0L};// 开始时间、结束时间
+	public static int snmpTrap = 1;// SNMP服务开关 0/1 = 关闭/开启
+	public static long[] snmpTrapTime = new long[]{System.currentTimeMillis(), 0L};// 开始时间、结束时间
+	public static int alarmMonitor = 1;// 告警监控开关 0/1 = 关闭/开启
+	public static long[] alarmMonitorTime = new long[]{System.currentTimeMillis(), 0L};// 开始时间、结束时间
 }

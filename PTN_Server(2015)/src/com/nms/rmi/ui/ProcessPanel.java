@@ -43,14 +43,12 @@ public class ProcessPanel extends JPanel {
 		this.init();		
 		this.setLayout();
 		this.addListener();
-				
 	}
 
 	/**
 	 * 初始化IP地址
 	 */
 	public void init() {
-	
 		try {		
 			if(ServerConstant.registry!=null){
 				this.alarmStartBtn.setEnabled(true);
@@ -99,13 +97,15 @@ public class ProcessPanel extends JPanel {
 					ThreadUtil.operateCurrAlarmTask.startThread();
 					alarmStartBtn.setEnabled(false);
 					alarmEndBtn.setEnabled(true);
+					ConstantUtil.alarmPolling = 1;
+					ConstantUtil.alarmPollingTime[0] = System.currentTimeMillis();
+					ConstantUtil.alarmPollingTime[1] = 0L;
 					sysLog=new SystemLog();
 					sysLog.setOperationResult(1);
 					sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_ALARM_POLLING));
 					sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_START_ALARM_POLLING));
 					sys.insertSystemLog(sysLog);
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}finally{
 					UiUtil.closeService_MB(sys);
@@ -133,6 +133,9 @@ public class ProcessPanel extends JPanel {
 						}
 						alarmStartBtn.setEnabled(true);
 						alarmEndBtn.setEnabled(false);	
+						ConstantUtil.alarmPolling = 0;
+						ConstantUtil.alarmPollingTime[0] = 0L;
+						ConstantUtil.alarmPollingTime[1] = System.currentTimeMillis();
 						sysLog=new SystemLog();
 						sysLog.setOperationResult(1);
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_ALARM_POLLING));
@@ -157,13 +160,15 @@ public class ProcessPanel extends JPanel {
 						agentServer.init(new String[]{});	
 						snmpStartBtn.setEnabled(false);
 						snmpEndBtn.setEnabled(true);
+						ConstantUtil.snmpTrap = 1;
+						ConstantUtil.snmpTrapTime[0] = System.currentTimeMillis();
+						ConstantUtil.snmpTrapTime[1] = 0L;
 						sysLog=new SystemLog();
 						sysLog.setOperationResult(1);
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_SNMP_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_START_SNMP_SERVER));
 						sys.insertSystemLog(sysLog);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}finally{
 						UiUtil.closeService_MB(sys);
@@ -181,13 +186,15 @@ public class ProcessPanel extends JPanel {
 						sys=(SystemLogService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SYSTEMLOG);					
 						snmpStartBtn.setEnabled(true);
 						snmpEndBtn.setEnabled(false);
+						ConstantUtil.snmpTrap = 0;
+						ConstantUtil.snmpTrapTime[0] = 0L;
+						ConstantUtil.snmpTrapTime[1] = System.currentTimeMillis();
 						sysLog=new SystemLog();
 						sysLog.setOperationResult(1);
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_SNMP_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_END_SNMP_SERVER));
 						sys.insertSystemLog(sysLog);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}finally{
 						UiUtil.closeService_MB(sys);
@@ -203,13 +210,15 @@ public class ProcessPanel extends JPanel {
 						sys=(SystemLogService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SYSTEMLOG);					
 						northStartBtn.setEnabled(false);
 						northEndBtn.setEnabled(true);
+						ConstantUtil.alarmMonitor = 1;
+						ConstantUtil.alarmMonitorTime[0] = System.currentTimeMillis();
+						ConstantUtil.alarmMonitorTime[1] = 0L;
 						sysLog=new SystemLog();
 						sysLog.setOperationResult(1);
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_NORTH_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_START_NORTH_SERVER));
 						sys.insertSystemLog(sysLog);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}finally{
 						UiUtil.closeService_MB(sys);
@@ -228,28 +237,22 @@ public class ProcessPanel extends JPanel {
 						sys=(SystemLogService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SYSTEMLOG);					
 						northStartBtn.setEnabled(true);
 						northEndBtn.setEnabled(false);	
+						ConstantUtil.alarmMonitor = 0;
+						ConstantUtil.alarmMonitorTime[0] = 0L;
+						ConstantUtil.alarmMonitorTime[1] = System.currentTimeMillis();
 						sysLog=new SystemLog();
 						sysLog.setOperationResult(1);
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_NORTH_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_END_NORTH_SERVER));
 						sys.insertSystemLog(sysLog);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}finally{
 						UiUtil.closeService_MB(sys);
 					}								
 			   }			
 		});	    
-	    
 	}
-	
-
-	
-	
-
-
-	
 		
 	/**
 	 * 初始化控件
@@ -267,15 +270,12 @@ public class ProcessPanel extends JPanel {
 		this.northEndBtn = new JButton(ResourceUtil.srcStr(StringKeysTip.CLOSE));		
 		this.panel_select = new JPanel();
 		this.panel_select.setBorder(null);
-
 	}
-
 
 	/**
 	 * 系统IP设置panel布局
 	 */
 	private void setLayoutSelect() {
-
 		GridBagLayout componentLayout = new GridBagLayout();
 		componentLayout.columnWidths = new int[] { 120, 30, 30 };
 		componentLayout.columnWeights = new double[] { 0.1, 0,0 };
@@ -367,21 +367,18 @@ public class ProcessPanel extends JPanel {
 		c.insets = new Insets(30, 0, 15, 0);
 		componentLayout.setConstraints(this.panel_select, c);
 		this.add(this.panel_select);
-
 	}
 
-	
 	private JLabel alarmPolling; // 告警轮询
 	private JLabel snmpJLabel; // 告警轮询
 	private JLabel northJLabel; // 告警轮询
 	private JButton alarmStartBtn; // 告警开启按钮
 	private JButton alarmEndBtn; // 告警关闭按钮
-	private JButton snmpStartBtn; // 告警开启按钮
-	private JButton snmpEndBtn; // 告警关闭按钮
-	private JButton northStartBtn; // 告警开启按钮
-	private JButton northEndBtn; // 告警关闭按钮
+	private JButton snmpStartBtn; // snmp开启按钮
+	private JButton snmpEndBtn; // snmp关闭按钮
+	private JButton northStartBtn; // 北向开启按钮
+	private JButton northEndBtn; // 北向关闭按钮
 	private JPanel panel_select; // 查询本机ID的panel
-	
 	
 	public static void main(String[] args) {
 		try {
