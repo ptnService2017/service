@@ -69,11 +69,11 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 				siteService = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE);
 				siteInst = siteService.select(currPerforInfoList.get(0).getSiteId());
 				for (CurrentPerforInfo info : currPerforInfoList) {
-				  if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
+//				  if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
 						capability = performanceMap.get(1 + "/" + info.getPerformanceCode());// 1表示武汉
-					} else {
-						capability = performanceMap.get(2 + "/" + info.getPerformanceCode()); // 2表示晨晓
-					}
+//					} else {
+//						capability = performanceMap.get(2 + "/" + info.getPerformanceCode()); // 2表示晨晓
+//					}
 					info.setCapability(capability);
 				}
 			}

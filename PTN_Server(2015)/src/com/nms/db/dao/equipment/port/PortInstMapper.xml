@@ -612,4 +612,10 @@ FROM
 	`port_inst` p
 INNER JOIN card_inst c ON p.cardId = c.id;
   </select>
+  
+    <select id="selectAlarmReversal" resultMap="BaseResultMap" >
+  	select siteId, number from port_inst where alarmReversalEnabled = 1
+  </select>
+  
 </mapper>
+

@@ -1,4 +1,5 @@
-﻿package com.nms.db.dao.equipment.port;
+package com.nms.db.dao.equipment.port;
+
 
 import java.util.List;
 
@@ -82,6 +83,7 @@ public interface PortInstMapper {
 
 	List<PortInst> northPort();
 	
-	
+	List<PortInst> selectAlarmReversal();
 
 }
+

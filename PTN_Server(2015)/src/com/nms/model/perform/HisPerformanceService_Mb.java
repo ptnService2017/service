@@ -169,11 +169,11 @@ public class HisPerformanceService_Mb extends ObjectService_Mybatis {
 					SiteInst siteInst = siteMap.get(hisInfo.getSiteId());
 					if (siteInst != null) {
 						hisInfo.setSiteName(siteInst.getCellId());
-						if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
+//						if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
 							capability = performancesMap.get(1 + "/" + hisInfo.getPerformanceCode());// 1表示武汉
-						} else {
-							capability = performancesMap.get(2 + "/" + hisInfo.getPerformanceCode()); // 2表示晨晓
-						}
+//						} else {
+//							capability = performancesMap.get(2 + "/" + hisInfo.getPerformanceCode()); // 2表示晨晓
+//						}
 						hisInfo.setCapability(capability);
 						if (hisInfo.getMonitor() == EMonitorCycle.MIN15.getValue()) {
 							hisInfo.setMonitorCycle(EMonitorCycle.MIN15);
@@ -296,11 +296,11 @@ public class HisPerformanceService_Mb extends ObjectService_Mybatis {
 				SiteInst siteInst = siteMap.get(hisInfo.getSiteId());
 				if(siteInst != null){
 					hisInfo.setSiteName(siteInst.getCellId());
-					if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
+//					if (UiUtil.getCodeById(Integer.parseInt(siteInst.getCellEditon())).getCodeName().equals("700+系列")) {
 						capability = performancesMap.get(1 + "/" + hisInfo.getPerformanceCode());// 1表示武汉
-					} else {
-						capability = performancesMap.get(2 + "/" + hisInfo.getPerformanceCode()); // 2表示晨晓
-					}
+//					} else {
+//						capability = performancesMap.get(2 + "/" + hisInfo.getPerformanceCode()); // 2表示晨晓
+//					}
 					hisInfo.setCapability(capability);
 					if(hisInfo.getMonitor() == EMonitorCycle.MIN15.getValue()){
 						hisInfo.setMonitorCycle(EMonitorCycle.MIN15);
