@@ -48,7 +48,7 @@ public class SBNXml
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, mapList);
-      XmlUtil.createFile(doc, "CM-PTN-SBN-A1-");
+      XmlUtil.createFile(doc, "CM-PTN-SBN-A1-",filePath);
     }
     catch (Exception e)
     {

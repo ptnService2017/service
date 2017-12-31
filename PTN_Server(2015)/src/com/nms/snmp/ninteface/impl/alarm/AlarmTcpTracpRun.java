@@ -27,6 +27,9 @@ import com.nms.ui.manager.UiUtil;
 public class AlarmTcpTracpRun implements Runnable{
 	private Socket socket;
 	private AlarmTcpTracpMainThread alarmTcpTracpMainThread;
+	private String type ="ftp";//socket类型
+	private Boolean isTrap;
+	private String loginTime="";
 	
 	public AlarmTcpTracpRun(Socket socket,AlarmTcpTracpMainThread alarmTcpTracpMainThread) {
 		this.socket = socket;
@@ -36,6 +39,7 @@ public class AlarmTcpTracpRun implements Runnable{
 	
 	@Override
 	public void run() {
+		System.out.println("lianjie"+this.toString());
 		InputStream inputStream = null;
 		OutputStream outputStream = null;
 		try {
@@ -47,9 +51,9 @@ public class AlarmTcpTracpRun implements Runnable{
 					inputStream.read(tempBytes);
 					if(tempBytes[2] ==1){//登陆
 						reqLoginAlarm(outputStream,tempBytes);
-					}else if(tempBytes[2] ==3){//请求同步告警
+					}else if(tempBytes[2] ==3 && "msg".equals(type)){//请求同步告警
 						ackSyncAlarmMsg(outputStream,tempBytes);
-					}else if(tempBytes[2] ==5){//请求批量同步告警
+					}else if(tempBytes[2] ==5 && "ftp".equals(type)){//请求批量同步告警
 						ackSyncAlarmFile(outputStream,tempBytes);
 					}else if(tempBytes[2] ==8){//心跳请求
 						ackHeartBeat(outputStream,tempBytes);
@@ -78,7 +82,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		String[] reqboby = this.reqBoby(tempBytes);
 		HisAlarmService_MB hisAlarmService_MB = null;
 		Map<String,String> param = new HashMap<String,String>();
-		List<Map<String,String>> list = null;
+		List<Map<String,Object>> list = null;
 		String re = "";
 		try {
 			hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
@@ -95,16 +99,17 @@ public class AlarmTcpTracpRun implements Runnable{
 				}
 				param.put("startTime", startTime);
 				param.put("endTime", endTime);
-				param.put("syncSource", reqboby[3].split("=")[1]);
+				param.put("syncSource", reqboby[4].split("=")[1]);
 			}
 			list = hisAlarmService_MB.sysNorthAlarm(param);
 			if(list.size() == 0){
-				re = "reqSyncAlarmFile;reqId="+reqboby[1].split("=")[1]+";result=success;resDesc=null";
+				re = "ackSyncAlarmFile;reqId="+reqboby[1].split("=")[1]+";result=success;resDesc=null";
 				outputStream.write(res(6, re));
 			}else{
-				String fileName = "snmpData\\ZJ\\CS\\EB\\OMC\\FM\\"+DateUtil.getDate("yyyyMMdd")+"\\FM-OMC-1A-V1.1.0-"+DateUtil.getDate("yyyyMMdd-HHmm")+".txt";
-				this.createFile(fileName, list);
-				re = "ackSyncAlarmFileResult;reqId="+reqboby[1].split("=")[1]+";filename="+fileName+";result=success;resDesc=null";
+				String filePath = "snmpData\\ZJ\\CS\\EB\\OMC\\FM\\"+DateUtil.getDate("yyyyMMdd");
+				String fileName = "FM-OMC-1A-V1.1.0-"+DateUtil.getDate("yyyyMMddHHmm")+".txt";
+				this.createFile(filePath,fileName, list);
+				re = "ackSyncAlarmFileResult;reqId="+reqboby[1].split("=")[1]+";result=success;filename="+filePath+"\\"+fileName+";resDesc=null";
 				outputStream.write(res(7, re));
 			}
 		} catch (Exception e) {
@@ -114,9 +119,36 @@ public class AlarmTcpTracpRun implements Runnable{
 		}
 	}
 
-	private void createFile(String fileName,List<Map<String,String>> list){
+	private void createFile(String filePath,String fileName,List<Map<String,Object>> list){
+		OutputStreamWriter  output = null;
+		try {
+			System.out.println(filePath);
+			File f = new File(filePath);
+			if(!f.exists()){
+				f.mkdirs();;// 不存在则创建
+			}
+			System.out.println(filePath+File.separator+fileName);
+			new FileOutputStream(filePath+File.separator+fileName);
+			output = new OutputStreamWriter (new FileOutputStream(filePath+File.separator+fileName),"UTF-8");
+			output.write(this.alarmString(list));
+			output.flush();
+			
+			FileTools fileTools = new FileTools();
+			fileTools.zipFile(filePath+File.separator+fileName, filePath+File.separator+fileName+".zip");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				output.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private String alarmString(List<Map<String,Object>> list){
 		StringBuilder stringBuilder = new StringBuilder();
-		for(Map<String,String> map : list){
+		for(Map<String,Object> map : list){
 			stringBuilder.append("{");
 			stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
 			stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
@@ -137,27 +169,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			stringBuilder.append("\"holderType\":\""+map.get("holderType")+"\"");
 			stringBuilder.append("}\r\n");
 		}
-		OutputStreamWriter  output = null;
-		try {
-			File f = new File(fileName);
-			if(!f.exists()){
-				f.createNewFile();// 不存在则创建
-			}
-			output = new OutputStreamWriter (new FileOutputStream(fileName),"UTF-8");
-			output.write(stringBuilder.toString());
-			output.flush();
-			
-			FileTools fileTools = new FileTools();
-			fileTools.zipFile(fileName, fileName+".zip");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			try {
-				output.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		return stringBuilder.toString();
 	}
 	
 	private int getLevel(String origSeverity){
@@ -178,19 +190,52 @@ public class AlarmTcpTracpRun implements Runnable{
 	 * @param tempBytes
 	 */
 	private void ackSyncAlarmMsg(OutputStream outputStream, byte[] tempBytes) {
+		setIsTrap(false);
 		String[] reqboby = this.reqBoby(tempBytes);
 		String re = "";
+		HisAlarmService_MB hisAlarmService_MB = null;
+		List<Map<String,Object>> list = null;
 		try {
 			if(reqboby.length<1){
 				re = "ackSyncAlarmMsg;reqId="+reqboby[1].split("=")[1]+";result=fail;resDesc=null";
-				outputStream.write(res(9, re));
+				outputStream.write(res(4, re));
 			}else{
 				re = "ackSyncAlarmMsg;reqId="+reqboby[1].split("=")[1]+";result=succ;resDesc=null";
-				outputStream.write(res(9, re));
+				outputStream.write(res(4, re));
+				outputStream.flush();
+				Integer index = Integer.parseInt(reqboby[2].split("=")[1]);
+				hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
+				list = hisAlarmService_MB.sysNorthAlarmIndex(index);
+				for (Map<String,Object> map : list) {
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append("{");
+					stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
+					stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
+					stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
+					stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
+					stringBuilder.append("\"eventTime\":\""+map.get("eventTime")+"\",");
+					stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
+					stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
+					stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
+					stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
+					stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
+					stringBuilder.append("\"neType\":\""+map.get("neType")+"\",");
+					stringBuilder.append("\"objectUID\":\""+map.get("objectUID")+"\",");
+					stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
+					stringBuilder.append("\"objectType\":\""+map.get("objectType")+"\",");
+					stringBuilder.append("\"locationInfo\":\""+map.get("locationInfo")+"\",");
+					stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
+					stringBuilder.append("\"holderType\":\""+map.get("holderType")+"\"");
+					stringBuilder.append("}");
+					outputStream.write(res(0, stringBuilder.toString()));
+					outputStream.flush();
+				}
 			}
-			
+			setIsTrap(true);
 		} catch (Exception e) {
 			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			UiUtil.closeService_MB(hisAlarmService_MB);
 		}
 	}
 
@@ -207,7 +252,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			if(reqboby.length<1){
 				outputStream.write(res(9, re));
 			}else{
-				re = "reqHeartBeat;reqId="+reqboby[1].split("=")[1];
+				re = "ackHeartBeat;reqId="+reqboby[1].split("=")[1];
 				outputStream.write(res(9, re));
 			}
 		} catch (Exception e) {
@@ -227,6 +272,11 @@ public class AlarmTcpTracpRun implements Runnable{
 		String re = "";
 		String userName = reqboby[1].split("=")[1];
 		String passWord = reqboby[2].split("=")[1];
+		this.type = reqboby[3].split("=")[1];
+		ExceptionManage.infor("userName===="+userName, this.getClass());
+		ExceptionManage.infor("passWord===="+passWord, this.getClass());
+		ExceptionManage.infor("userName+++"+SnmpConfig.getInstanse().getValue("alarm.userName"), this.getClass());
+		ExceptionManage.infor("passWord++++"+SnmpConfig.getInstanse().getValue("alarm.passWord"), this.getClass());
 		if(reqboby.length<4){
 			re = "ackLoginAlarm;result=fail;resDesc=param-error";
 		}else if(!userName.equals(SnmpConfig.getInstanse().getValue("alarm.userName"))){
@@ -237,7 +287,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			re = "ackLoginAlarm;result=succ;resDesc=null";
 		}
 		try {
-			outputStream.write(res(1, re));
+			outputStream.write(res(2, re));
 		} catch (IOException e) {
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -290,6 +340,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		try {
 			reboby_s = new String(reboby, "utf-8");
 			System.out.println(reboby_s);
+			ExceptionManage.infor("登录收到"+tempBytes, this.getClass());
 			ss = reboby_s.split(";");
 			
 		} catch (UnsupportedEncodingException e) {
@@ -319,4 +370,36 @@ public class AlarmTcpTracpRun implements Runnable{
 			System.out.println(DateUtil.getDate("yyyyMMdd"));
 //			AlarmTcpTracpRun.contentToTxt("C:\\Users\\peng\\test22.txt", str);
 		}
+
+
+	public String getType() {
+		return type;
+	}
+
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
+	public Boolean getIsTrap() {
+		return isTrap;
+	}
+
+
+	public void setIsTrap(Boolean isTrap) {
+		this.isTrap = isTrap;
+	}
+
+
+	public String getLoginTime() {
+		return loginTime;
+	}
+
+
+	public void setLoginTime(String loginTime) {
+		this.loginTime = loginTime;
+	}
+	
+	
 }

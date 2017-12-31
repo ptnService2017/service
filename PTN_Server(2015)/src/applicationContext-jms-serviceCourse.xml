@@ -24,7 +24,7 @@
 
 	<bean id="serverOtherNotify"
 		class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="queue.server.other.notify" />
+		<constructor-arg value="serverOtherNotify" />
 	</bean>
 	
 	<!-- 

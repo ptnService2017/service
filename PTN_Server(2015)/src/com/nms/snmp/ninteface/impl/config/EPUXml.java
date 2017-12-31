@@ -48,7 +48,7 @@ public class EPUXml
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, siteList);
-      XmlUtil.createFile(doc, "CM-PTN-EPU-A1-");
+      XmlUtil.createFile(doc, "CM-PTN-EPU-A1-",filePath);
     }
     catch (Exception e)
     {
@@ -135,16 +135,16 @@ public class EPUXml
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
-    for (SiteInst siteInst : siteList)
-    {
-      Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCS1EPU" + siteInst.getSite_Inst_Id());
-      createElementNode(doc, "N", "rmUID", Object, "i", "1");
-      createElementNode(doc, "N", "grouprmUID", Object, "i", "2");
-      createElementNode(doc, "N", "cardrmUID", Object, "i", "3");
-      createElementNode(doc, "N", "role", Object, "i", "4");
-      FieldValue.appendChild(Object);
-    }
+//    for (SiteInst siteInst : siteList)
+//    {
+//      Element Object = doc.createElement("Object");
+//      Object.setAttribute("rmUID", "3301EBCS1EPU" + siteInst.getSite_Inst_Id());
+//      createElementNode(doc, "N", "rmUID", Object, "i", "1");
+//      createElementNode(doc, "N", "grouprmUID", Object, "i", "2");
+//      createElementNode(doc, "N", "cardrmUID", Object, "i", "3");
+//      createElementNode(doc, "N", "role", Object, "i", "4");
+//      FieldValue.appendChild(Object);
+//    }
     Objects.appendChild(FieldValue);
     return Objects;
   }

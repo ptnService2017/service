@@ -46,6 +46,8 @@ public interface SiteInstMapper {
     public int delete(@Param("siteId")Integer siteId);
 
 	public void updateOnline(SiteInst siteInst);
+
+	public List<SiteInst> selectPage(Integer size, Integer index);
     
     
 }

@@ -47,7 +47,7 @@ public class TDMXml{
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, cesinfos);
-      XmlUtil.createFile(doc, "CM-PTN-TDM-A1-");
+      XmlUtil.createFile(doc, "CM-PTN-TDM-A1-",filePath);
     }
     catch (Exception e)
     {
@@ -162,9 +162,9 @@ public class TDMXml{
       createElementNode(doc, "N", "3301EBCS1TDM" + cesInfo.getId(), Object, "i", "1");
       createElementNode(doc, "N", cesInfo.getName(), Object, "i", "2");
       createElementNode(doc, "N", "2M", Object, "i", "3");
-      createElementNode(doc, "N", "CD_UNI", Object, "i", "4");
+      createElementNode(doc, "N", "CD_BI", Object, "i", "4");
       createElementNode(doc, "N", cesInfo.getActiveStatus() == 1 ? "ACTIVE" : "PENDING", Object, "i", "5");
-      createElementNode(doc, "N", "", Object, "i", "6");
+      createElementNode(doc, "N", cesInfo.getName(), Object, "i", "6");
       createElementNode(doc, "N", "", Object, "i", "7");
       createElementNode(doc, "N", "3301EBCS1NEL" + cesInfo.getaSiteId(), Object, "i", "8");
       createElementNode(doc, "N", "3301EBCS1NEL" + cesInfo.getaSiteId(), Object, "i", "9");
@@ -183,7 +183,7 @@ public class TDMXml{
       createElementNode(doc, "N", "", Object, "i", "22");
       createElementNode(doc, "N", "", Object, "i", "23");
       createElementNode(doc, "N", "3301EBCS1PSW" + cesInfo.getPwId(), Object, "i", "24");
-      createElementNode(doc, "N", "PW2rmUI", Object, "i", "25");
+      createElementNode(doc, "N", "", Object, "i", "25");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

@@ -1,8 +1,11 @@
 package com.nms.snmp.ninteface.impl.config;
 
 import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.ptn.port.PortLagInfo;
 import com.nms.model.equipment.shlef.SiteService_MB;
+import com.nms.model.ptn.port.PortLagService_MB;
 import com.nms.model.util.ServiceFactory;
+import com.nms.model.util.Services;
 import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
@@ -20,6 +23,8 @@ import java.net.InetAddress;
 import java.rmi.ConnectException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -39,16 +44,16 @@ public class PGUXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-PGU-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-PGU-A1-" + version + "-" + XmlUtil.getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
       filePath = xmlPath[0] + File.separator + xmlPath[1];
-      List<SiteInst> siteList = getAllSites();
+      List<Map<String,Object>> list = getAllLags();
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
-      createXML(doc, siteList);
-      XmlUtil.createFile(doc, "CM-PTN-PGU-A1-");
+      createXML(doc, list);
+      XmlUtil.createFile(doc, "CM-PTN-PGU-A1-",filePath);
     }
     catch (Exception e)
     {
@@ -57,14 +62,14 @@ public class PGUXml
     return filePath;
   }
   
-  private List<SiteInst> getAllSites()
+  private List<Map<String,Object>> getAllLags()
   {
-    List<SiteInst> siteList = null;
-    SiteService_MB siteService = null;
+    List<Map<String,Object>> list = null;
+    PortLagService_MB lagService_MB = null;
     try
     {
-      siteService = (SiteService_MB)ConstantUtil.serviceFactory.newService_MB(1);
-      siteList = siteService.select();
+    	lagService_MB = (PortLagService_MB)ConstantUtil.serviceFactory.newService_MB(Services.PORTLAG);
+    	list = lagService_MB.selectAllPGU();
     }
     catch (Exception e)
     {
@@ -72,9 +77,9 @@ public class PGUXml
     }
     finally
     {
-      UiUtil.closeService_MB(siteService);
+      UiUtil.closeService_MB(lagService_MB);
     }
-    return siteList;
+    return list;
   }
   
   private String getTime()
@@ -109,7 +114,7 @@ public class PGUXml
     return null;
   }
   
-  private void createXML(Document doc, List<SiteInst> siteList)
+  private void createXML(Document doc, List<Map<String,Object>> list)
   {
     doc.setXmlVersion("1.0");
     doc.setXmlStandalone(true);
@@ -118,12 +123,12 @@ public class PGUXml
     root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
     root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
     root.appendChild(XmlUtil.fileHeader(doc,"ProtectGroupUnit"));
-    Element emsList = createFileContent(doc, siteList);
+    Element emsList = createFileContent(doc, list);
     root.appendChild(emsList);
     doc.appendChild(root);
   }
   
-  private Element createFileContent(Document doc, List<SiteInst> siteList)
+  private Element createFileContent(Document doc, List<Map<String,Object>> list)
   {
     Element Objects = doc.createElement("Objects");
     
@@ -135,14 +140,14 @@ public class PGUXml
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
-    for (SiteInst siteInst : siteList)
+    for (Map<String,Object> map : list)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCS1SNN" + siteInst.getSite_Inst_Id());
-      createElementNode(doc, "N", "rmUID", Object, "i", "1");
-      createElementNode(doc, "N", "grouprmUID", Object, "i", "2");
-      createElementNode(doc, "N", "cardrmUID", Object, "i", "3");
-      createElementNode(doc, "N", "role", Object, "i", "4");
+      Object.setAttribute("rmUID", "3301EBCS1PGU" + map.get("portId"));
+      createElementNode(doc, "N", "3301EBCS1PGU" + map.get("portId"), Object, "i", "1");
+      createElementNode(doc, "N", "3301EBCS1PTG" + map.get("lagId"), Object, "i", "2");
+      createElementNode(doc, "N", "3301EBCS1PRT" + map.get("portId"), Object, "i", "3");
+      createElementNode(doc, "N", map.get("portId").toString().equals(map.get("master").toString())?"master":"backup", Object, "i", "4");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

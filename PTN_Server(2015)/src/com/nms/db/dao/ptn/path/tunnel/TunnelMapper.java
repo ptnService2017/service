@@ -164,5 +164,9 @@ public interface TunnelMapper {
 	public List<Tunnel> queryByCondition_joinRotate(Tunnel tunnel);
 
 	public List<Tunnel> quertyNodeBySiteAndType(@Param("siteId")int siteId, @Param("tunnelType")String tunnelType, @Param("isSingle")int isSingle, @Param("flag")int flag);
+
+	List<Tunnel> selectPage(@Param("siteId")Integer siteId, @Param("index")Integer index, @Param("size")Integer size);
+
+	List<Tunnel> queryProetctPage(@Param("siteId")Integer siteId, @Param("index")Integer index, @Param("size")Integer size);
 	
 }

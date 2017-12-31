@@ -62,7 +62,7 @@ public class ESIXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,mapList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-ESI-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-ESI-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -146,12 +146,12 @@ public class ESIXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Map<String,Object> map :mapList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1ESI"+map.get("id"));
-			this.createElementNode(doc, "N", "3301EBCS1ESI"+map.get("id"), Object, "i", "1");
+			Object.setAttribute("rmUID","3301EBCS1ETH"+map.get("id"));
+			this.createElementNode(doc, "N", "3301EBCS1ETH"+map.get("id"), Object, "i", "1");
 			this.createElementNode(doc, "N", "3301EBCS1PSW"+map.get("pwId"), Object, "i", "2");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("aSiteId"), Object, "i", "3");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("zSiteId"), Object, "i", "4");
-			this.createElementNode(doc, "N", "NA", FieldName, "i", "5");
+			this.createElementNode(doc, "N", "NA", Object, "i", "5");
 			FieldValue.appendChild(Object);
 		}
 		

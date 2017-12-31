@@ -612,6 +612,14 @@ public class PortService_MB extends ObjectService_Mybatis {
 		}
 		return siteIdPortMap;
 	}
+
+	public List<PortInst> selectPage(Integer siteId, Integer page,Integer size) {
+		return this.mapper.selectPage(siteId,size*(page-1),size);
+	}
+
+	public List<PortInst> selectBySiteid(int siteId) {
+		return this.mapper.selectPage(siteId,0,Integer.MAX_VALUE);
+	}
 }
 
 

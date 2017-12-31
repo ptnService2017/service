@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.nms.db.bean.equipment.port.PortInst;
 import com.nms.db.bean.path.Segment;
 import com.nms.db.bean.ptn.Businessid;
 import com.nms.db.bean.ptn.LabelInfo;
@@ -132,6 +133,15 @@ public class TunnelService_MB extends ObjectService_Mybatis {
 	public Tunnel selectByID(Integer tunnelID) {
 		Tunnel tunnel = null;
 		tunnel = tunnelMapper.selectByPrimaryKey(tunnelID);
+		try {
+			this.getAllLsp(tunnel);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return tunnel;
 	}
 
@@ -2661,5 +2671,22 @@ public class TunnelService_MB extends ObjectService_Mybatis {
 			ExceptionManage.dispose(e, this.getClass());
 		}
 		return tunnelList;
+	}
+
+	public List<Tunnel> selectPage(Integer siteId, Integer index, Integer size) {
+		List<Tunnel> tunnelList = this.tunnelMapper.selectPage(siteId,index,size);
+		LspinfoMapper lspInfoMapper = this.sqlSession.getMapper(LspinfoMapper.class);
+		for (Tunnel tunnel : tunnelList) {
+			tunnel.setNode(true);
+			List<Lsp> lspparticularList = new ArrayList<Lsp>();
+			lspparticularList = lspInfoMapper.queryBySiteId(siteId, tunnel.getTunnelId());
+			tunnel.setLspParticularList(lspparticularList);
+		}
+		return tunnelList;
+	}
+
+	public List<Tunnel> queryProetctPage(Integer siteId, Integer index, Integer size) {
+		
+		return this.tunnelMapper.queryProetctPage(siteId,index,size);
 	}
 }

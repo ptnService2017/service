@@ -53,7 +53,7 @@ public class NELXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,siteList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-NEL-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-NEL-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -145,6 +145,7 @@ public class NELXml {
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (SiteInst siteInst :siteList) {
+			getHardEdition(siteInst);
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1NEL"+siteInst.getSite_Inst_Id());
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+siteInst.getSite_Inst_Id(), Object, "i", "1");
@@ -155,8 +156,8 @@ public class NELXml {
 			this.createElementNode(doc, "N", siteInst.getSiteType()==369?"real":"virtual", Object, "i", "6");
 			this.createElementNode(doc, "N", siteInst.getCellDescribe(), Object, "i", "7");
 			this.createElementNode(doc, "N", "", Object, "i", "8");
-			this.createElementNode(doc, "N", getHardEdition(siteInst), Object, "i", "9");
-			this.createElementNode(doc, "N", "V1.2", Object, "i", "10");
+			this.createElementNode(doc, "N", siteInst.getHardEdition(), Object, "i", "9");
+			this.createElementNode(doc, "N", siteInst.getSoftEdition(), Object, "i", "10");
 			this.createElementNode(doc, "N", "", Object, "i", "11");
 			this.createElementNode(doc, "N", siteInst.getLoginstatus()==1?"available":"unavaliable", Object, "i", "12");
 			FieldValue.appendChild(Object);
@@ -167,12 +168,15 @@ public class NELXml {
 	}
 	private String getHardEdition(SiteInst siteInst){
 		String type = "EB204.002V03";
+		String soft = "V2.1.3";
 		if(siteInst.getCellType().equals("ETN-5000")){
 			type = "EB5000.003V01";
+			soft = "V3.2.5";
 		}else if(siteInst.getCellType().equals("ETN-200-204E")){
 			type = "EB204E.002V03";
 		}
-			
+		siteInst.setHardEdition(type);
+		siteInst.setSoftEdition(soft);
 		return type;
 	}
 	

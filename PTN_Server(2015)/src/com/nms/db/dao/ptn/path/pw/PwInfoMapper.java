@@ -93,5 +93,11 @@ public interface PwInfoMapper {
 
 	public List<PwInfo> selectAll_North();
 
+	public List<PwInfo> selectPage(@Param("siteId")Integer siteId, @Param("index")Integer index, @Param("size")Integer size);
+
+	public PwInfo selectById(@Param("pwId")Integer pwId);
+
+	public Integer updateLableById(@Param("pwId")Integer pwId, @Param("inlable")Integer inlable, @Param("outlable")Integer outLable);
+
 
 }

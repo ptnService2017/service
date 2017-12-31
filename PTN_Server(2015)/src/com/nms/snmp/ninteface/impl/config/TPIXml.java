@@ -49,7 +49,7 @@ public class TPIXml
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, tunnelList);
-      XmlUtil.createFile(doc, "CM-PTN-TPI-A1-");
+      XmlUtil.createFile(doc, "CM-PTN-TPI-A1-",filePath);
     }
     catch (Exception e)
     {
@@ -144,9 +144,9 @@ public class TPIXml
     for (Tunnel tunnel : tunnelList)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCS1TPI" + tunnel.getAprotectId());
-      createElementNode(doc, "N", "3301EBCS1TPI" + tunnel.getAprotectId(), Object, "i", "1");
-      createElementNode(doc, "N", tunnel.getName(), Object, "i", "2");
+      Object.setAttribute("rmUID", "3301EBCS1TPI" + tunnel.getTunnelId());
+      createElementNode(doc, "N", "3301EBCS1TPI" + tunnel.getTunnelId(), Object, "i", "1");
+      createElementNode(doc, "N", tunnel.getTunnelName(), Object, "i", "2");
       createElementNode(doc, "N", tunnel.getRotateMode().equals("MANUAL")?"RM_REVERTIVE":"RM_NON_REVERTIVE", Object, "i", "3");
       createElementNode(doc, "N", "1:1", Object, "i", "4");
       FieldValue.appendChild(Object);

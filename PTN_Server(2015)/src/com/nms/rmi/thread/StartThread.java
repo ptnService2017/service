@@ -20,6 +20,8 @@ import com.nms.rmi.ui.util.LicenseClientUtil;
 import com.nms.rmi.ui.util.ServerConstant;
 import com.nms.rmi.ui.util.ServiceInitUtil;
 import com.nms.snmp.ninteface.framework.AgentServer;
+import com.nms.snmp.ninteface.impl.alarm.AlarmNorthconsumer;
+import com.nms.snmp.ninteface.util.NorthConfig;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.DialogBoxUtil;
 import com.nms.ui.manager.ExceptionManage;
@@ -98,7 +100,12 @@ public class StartThread implements Runnable {
 				while (flag) {
 					try {
 						// 初始化数据库连接 默认连接本机
-						Mybatis_DBManager.init(ServerConstant.localhostIp);
+						if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 1){
+							Mybatis_DBManager.init(NorthConfig.northServiceIp);
+						}else{
+							Mybatis_DBManager.init(ServerConstant.localhostIp);
+						}
+						
 						flag = false;
 						break;
 					} catch (Exception e) {
@@ -131,10 +138,15 @@ public class StartThread implements Runnable {
 				return;
 			}
 			try {
-				Broker.init("applicationContext-jms-broker.xml");
-				ApplicationBeanFactory.initBeanFactory("applicationContext-jms-send.xml","targetConnectionFactory");
-				ApplicationBeanFactory.initBeanFactory("applicationContext-jms-serviceCourse.xml","targetConnectionFactory");
-				ExceptionManage.infor("JMS初始化成功", this.getClass());
+				if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 1){
+					ApplicationBeanFactory.initBeanFactory("applicationContext-jms-serviceCourse.xml","targetConnectionFactory");
+				}else{
+					Broker.init("applicationContext-jms-broker.xml");
+					ApplicationBeanFactory.initBeanFactory("applicationContext-jms-send.xml","targetConnectionFactory");
+					ApplicationBeanFactory.initBeanFactory("applicationContext-jms-serviceCourse.xml","targetConnectionFactory");
+					ExceptionManage.infor("JMS初始化成功", this.getClass());
+				}
+				
 			} catch (Exception e) {
 				ExceptionManage.dispose(e, this.getClass());
 			}

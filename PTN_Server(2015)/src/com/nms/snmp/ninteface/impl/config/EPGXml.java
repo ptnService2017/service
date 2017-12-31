@@ -48,7 +48,7 @@ public class EPGXml
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, siteList);
-      XmlUtil.createFile(doc, "CM-PTN-EPG-A1-");
+      XmlUtil.createFile(doc, "CM-PTN-EPG-A1-",filePath);
     }
     catch (Exception e)
     {
@@ -136,17 +136,17 @@ public class EPGXml
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
-    for (SiteInst siteInst : siteList)
-    {
-      Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCS1EPG" + siteInst.getSite_Inst_Id());
-      createElementNode(doc, "N", "rmUID", Object, "i", "1");
-      createElementNode(doc, "N", "NErmUID", Object, "i", "2");
-      createElementNode(doc, "N", "nativeName", Object, "i", "3");
-      createElementNode(doc, "N", "reversionMode", Object, "i", "4");
-      createElementNode(doc, "N", "type", Object, "i", "5");
-      FieldValue.appendChild(Object);
-    }
+//    for (SiteInst siteInst : siteList)
+//    {
+//      Element Object = doc.createElement("Object");
+//      Object.setAttribute("rmUID", "3301EBCS1EPG" + siteInst.getSite_Inst_Id());
+//      createElementNode(doc, "N", "rmUID", Object, "i", "1");
+//      createElementNode(doc, "N", "NErmUID", Object, "i", "2");
+//      createElementNode(doc, "N", "nativeName", Object, "i", "3");
+//      createElementNode(doc, "N", "reversionMode", Object, "i", "4");
+//      createElementNode(doc, "N", "type", Object, "i", "5");
+//      FieldValue.appendChild(Object);
+//    }
     Objects.appendChild(FieldValue);
     return Objects;
   }

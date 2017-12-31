@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.nms.db.bean.equipment.port.PortInst;
 import com.nms.db.bean.ptn.Businessid;
 import com.nms.db.bean.ptn.LabelInfo;
 import com.nms.db.bean.ptn.oam.OamInfo;
@@ -1579,5 +1580,20 @@ public class PwInfoService_MB extends ObjectService_Mybatis{
 			ExceptionManage.dispose(e,this.getClass());
 		}
 		return pwinfoList;
+	}
+
+	public List<PwInfo> selectPage(Integer siteId, Integer index, Integer size) {
+		return this.mapper.selectPage(siteId,index,size);
+	}
+	
+	public PwInfo selectById(Integer pwId){
+		return this.mapper.selectById(pwId);
+	}
+	
+	public Integer updateLableById(Integer pwId,Integer inlable,Integer outLable){
+		Integer i = this.mapper.updateLableById(pwId,inlable,outLable);
+		this.sqlSession.commit();
+		return i;
+		
 	}
 }

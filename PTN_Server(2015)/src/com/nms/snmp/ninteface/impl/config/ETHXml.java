@@ -62,7 +62,7 @@ public class ETHXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,mapList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-ETH-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-ETH-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -160,7 +160,7 @@ public class ETHXml {
 				type = "E-TREE";
 			}
 			this.createElementNode(doc, "N", type, Object, "i", "3");
-			this.createElementNode(doc, "N", "CD_UNI", Object, "i", "4");
+			this.createElementNode(doc, "N", "CD_BI", Object, "i", "4");
 			this.createElementNode(doc, "N", map.get("name").toString(), Object, "i", "5");
 			this.createElementNode(doc, "N", "", Object, "i", "6");
 			this.createElementNode(doc, "N", map.get("activeStatus").toString().equals("1")?"ACTIVE":"PENDING", Object, "i", "7");

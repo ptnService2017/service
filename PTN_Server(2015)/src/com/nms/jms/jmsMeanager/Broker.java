@@ -27,7 +27,7 @@ public class Broker {
     	            broker.setBrokerName("myBroker");  
     	            broker.setUseJmx(true);  
     	            broker.setSchedulerSupport(false);
-    	            broker.addConnector(jmsIp);  
+    	            broker.addConnector(jmsIp); 
     	            broker.start();  
     	            ExceptionManage.infor("DATAX:   broker start", Broker.class);
     	        } catch (InterruptedException e) {  

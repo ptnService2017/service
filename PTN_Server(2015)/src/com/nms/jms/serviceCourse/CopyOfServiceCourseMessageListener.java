@@ -27,6 +27,7 @@ public class CopyOfServiceCourseMessageListener implements MessageListener{
 			try {
 				if(objectMessage.getObject() instanceof OpviewMessage){
 					opviewMessage = (OpviewMessage) objectMessage.getObject();
+					ExceptionManage.infor(opviewMessage.getMessageSource()+"++++"+opviewMessage.getObject(), this.getClass());
 					if(opviewMessage.getObject() != null && opviewMessage.getMessageSource().equals("Alarm")){//告警分支
 						AlarmTools alarmTools = new AlarmTools();
 						List<AlarmObject> alarms = (List<AlarmObject>) opviewMessage.getObject();

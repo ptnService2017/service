@@ -7,6 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.nms.model.util.ServiceFactory;
+import com.nms.snmp.ninteface.framework.SnmpConfig;
+import com.nms.snmp.ninteface.util.NorthConfig;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.util.Mybatis_DBManager;
+
 
 public class AlarmTcpTracpMainThread extends Thread{
 	private ServerSocket serverSocket;
@@ -17,19 +23,19 @@ public class AlarmTcpTracpMainThread extends Thread{
 	
 	@Override
 	public void run() {
+		
+		try {
+			serverSocket = new ServerSocket(NorthConfig.northAlarmPort);
 		while(isRun){
-			try {
-				serverSocket = new ServerSocket(31232);
 				Socket socket = serverSocket.accept();
 				alarmTrapRun.put(socket.toString(), true);
 				alarmTrapHeart.put(socket.toString(), System.currentTimeMillis());
 				AlarmTcpTracpRun alarmTcpTracpRun = new AlarmTcpTracpRun(socket,this);
 				threadPoolExecutor.execute(alarmTcpTracpRun);
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
 	}
 
 
@@ -82,6 +88,12 @@ public class AlarmTcpTracpMainThread extends Thread{
 		this.alarmTrapRun = alarmTrapRun;
 	}
 	
-	
+	public static void main(String[] args) {
+		 Mybatis_DBManager.init("127.0.0.1");
+		 ConstantUtil.serviceFactory = new ServiceFactory();
+		 SnmpConfig.getInstanse().init();
+		AlarmTcpTracpMainThread alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
+		new Thread(alarmTcpTracpMainThread).start();
+	}
 	
 }

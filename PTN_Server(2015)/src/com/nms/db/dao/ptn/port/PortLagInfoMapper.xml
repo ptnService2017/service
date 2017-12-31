@@ -659,4 +659,23 @@
     delete from port_lag
     where siteId = #{siteId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="selectAllPGU" resultType="java.util.Map">
+SELECT
+	p.portId,
+	l.id as lagId,
+	l.buffer as master,
+	l.floodBate as backup
+FROM
+	`port_inst` p
+INNER JOIN port_lag l ON p.siteId = l.siteId
+AND p.lagId = l.id;
+  </select>
+  
+    <select id="selectAllPTG" resultType="PortLagInfo">
+SELECT
+	id,siteId 
+FROM
+	port_lag 
+  </select>
 </mapper>

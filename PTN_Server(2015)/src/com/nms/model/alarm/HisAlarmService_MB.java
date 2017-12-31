@@ -555,9 +555,22 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 		return resultcesId;
 	}
 	
-	public List<Map<String,String>> sysNorthAlarm(Map<String,String> param){
-		List<Map<String,String>> list = this.mapper.sysNorthAlarm(param);
-		
+	public List<Map<String,Object>> sysNorthAlarm(Map<String,String> param){
+		List<Map<String,Object>> list = this.mapper.sysNorthAlarm(param);
 		return list;
+	}
+	
+	public List<Map<String,Object>> sysNorthAlarmIndex(Integer index){
+		List<Map<String,Object>> list = this.mapper.sysNorthAlarmIndex(index);
+		return list;
+	}
+	
+	/**
+	 * 北向流水，告警清除时，查询当前告警id
+	 * @param hisInfo
+	 * @return
+	 */
+	public List<HisAlarmInfo>  queryHisNorth(HisAlarmInfo hisInfo){
+		return this.mapper.queryHisNorth(hisInfo);
 	}
 }

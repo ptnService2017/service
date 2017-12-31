@@ -460,4 +460,10 @@
   <update id="updateOnline">
   update site_inst set loginstatus=#{loginstatus} where site_inst_id=#{Site_Inst_Id}
   </update>
+  
+  <select id="selectPage" resultMap="BaseResultMap">
+   select
+       <include refid="Base_Column_List" />
+       from site_inst limit #{size},#{index}
+  </select>
 </mapper>

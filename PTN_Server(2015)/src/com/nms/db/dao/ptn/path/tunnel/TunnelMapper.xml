@@ -523,7 +523,7 @@
   
   <select id="queryByCondition" resultMap="BaseResultMap" parameterType="Tunnel">
   	select t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction, t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType ,t.position 
-	 ,t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id and t.zSiteId = sz.site_inst_id and t.aPortId = pa.portId and t.zPortId = pz.portId and t.tunnelId = t.tunnelId and tunneltype!=0 and t.isSingle=0
+	 ,t.protectBack,t.sncpIds ,t.rotateMode FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id and t.zSiteId = sz.site_inst_id and t.aPortId = pa.portId and t.zPortId = pz.portId and t.tunnelId = t.tunnelId and tunneltype!=0 and t.isSingle=0
   	<if test="tunnelId>0" >
         and t.tunnelId = #{tunnelId} 
     </if>
@@ -845,5 +845,23 @@
   <if test="flag == 1">
   and t.isSingle=#{isSingle}
   </if>
+  </select>
+  
+  <select id="selectPage" resultType="Tunnel">
+  	 SELECT 
+  <include refid="Base_Column_List" />
+   FROM tunnel t WHERE 
+  ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid =#{siteId} AND lsp.aPortId != 0 ) OR ( lsp.zsiteid =#{siteId} AND lsp.zportid != 0 )) ) OR ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid =#{siteId} AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId )
+   OR ( lsp.zsiteid =#{siteId} AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId ))) limit #{index},#{size}
+  </select>
+  
+  <select id="queryProetctPage" resultType="Tunnel">
+  	  	 SELECT 
+  <include refid="Base_Column_List" />
+FROM
+	tunnel t
+WHERE
+	(t.aSiteId = #{siteId} OR t.zSiteId = #{siteId})
+AND  t.tunnelType=0 limit #{index},#{size}
   </select>
 </mapper>

@@ -49,7 +49,7 @@ public class SnmpConfig {
 	}
 
 	public String getValue(String param){
-		return propUtil.getProperty("snmp.emsname", snmpConfigFile);
+		return propUtil.getProperty(param, snmpConfigFile);
 	}
 	public void init() {
 		

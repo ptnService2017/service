@@ -1,6 +1,7 @@
 package com.nms.db.dao.ptn.port;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +32,8 @@ public interface PortLagInfoMapper {
 	List<PortLagInfo> selectByConditionForSynchro(PortLagInfo portLagInfo);
 	
 	public int deleteBysiteId(@Param("siteId")int siteId);
+
+	List<Map<String,Object>> selectAllPGU();
+	
+	List<PortLagInfo> selectAllPTG();
 }

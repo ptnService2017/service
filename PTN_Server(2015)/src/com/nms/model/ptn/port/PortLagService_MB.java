@@ -3,6 +3,7 @@ package com.nms.model.ptn.port;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -435,4 +436,11 @@ public class PortLagService_MB extends ObjectService_Mybatis{
 		return portLagInfoList;
 	}
 	
+	public List<Map<String,Object>> selectAllPGU(){
+		return this.mapper.selectAllPGU();
+	}
+	
+	public List<PortLagInfo> selectAllPTG(){
+		return this.mapper.selectAllPTG();
+	}
 }

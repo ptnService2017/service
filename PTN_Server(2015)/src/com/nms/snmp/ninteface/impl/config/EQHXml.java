@@ -50,7 +50,7 @@ public class EQHXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,slotList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-EQH-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-EQH-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}

@@ -48,7 +48,7 @@ public class SNNXml
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, siteList);
-      XmlUtil.createFile(doc, "CM-PTN-SNN-A1-");
+      XmlUtil.createFile(doc, "CM-PTN-SNN-A1-",filePath);
     }
     catch (Exception e)
     {
@@ -139,8 +139,8 @@ public class SNNXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1SNN" + siteInst.getSite_Inst_Id());
-      createElementNode(doc, "N", "3301EBCS1SNN" + siteInst.getSite_Inst_Id(), Object, "i", "1");
-      createElementNode(doc, "N", "3301EBCS1SBN" + siteInst.getSite_Inst_Id(), Object, "i", "2");
+      createElementNode(doc, "N", "3301EBCS1NEL" + siteInst.getSite_Inst_Id(), Object, "i", "1");
+      createElementNode(doc, "N", "3301EBCS1SBN" + siteInst.getFieldID(), Object, "i", "2");
       createElementNode(doc, "N", siteInst.getSiteX()+"", Object, "i", "3");
       createElementNode(doc, "N", siteInst.getSiteY()+"", Object, "i", "4");
       FieldValue.appendChild(Object);

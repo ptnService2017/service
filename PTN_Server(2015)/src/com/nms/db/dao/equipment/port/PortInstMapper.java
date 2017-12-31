@@ -85,5 +85,9 @@ public interface PortInstMapper {
 	
 	List<PortInst> selectAlarmReversal();
 
+	List<PortInst> selectPage(@Param("siteId")Integer siteId, @Param("page")Integer page, @Param("size")Integer size);
+
+	List<PortInst> selectBySiteid(@Param("siteId")int siteId);
+
 }
 

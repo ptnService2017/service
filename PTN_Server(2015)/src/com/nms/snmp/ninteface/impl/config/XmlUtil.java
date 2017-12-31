@@ -36,7 +36,7 @@ public class XmlUtil {
 		FileHeader.appendChild(ElementType);
 		
 		Element CmVersion = doc.createElement("CmVersion");
-		CmVersion.setTextContent("1.0");
+		CmVersion.setTextContent("V1.0.1");
 		FileHeader.appendChild(CmVersion);
 		
 		Element rmUID = doc.createElement("rmUID");
@@ -59,13 +59,12 @@ public class XmlUtil {
 		return FileHeader;
 	}
 	
-	public static String createFile(Document doc,String fileName){
-		String filePath = "";
+	public static String createFile(Document doc,String fileName,String filePath){
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
 		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), fileName+version+"-"+getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
-			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
+//			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
 		    fileTools = new FileTools();
 		    fileTools.putFile(doc, filePath);//根据xml文件内容生成对应的文件
 		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length())+".zip");

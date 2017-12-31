@@ -58,7 +58,7 @@ public class TPBXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,tunnelList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-TPB-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-TPB-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -147,15 +147,15 @@ public class TPBXml {
 		for (Tunnel tunnel :tunnelList) {
 			
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getProtectTunnelId());
-			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getProtectTunnelId(), Object, "i", "1");
+			Object.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getTunnelId());
+			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getTunnelId(), Object, "i", "1");
 			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getTunnelId(), Object, "i", "2");
 			this.createElementNode(doc, "N", "Master", Object, "i", "3");
 			FieldValue.appendChild(Object);
 			
 			Element ObjectPro = doc.createElement("Object");
-			ObjectPro.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getProtectTunnelId());
-			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getProtectTunnelId(), ObjectPro, "i", "1");
+			ObjectPro.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getTunnelId());
+			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getTunnelId(), ObjectPro, "i", "1");
 			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getProtectTunnelId(), ObjectPro, "i", "2");
 			this.createElementNode(doc, "N", "Backup", ObjectPro, "i", "3"); 
 			FieldValue.appendChild(ObjectPro);

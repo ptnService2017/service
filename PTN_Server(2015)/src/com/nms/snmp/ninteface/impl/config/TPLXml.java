@@ -39,7 +39,7 @@ public class TPLXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TPLXml-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TPL-A1-" + version + "-" + XmlUtil.getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -152,8 +152,8 @@ public class TPLXml
       createElementNode(doc, "N", "3301EBCS1NEL" + segment.getZSITEID(), Object, "i", "4");
       createElementNode(doc, "N", "3301EBCS1PRT" + segment.getAPORTID(), Object, "i", "5");
       createElementNode(doc, "N", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "6");
-      createElementNode(doc, "N", "rate", Object, "i", "7");
-      createElementNode(doc, "N", "CD_UNI", Object, "i", "8");
+      createElementNode(doc, "N", segment.getNAME().contains("ge")?"GE":"FE", Object, "i", "7");
+      createElementNode(doc, "N", "CD_BI", Object, "i", "8");
       createElementNode(doc, "N", "real", Object, "i", "9");
       FieldValue.appendChild(Object);
     }

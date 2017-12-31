@@ -1654,4 +1654,8 @@ public class SiteService_MB extends ObjectService_Mybatis{
 		
 	}
 	
+	public List<SiteInst> selectPage(Integer size,Integer index){
+		return this.siteInstMapper.selectPage(size*(index-1),size);
+	}
+	
 }

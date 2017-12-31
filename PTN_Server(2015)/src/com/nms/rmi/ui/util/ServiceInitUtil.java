@@ -116,7 +116,9 @@ import com.nms.service.impl.dispatch.rmi.SegmentDispatchI;
 import com.nms.service.impl.dispatch.rmi.SiteDispatchI;
 import com.nms.service.impl.dispatch.rmi.impl.RmiInitImpl;
 import com.nms.service.impl.util.WhImplUtil;
+import com.nms.snmp.ninteface.commandline.CommandLineStart;
 import com.nms.snmp.ninteface.impl.alarm.AlarmNorthconsumer;
+import com.nms.snmp.ninteface.impl.alarm.AlarmTcpTracpMainThread;
 import com.nms.snmp.ninteface.impl.ftp.FtpTransThread;
 import com.nms.ui.PerforTaskThreadFactory;
 import com.nms.ui.manager.ConstantUtil;
@@ -356,8 +358,16 @@ public class ServiceInitUtil {
 			 tables = null;
 		}*/
 
-	    FtpTransThread ftpTransThread = new FtpTransThread();
-	    new Thread(ftpTransThread).start();
+		if(codeConfigItem.getSnmpStartOrClose() == 1){
+			FtpTransThread ftpTransThread = new FtpTransThread();
+		    new Thread(ftpTransThread).start();
+		    AlarmTcpTracpMainThread alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
+			new Thread(alarmTcpTracpMainThread).start();
+		}
+		
+		//telnet登录
+		CommandLineStart commandLineStart = new CommandLineStart();
+		new Thread(commandLineStart).start();
 	}
 
 	/**

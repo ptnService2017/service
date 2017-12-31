@@ -38,6 +38,8 @@ import com.nms.drive.service.bean.AlarmLineObject;
 import com.nms.drive.service.bean.AlarmMasterCardObject;
 import com.nms.drive.service.bean.AlarmObject;
 import com.nms.drive.service.impl.CoderUtils;
+import com.nms.jms.common.OpviewMessage;
+import com.nms.jms.jmsMeanager.JmsUtil;
 import com.nms.model.alarm.CurAlarmService_MB;
 import com.nms.model.alarm.HisAlarmService_MB;
 import com.nms.model.alarm.WarningLevelService_MB;
@@ -50,6 +52,7 @@ import com.nms.model.ptn.path.eth.DualInfoService_MB;
 import com.nms.model.ptn.path.protect.PwProtectService_MB;
 import com.nms.model.ptn.path.pw.PwInfoService_MB;
 import com.nms.model.ptn.path.tunnel.TunnelService_MB;
+import com.nms.model.util.CodeConfigItem;
 import com.nms.model.util.Services;
 import com.nms.service.bean.ActionObject;
 import com.nms.service.bean.OperationObject;
@@ -456,7 +459,24 @@ public class AlarmTools {
 							}
 							for (AlarmLineObject lineObject : alarmCardObject.getAlarmLineObjectList()) {
 								for (AlarmInfoObject infoObject : lineObject.getAlarmInfoObjectList()) {
-
+									WarningLevel warningLevel = new WarningLevel();
+									warningLevel.setWarningcode(infoObject.getAlarmCode());
+									warningLevel.setWarninglevel(getAlarmLevel(infoObject.getAlarmStatus()));
+									HisAlarmInfo northAlarm = new HisAlarmInfo();
+									northAlarm.setRaisedTime(sdf.parse(infoObject.getAlarmDate()));
+									northAlarm.setClearedTime(sdf.parse(infoObject.getAlarmDate()));
+									northAlarm.setConfirmtime(sdf.format(System.currentTimeMillis()));
+									northAlarm.setSiteId(siteInst.getSite_Inst_Id());
+									northAlarm.setSiteName(siteInst.getCellId() + "");
+									northAlarm.setSlotId(slotInst.getId());
+									northAlarm.setSlotNumber(slotInst.getNumber());
+									northAlarm.setSiteAddress(alarmObject.getNeAddress());
+									northAlarm.setAlarmCode(infoObject.getAlarmCode());
+									northAlarm.setAlarmLevel(info.getAlarmLevel());// 确定告警等级
+									northAlarm.setWarningLevel(warningLevel);
+									northAlarm.setAlarmTime(infoObject.getAlarmDate());
+									northAlarm.setWarningLevel(warningLevel);
+									setIdAndType(lineObject, northAlarm,slotInst.getNumber(),infoObject.getAlarmCode());// 确定告警类型
 									if (getAlarmStatus(infoObject.getAlarmStatus()) == 1) {// 判断是历史告警还是当前告警
 										info = new CurrentAlarmInfo();
 										info.setRaisedTime(sdf.parse(infoObject.getAlarmDate()));
@@ -469,9 +489,6 @@ public class AlarmTools {
 										info.setSiteAddress(alarmObject.getNeAddress());
 										info.setAlarmCode(infoObject.getAlarmCode());
 										info.setAlarmLevel(getAlarmLevel(infoObject.getAlarmStatus()));// 确定告警等级
-										WarningLevel warningLevel = new WarningLevel();
-										warningLevel.setWarningcode(infoObject.getAlarmCode());
-										warningLevel.setWarninglevel(getAlarmLevel(infoObject.getAlarmStatus()));
 										this.updateCode(info, warningLevel);
 										info.setAlarmSeverity(this.getAlarmSeverity(warningLevel.getWarninglevel()));
 										info.setWarningLevel(warningLevel);
@@ -495,19 +512,7 @@ public class AlarmTools {
 												currentAlarmInfoListToCorba.add(cInfo);
 											}
 										}
-										HisAlarmInfo northAlarm = new HisAlarmInfo();
-										northAlarm.setRaisedTime(sdf.parse(infoObject.getAlarmDate()));
-										northAlarm.setSiteId(siteInst.getSite_Inst_Id());
-										northAlarm.setSiteName(siteInst.getCellId() + "");
-										northAlarm.setSlotId(slotInst.getId());
-										northAlarm.setSlotNumber(slotInst.getNumber());
-										northAlarm.setSiteAddress(alarmObject.getNeAddress());
-										northAlarm.setAlarmCode(infoObject.getAlarmCode());
-										northAlarm.setAlarmLevel(info.getAlarmLevel());// 确定告警等级
-										northAlarm.setWarningLevel(warningLevel);
-										northAlarm.setAlarmTime(infoObject.getAlarmDate());
-										northAlarm.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
-										hisAlarmService.saveNorth(northAlarm);//北向告警流水
+										northAlarm.setIsClear(0);
 									} else {
 										hisAlarmInfo = new HisAlarmInfo();
 										
@@ -523,9 +528,6 @@ public class AlarmTools {
 										setIdAndType(lineObject, hisAlarmInfo,slotInst.getNumber(),infoObject.getAlarmCode());// 确定告警类型
 										hisAlarmInfo.setAlarmCode(infoObject.getAlarmCode());
 										hisAlarmInfo.setAlarmLevel(getAlarmLevel(infoObject.getAlarmStatus()));// 确定告警等级
-										WarningLevel warningLevel = new WarningLevel();
-										warningLevel.setWarningcode(infoObject.getAlarmCode());
-										warningLevel.setWarninglevel(getAlarmLevel(infoObject.getAlarmStatus()));
 										this.updateCode(hisAlarmInfo, warningLevel);
 										hisAlarmInfo.setAlarmSeverity(this.getAlarmSeverity(warningLevel.getWarninglevel()));
 										hisAlarmInfo.setWarningLevel(warningLevel);
@@ -555,6 +557,19 @@ public class AlarmTools {
 											hisAlarmInfo.setAlarmId(currentAlarmInfo_beforeList.get(0).getId());//北向中告警产生，消失唯一标识
 										}
 										hisAlarmService.saveOrUpdate(hisAlarmInfo);// 不存在，直接入库
+										List<HisAlarmInfo> northHis = hisAlarmService.queryHisNorth(northAlarm);
+										if(northHis.size()>0){
+											northAlarm.setAlarmId(northHis.get(0).getId());
+											northAlarm.setIsClear(1);
+										}
+									}
+									if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 0){
+										hisAlarmService.saveNorth(northAlarm);//北向告警流水
+										OpviewMessage opviewMessage = new OpviewMessage();
+										opviewMessage.setOccuredTime(System.currentTimeMillis());
+										opviewMessage.setMessageSource("alarmNorth");
+										opviewMessage.setObject(northAlarm);
+										JmsUtil.sendNorthAlarm(opviewMessage);
 									}
 								}
 							}

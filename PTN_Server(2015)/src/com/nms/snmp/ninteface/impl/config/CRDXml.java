@@ -50,11 +50,12 @@ public class CRDXml {
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
 		String[] xmlPath = {"snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-CRD-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		try {
+			filePath = xmlPath[0] + File.separator + xmlPath[1];
 			List<CardInst> cardList = this.getCardList();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,cardList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-CRD-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-CRD-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -90,6 +91,7 @@ public class CRDXml {
 		if (!dirname.exists()) 
 			dirname.mkdirs();
 		//生成xml文件
+		System.out.println(xmlPath[0]+File.separator+xmlPath[1]);
     	new FileOutputStream(xmlPath[0]+File.separator+xmlPath[1]);
 	}
     

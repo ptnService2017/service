@@ -58,7 +58,7 @@ public class TNLXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,tunnelList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-TNL-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-TNL-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -159,7 +159,7 @@ public class TNLXml {
 			Object.setAttribute("rmUID","3301EBCS1TNL"+tunnel.getTunnelId());
 			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getTunnelId(), Object, "i", "1");
 			this.createElementNode(doc, "N", tunnel.getTunnelName(), Object, "i", "2");
-			this.createElementNode(doc, "N", "CD_UNI", Object, "i", "3");
+			this.createElementNode(doc, "N", "CD_BI", Object, "i", "3");
 			this.createElementNode(doc, "N", tunnel.getTunnelStatus()==1?"ACTIVE":"PENDING", Object, "i", "4");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "5");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "6");
@@ -169,18 +169,21 @@ public class TNLXml {
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "10");
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "11");
 			this.createElementNode(doc, "N", "3301EBCS1PRT"+tunnel.getZPortId(), Object, "i", "12");
-			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(1).getFrontLabelValue()+"", Object, "i", "13");
-			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(1).getBackLabelValue()+"", Object, "i", "14");
+			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(0).getBackLabelValue()+"", Object, "i", "13");
+			this.createElementNode(doc, "N", tunnel.getLspParticularList().get(0).getFrontLabelValue()+"", Object, "i", "14");
 			if(tunnel.getQosList().size()>0){
 				this.createElementNode(doc, "N", tunnel.getQosList().get(0).getCir()+"", Object, "i", "15");
+				this.createElementNode(doc, "N", tunnel.getQosList().get(0).getCir()+"", Object, "i", "16");
 				this.createElementNode(doc, "N", tunnel.getQosList().get(0).getPir()+"", Object, "i", "17");
+				this.createElementNode(doc, "N", tunnel.getQosList().get(0).getPir()+"", Object, "i", "18");
 			}else{
-				this.createElementNode(doc, "N", "", Object, "i", "15");
-				
-				this.createElementNode(doc, "N", "", Object, "i", "17");
+				this.createElementNode(doc, "N", "0", Object, "i", "15");
+				this.createElementNode(doc, "N", "0", Object, "i", "16");
+				this.createElementNode(doc, "N", "0", Object, "i", "17");
+				this.createElementNode(doc, "N", "0", Object, "i", "18");
 			}
-			this.createElementNode(doc, "N", "", Object, "i", "16");
-			this.createElementNode(doc, "N", "", Object, "i", "18");
+			
+			
 			this.createElementNode(doc, "N", "false", Object, "i", "19");
 			FieldValue.appendChild(Object);
 		}

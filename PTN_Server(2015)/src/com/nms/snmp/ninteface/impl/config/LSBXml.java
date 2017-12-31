@@ -30,12 +30,12 @@ import com.nms.ui.manager.UiUtil;
 import com.nms.ui.manager.keys.StringKeysLbl;
 import com.nms.util.Mybatis_DBManager;
 
-public class LBSXml {
+public class LSBXml {
 	public static void main(String[] args) {
 		Mybatis_DBManager.init("127.0.0.1");
 		ConstantUtil.serviceFactory = new ServiceFactory();
 		SnmpConfig.getInstanse().init();
-		new LBSXml().getLSBXml();
+		new LSBXml().getLSBXml();
 	}
 	
 	public String getLSBXml() {
@@ -50,7 +50,7 @@ public class LBSXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,lspList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-LSB-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-LSB-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}

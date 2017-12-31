@@ -420,7 +420,7 @@ INNER JOIN serviceinfo s ON s.zAcId = a.id
 OR s.aAcId = a.id
 OR s.amostAcIds = a.id
 OR s.zmostAcIds = a.id
-INNER JOIN acbuffer ac on a.id = ac.acId
+INNER JOIN acbuffer ac on a.id = ac.acId and a.lagId=0
 GROUP BY
 	a.id;
   </select>

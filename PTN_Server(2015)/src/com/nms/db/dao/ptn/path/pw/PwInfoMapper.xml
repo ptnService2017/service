@@ -436,4 +436,15 @@ FROM
 	pwinfo p INNER JOIN tunnel t on p.tunnelId = t.tunnelId
   </select>
   
+  <select id="selectPage" resultMap="BaseResultMap">
+  	select *from pwinfo where (aSiteId = #{siteId} or zSiteId= #{siteId}) limit #{index},#{size}
+  </select>
+  
+  <select id="selectById" resultMap="BaseResultMap">
+  	select *from pwinfo where pwId=#{pwId}
+  </select>
+  
+  <update id="updateLableById" >
+  	UPDATE pwinfo set inlabelValue = #{inlable} , outlabelValue= #{outlable} where pwId= #{pwId}
+  </update>
 </mapper>

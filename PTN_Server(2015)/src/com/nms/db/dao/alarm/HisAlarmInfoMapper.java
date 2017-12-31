@@ -60,5 +60,9 @@ public interface HisAlarmInfoMapper {
 	
 	public int saveNorth(HisAlarmInfo hisInfo);
 
-	public List<Map<String, String>> sysNorthAlarm(@Param("params")Map<String, String> params);
+	public List<Map<String, Object>> sysNorthAlarm(@Param("params")Map<String, String> params);
+
+	public List<Map<String, Object>> sysNorthAlarmIndex(@Param("index")Integer index);
+
+	public List<HisAlarmInfo> queryHisNorth(HisAlarmInfo hisInfo);
 }

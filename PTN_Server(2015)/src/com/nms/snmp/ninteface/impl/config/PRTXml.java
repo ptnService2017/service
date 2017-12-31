@@ -58,7 +58,7 @@ public class PRTXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,portInstList);//生成xml文件内容
-		    XmlUtil.createFile(doc, "CM-PTN-PRT-A1-");
+		    XmlUtil.createFile(doc, "CM-PTN-PRT-A1-",filePath);
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -159,7 +159,7 @@ public class PRTXml {
 			this.createElementNode(doc, "N", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
 			this.createElementNode(doc, "N", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
 			this.createElementNode(doc, "N", "3301EBCS1CEQH"+portInst.getSlotNumber(), Object, "i", "4");
-			this.createElementNode(doc, "N", portInst.getNumber()+"", Object, "i", "5");
+			this.createElementNode(doc, "N", number(portInst), Object, "i", "5");
 			this.createElementNode(doc, "N", portInst.getPortName(), Object, "i", "6");
 			this.createElementNode(doc, "N", "ptp", Object, "i", "7");
 			this.createElementNode(doc, "N", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "8");
@@ -179,15 +179,49 @@ public class PRTXml {
 			this.createElementNode(doc, "N", speed, Object, "i", "11");
 			
 			this.createElementNode(doc, "N", "D_BIDIRECTIONAL", Object, "i", "12");
-			this.createElementNode(doc, "N", "NA", Object, "i", "13");
-			this.createElementNode(doc, "N", "", Object, "i", "14");
-			this.createElementNode(doc, "N", "", Object, "i", "15");
+			this.createElementNode(doc, "N", role(portInst), Object, "i", "13");
+			this.createElementNode(doc, "N", ip(portInst), Object, "i", "14");
+			this.createElementNode(doc, "N", portInst.getCirCount() == 1?"255.255.255.0":"NA", Object, "i", "15");
 			this.createElementNode(doc, "N", "false", Object, "i", "16");
 			FieldValue.appendChild(Object);
 		}
 		
 		Objects.appendChild(FieldValue);
 		return Objects;
+	}
+	
+	private String ip(PortInst portInst){
+		String ip = "NA";
+		portInst.setCirCount(0);
+		if(portInst.getPortName().equals("F1") || portInst.getPortName().equals("F2") 
+				|| portInst.getPortName().equals("NMS")){
+			ip = portInst.getSnmpName();
+			portInst.setCirCount(1);
+		}else if(portInst.getPortName().equals("TNT/CON")){
+			ip = "10.26.3.234";
+			portInst.setCirCount(1);
+		}
+		return ip;
+	}
+	
+	private String role(PortInst portInst){
+		String role = "NA";
+		if(portInst.getPortName().equals("F1")){
+			role = "Master";
+		}else if(portInst.getPortName().equals("F2")){
+			role = "Backup";
+		}
+		return role;
+	}
+	
+	private String number(PortInst portInst){
+		String number = portInst.getNumber()+"";
+		if(portInst.getPortName().equals("F1")){
+			number = "31";
+		}else if(portInst.getPortName().equals("F2")){
+			number = "32";
+		}
+		return number;
 	}
 
 	/**
