@@ -472,7 +472,7 @@ public class AlarmTools {
 									northAlarm.setSlotNumber(slotInst.getNumber());
 									northAlarm.setSiteAddress(alarmObject.getNeAddress());
 									northAlarm.setAlarmCode(infoObject.getAlarmCode());
-									northAlarm.setAlarmLevel(info.getAlarmLevel());// 确定告警等级
+									northAlarm.setAlarmLevel(warningLevel.getWarninglevel());// 确定告警等级
 									northAlarm.setWarningLevel(warningLevel);
 									northAlarm.setAlarmTime(infoObject.getAlarmDate());
 									northAlarm.setWarningLevel(warningLevel);
