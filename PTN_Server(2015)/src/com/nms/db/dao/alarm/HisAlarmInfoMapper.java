@@ -65,4 +65,8 @@ public interface HisAlarmInfoMapper {
 	public List<Map<String, Object>> sysNorthAlarmIndex(@Param("index")Integer index);
 
 	public List<HisAlarmInfo> queryHisNorth(HisAlarmInfo hisInfo);
+
+	public List<Map<String, Object>> queryNorthRun(@Param("alarmSeq")Integer alarmSeq, @Param("time")String time);
+
+	public void insertNorthBatch(@Param("list")List<HisAlarmInfo> list);
 }
