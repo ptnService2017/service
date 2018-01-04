@@ -476,6 +476,7 @@ public class AlarmTools {
 									northAlarm.setWarningLevel(warningLevel);
 									northAlarm.setAlarmTime(infoObject.getAlarmDate());
 									northAlarm.setWarningLevel(warningLevel);
+									northAlarm.setHappenedtime(infoObject.getAlarmDate());
 									setIdAndType(lineObject, northAlarm,slotInst.getNumber(),infoObject.getAlarmCode());// 确定告警类型
 									if (getAlarmStatus(infoObject.getAlarmStatus()) == 1) {// 判断是历史告警还是当前告警
 										info = new CurrentAlarmInfo();
