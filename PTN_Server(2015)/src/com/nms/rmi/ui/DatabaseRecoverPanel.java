@@ -18,7 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.nms.db.bean.system.user.UserInst;
 import com.nms.model.system.loginlog.LoginLogServiece_Mb;
+import com.nms.model.system.user.UserInstServiece_Mb;
+import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.RecoverFileChecking;
 import com.nms.rmi.ui.util.backups.DataBaseUtil;
@@ -171,6 +174,17 @@ public class DatabaseRecoverPanel extends JPanel {
 			}
 			UiUtil.closeService_MB(loginLogServiece);
 		}
+	}
+	
+	public static void main(String[] args) throws SQLException, Exception {
+		Mybatis_DBManager.init("199.199.10.198");
+		Mybatis_DBManager.init("127.0.0.1");
+		ConstantUtil.serviceFactory = new ServiceFactory();
+		DataBaseUtil dbUtil = new DataBaseUtil();
+		String path = "D:\\Users\\EBANGTest2\\Desktop\\ptn.sql";
+		Connection conn = Mybatis_DBManager.getInstance().getConnection();
+		boolean flag = dbUtil.recover(path, conn);
+		System.out.println("flag="+flag);
 	}
 
 	/**

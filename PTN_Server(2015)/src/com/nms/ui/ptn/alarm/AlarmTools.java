@@ -755,23 +755,30 @@ public class AlarmTools {
 						if(alarm.getSiteId() == siteId && ConstantUtil.alarmBlock.getAlarmLevel().contains(alarm.getAlarmLevel())){
 							WarningLevel level = levelMap.get("1:"+alarm.getAlarmCode()+":"+alarm.getAlarmLevel());
 							if(level != null){
+								ExceptionManage.infor("@@@@@@@@@@@@@@@@@@@@@@@@@@@@1step@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.getClass());
 								if(ConstantUtil.alarmBlock.getWarningType() == 0){
 									// 屏蔽所有类型的告警
 									alarmList.add(alarm);
 								}else{
 									if(ConstantUtil.alarmBlock.getWarningType() == level.getWarningtype() && 
 											ConstantUtil.alarmBlock.getAlarmLevel().contains(alarm.getAlarmLevel())){
+										ExceptionManage.infor("@@@@@@@@@@@@@@@@@@@@@@@2step@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.getClass());
 										if(filterByAlarmSrc(alarm)){
-											long alarmTime = DateUtil.updateTimeToLong(alarm.getHappenedtime(), DateUtil.FULLTIME);
-											long startTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenTime(), DateUtil.FULLTIME);
-											long endTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenEndTime(), DateUtil.FULLTIME);
-											if(startTime != 0){
-												if(alarmTime >= startTime && alarmTime <= endTime){
-													alarmList.add(alarm);
-												}
-											}else{
+											ExceptionManage.infor("@@@@@@@@@@@@@@@@@@@@@@@3step@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.getClass());
+//											long alarmTime = DateUtil.updateTimeToLong(alarm.getHappenedtime(), DateUtil.FULLTIME);
+//											long startTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenTime(), DateUtil.FULLTIME);
+//											long endTime = DateUtil.updateTimeToLong(ConstantUtil.alarmBlock.getHappenEndTime(), DateUtil.FULLTIME);
+//											ExceptionManage.infor("alarmTime="+alarmTime, this.getClass());
+//											ExceptionManage.infor("alarmTime="+startTime, this.getClass());
+//											ExceptionManage.infor("alarmTime="+endTime, this.getClass());
+//											if(startTime != 0){
+//												if(alarmTime >= startTime && alarmTime <= endTime){
+//													ExceptionManage.infor("@@@@@@@@@@@@@@@@@@@@@@@4step@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.getClass());
+//													alarmList.add(alarm);
+//												}
+//											}else{
 												alarmList.add(alarm);
-											}
+//											}
 										}
 									}
 								}

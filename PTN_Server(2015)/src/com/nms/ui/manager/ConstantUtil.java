@@ -104,4 +104,5 @@ public class ConstantUtil {
 	public static long[] snmpTrapTime = new long[]{System.currentTimeMillis(), 0L};// 开始时间、结束时间
 	public static int alarmMonitor = 1;// 告警监控开关 0/1 = 关闭/开启
 	public static long[] alarmMonitorTime = new long[]{System.currentTimeMillis(), 0L};// 开始时间、结束时间
+	public static int performanceDelay = 0;
 }

@@ -8,11 +8,19 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.nms.db.bean.alarm.CurrentAlarmInfo;
+import com.nms.db.bean.alarm.WarningLevel;
 import com.nms.db.bean.system.SystemLog;
+import com.nms.db.enums.EObjectType;
+import com.nms.model.alarm.CurAlarmService_MB;
 import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.ServerConstant;
@@ -105,6 +113,7 @@ public class ProcessPanel extends JPanel {
 					sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_ALARM_POLLING));
 					sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_START_ALARM_POLLING));
 					sys.insertSystemLog(sysLog);
+					deleteAlarm(1);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}finally{
@@ -141,6 +150,7 @@ public class ProcessPanel extends JPanel {
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_ALARM_POLLING));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_END_ALARM_POLLING));
 						sys.insertSystemLog(sysLog);
+						addAlarm(1);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}finally{
@@ -168,6 +178,7 @@ public class ProcessPanel extends JPanel {
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_SNMP_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_START_SNMP_SERVER));
 						sys.insertSystemLog(sysLog);
+						deleteAlarm(2);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}finally{
@@ -194,6 +205,7 @@ public class ProcessPanel extends JPanel {
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_SNMP_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_END_SNMP_SERVER));
 						sys.insertSystemLog(sysLog);
+						addAlarm(2);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}finally{
@@ -218,6 +230,7 @@ public class ProcessPanel extends JPanel {
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_NORTH_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_START_NORTH_SERVER));
 						sys.insertSystemLog(sysLog);
+						deleteAlarm(3);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}finally{
@@ -245,6 +258,7 @@ public class ProcessPanel extends JPanel {
 						sysLog.setOperationObjName(ResourceUtil.srcStr(StringKeysLbl.LBL_NORTH_SERVER));
 						sysLog.setOperationType(ResourceUtil.srcStr(StringKeysLbl.LBL_END_NORTH_SERVER));
 						sys.insertSystemLog(sysLog);
+						addAlarm(3);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}finally{
@@ -252,6 +266,68 @@ public class ProcessPanel extends JPanel {
 					}								
 			   }			
 		});	    
+	}
+	
+	private void addAlarm(int flag){
+		if(flag == 1){
+			alarmPerformance(1073, "告警轮询服务关闭告警", "ALARM_POLL", 230, false);
+		}else if(flag == 2){
+			alarmPerformance(1074, "SNMP服务关闭告警", "SNMP_TRAP", 231, false);
+		}else if(flag == 3){
+			alarmPerformance(1075, "告警监控服务关闭告警", "ALARM_MONITOR", 232, false);
+		}
+	}
+	
+	private void deleteAlarm(int flag){
+		if(flag == 1){
+			alarmPerformance(1073, "告警轮询服务关闭告警", "ALARM_POLL", 230, true);
+		}else if(flag == 2){
+			alarmPerformance(1074, "SNMP服务关闭告警", "SNMP_TRAP", 231, true);
+		}else if(flag == 3){
+			alarmPerformance(1075, "告警监控服务关闭告警", "ALARM_MONITOR", 232, true);
+		}
+	}
+	
+	private void alarmPerformance(int codeValue,String alarmDesc,String warningName,int id, boolean isDelete){
+		CurAlarmService_MB alarmServiceMB = null;
+		try {
+			alarmServiceMB = (CurAlarmService_MB)ConstantUtil.serviceFactory.newService_MB(Services.CurrentAlarm);
+			CurrentAlarmInfo losAlarm = null;
+			losAlarm = new CurrentAlarmInfo();
+			losAlarm.setAlarmCode(codeValue);
+			losAlarm.setAlarmDesc(alarmDesc);
+			losAlarm.setAlarmLevel(2);
+			losAlarm.setObjectName("EMS服务器_"+warningName);
+			losAlarm.setObjectType(EObjectType.EMSCLIENT);
+			losAlarm.setWarningLevel_temp(2);
+			WarningLevel level = new WarningLevel();
+			level.setId(id);
+			level.setManufacturer(1);
+			level.setWarningcode(codeValue);
+			level.setWarningdescribe(alarmDesc);
+			level.setWarninglevel(2);
+			level.setWarninglevel_temp(2);
+			level.setWarningname(warningName);
+			level.setWarningnote(alarmDesc);
+			losAlarm.setWarningLevel(level);
+			losAlarm.setRaisedTime(new Date());
+			List<CurrentAlarmInfo> existList = alarmServiceMB.select(losAlarm);
+			System.out.println(existList);
+			if(!isDelete){
+				if(existList == null || existList.size() == 0){
+					// 只产生一次，如果有，就不在放入数据库
+					alarmServiceMB.saveOrUpdate(losAlarm);
+				}
+			}else{
+				if(existList != null && existList.size() > 0){
+					alarmServiceMB.delete(existList.get(0).getId());
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			UiUtil.closeService_MB(alarmServiceMB);
+		}
 	}
 		
 	/**

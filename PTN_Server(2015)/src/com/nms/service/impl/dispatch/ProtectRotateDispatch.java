@@ -150,7 +150,7 @@ public class ProtectRotateDispatch implements DispatchInterface{
 				}
 			 }else if(siteRoateList.get(0).getType().equals("pw")){
 				 for(SiteRoate rote:siteRoateList){
-						if(0==siteUtil.SiteTypeUtil(rote.getSiteId())&&rote.getDualInfo().getActiveStatus()==EActiveStatus.ACTIVITY.getValue()){
+						if(0==siteUtil.SiteTypeUtil(rote.getSiteId())){
 							roteList.add(rote);
 							siteRoate=siteRoateService.select(rote);	
 							siteRoate.setDualInfo(rote.getDualInfo());

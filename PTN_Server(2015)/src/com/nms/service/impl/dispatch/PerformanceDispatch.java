@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import com.nms.db.bean.equipment.shelf.SiteInst;
@@ -194,11 +195,11 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 			// 根据网元数据库id，查询当前性能
 			Set<Integer> siteIdList = new HashSet<Integer>();
 			if (null != filter.getSiteInsts()) {
-				SiteUtil siteUtil = new SiteUtil();
+//				SiteUtil siteUtil = new SiteUtil();
 				for (Integer siteId : filter.getSiteInsts()) {
-					if(siteUtil.SiteTypeUtil(siteId)==0){//真实网元
+//					if(siteUtil.SiteTypeUtil(siteId)==0){//真实网元
 					siteIdList.add(siteId);
-				}
+//				}
 				}
 			}
 			if (siteIdList != null && siteIdList.size() > 0) {
@@ -206,22 +207,22 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 			}
 			for (Integer id : siteIds) {
 				manufacturer = super.getManufacturer(id);
-				if (manufacturer == EManufacturer.WUHAN.getValue()) {
+//				if (manufacturer == EManufacturer.WUHAN.getValue()) {
 					whSiteIdList.add(id);
-				} else {
-					cxSiteIdList.add(id);
-				}
+//				} else {
+//					cxSiteIdList.add(id);
+//				}
 			}
 
 			// 根据网元数据库id+板卡的盘地址来查询当前板卡的性能
 			if (null != filter.getSite_slotInsts()) {
 				for (String site_slot : filter.getSite_slotInsts()) {
-					manufacturer = super.getManufacturer(Integer.valueOf(site_slot.split("/")[0]));
-					if (manufacturer == EManufacturer.WUHAN.getValue()) {
+//					manufacturer = super.getManufacturer(Integer.valueOf(site_slot.split("/")[0]));
+//					if (manufacturer == EManufacturer.WUHAN.getValue()) {
 						whslotIdList.add(site_slot);
-					} else {
-						cxslotIdList.add(site_slot);
-					}
+//					} else {
+//						cxslotIdList.add(site_slot);
+//					}
 				}
 			}
 			
@@ -272,6 +273,13 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 			 
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
+		}
+		if(perforInfoList == null || perforInfoList.size() == 0){
+			Random random = new Random();
+			ConstantUtil.performanceDelay = random.nextInt(5)+20; 
+			Thread.sleep(20000);
+		}else{
+			ConstantUtil.performanceDelay = 0;
 		}
 		return perforInfoList;
 	}
