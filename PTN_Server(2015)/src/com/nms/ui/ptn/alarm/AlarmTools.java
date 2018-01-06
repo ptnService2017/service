@@ -566,7 +566,9 @@ public class AlarmTools {
 										}
 									}
 									if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 0){
-										
+										if(!(northAlarm.getHappenedtime() != null && !northAlarm.equals(""))){
+											northAlarm.setHappenedtime(infoObject.getAlarmDate());
+										}
 										hisAlarmService.saveNorth(northAlarm);//北向告警流水
 									}
 								}

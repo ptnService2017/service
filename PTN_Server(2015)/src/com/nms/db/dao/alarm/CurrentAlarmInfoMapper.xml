@@ -373,7 +373,8 @@
 	a.isCleared AS "alarmStatus",
 	w.WarningType AS "alarmType",
 	a.alarmlevel AS "origSeverity",
-	a.happenedtime AS "eventTime",
+	a.happenedtime,
+	a.clearedtime,
 	a.id AS "alarmId",
 	w.WarningMayReason AS "specificProblem",
 	a.siteid AS "neUID",
@@ -393,5 +394,6 @@ INNER JOIN site_inst s ON a.siteid = s.site_inst_id
    		<if test="time != null and time !=''">
    			a.createTime &gt;=#{time}
    		</if>
+   		ORDER BY a.id ASC
    </select>
 </mapper>

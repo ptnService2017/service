@@ -144,14 +144,28 @@ public class ServiceInitUtil {
 	private Registry registry = null;
 
 	public ServiceInitUtil(Registry registry) throws Exception {
-		this.registry = registry;
-		this.initDate();
-		this.initSite();
-		ExceptionManage.infor("加载网元信息", this.getClass());
-		this.initRmi();
-		ExceptionManage.infor("加载rmi信息", this.getClass());
-		this.initThread();
-		ExceptionManage.infor("加载线程信息", this.getClass());
+		CodeConfigItem	codeConfigItem = CodeConfigItem.getInstance();
+		if(codeConfigItem.getSnmpStartOrClose() == 1){
+			initNorth();
+		}else{
+			this.registry = registry;
+			this.initDate();
+			this.initSite();
+			ExceptionManage.infor("加载网元信息", this.getClass());
+			this.initRmi();
+			ExceptionManage.infor("加载rmi信息", this.getClass());
+			this.initThread();
+			ExceptionManage.infor("加载线程信息", this.getClass());
+		}
+		
+	}
+	
+	private void initNorth(){
+		ConstantUtil.serviceFactory = new ServiceFactory();
+		FtpTransThread ftpTransThread = new FtpTransThread();
+	    new Thread(ftpTransThread).start();
+	    AlarmTcpTracpMainThread alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
+		new Thread(alarmTcpTracpMainThread).start();
 	}
 	public ServiceInitUtil(Registry registry,int label) throws Exception {
 		this.registry = registry;
@@ -357,14 +371,6 @@ public class ServiceInitUtil {
 			 autoDatabaseBackThradUtil = null;
 			 tables = null;
 		}*/
-
-		if(codeConfigItem.getSnmpStartOrClose() == 1){
-			FtpTransThread ftpTransThread = new FtpTransThread();
-		    new Thread(ftpTransThread).start();
-		    AlarmTcpTracpMainThread alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
-			new Thread(alarmTcpTracpMainThread).start();
-		}
-		
 		//telnet登录
 		CommandLineStart commandLineStart = new CommandLineStart();
 		new Thread(commandLineStart).start();

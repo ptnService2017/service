@@ -179,10 +179,11 @@ public class AlarmTcpTracpRun implements Runnable{
 			stringBuilder.append("{");
 			stringBuilder.append("\"alarmSeq\":\""+map.get("alarmId")+"\",");
 			stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
-			stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
+			Integer status = Integer.parseInt(map.get("alarmStatus").toString())==0?1:0;
+			stringBuilder.append("\"alarmStatus\":"+status+",");
 			stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
 			stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
-			stringBuilder.append("\"eventTime\":\""+map.get("eventTime")+"\",");
+			stringBuilder.append("\"eventTime\":\""+(status ==1?map.get("happenedtime"):map.get("clearedtime"))+"\",");
 			stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
 			stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
 			stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
@@ -241,10 +242,11 @@ public class AlarmTcpTracpRun implements Runnable{
 					stringBuilder.append("{");
 					stringBuilder.append("\"alarmSeq\":\""+map.get("alarmId")+"\",");
 					stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
-					stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
+					Integer status = Integer.parseInt(map.get("alarmStatus").toString())==0?1:0;
+					stringBuilder.append("\"alarmStatus\":"+status+",");
 					stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
 					stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
-					stringBuilder.append("\"eventTime\":\""+map.get("eventTime")+"\",");
+					stringBuilder.append("\"eventTime\":\""+(status ==1?map.get("happenedtime"):map.get("clearedtime"))+"\",");
 					stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
 					stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
 					stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");

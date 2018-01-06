@@ -576,10 +576,6 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 		return this.mapper.queryHisNorth(hisInfo);
 	}
 	
-	public List<Map<String, Object>> queryNorthRun(Integer alarmSeq,String time){
-		return this.mapper.queryNorthRun(alarmSeq,time);
-	}
-	
 	public void insertNorthBatch(List<HisAlarmInfo> list){
 		this.mapper.insertNorthBatch(list);
 		this.sqlSession.commit();

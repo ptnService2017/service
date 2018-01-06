@@ -165,11 +165,6 @@ public class StartThread implements Runnable {
 //			}
 			
 			//等于1说明是开启snmp服务
-			if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 1){
-				AgentServer agentServer = new AgentServer();
-				agentServer.init(new String[]{});
-			}
-
 			serviceStartPanel.buttonResult(true,true,resultStr);
 			
 		} catch (Exception e) {

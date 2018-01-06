@@ -335,7 +335,8 @@
 	a.isCleared AS "alarmStatus",
 	w.WarningType AS "alarmType",
 	a.alarmlevel AS "origSeverity",
-	a.happenedtime AS "eventTime",
+	a.happenedtime,
+	a.clearedtime, 
 	a.id AS "alarmId",
 	w.WarningMayReason AS "specificProblem",
 	a.siteid AS "neUID",
@@ -369,7 +370,7 @@ where 1=1
    		and a.confirmtime &lt;= #{params.endTime}
    	</if>
    	</if>
-   	ORDER BY a.id asc
+   	ORDER BY a.id ASC
    </select>
    
    <select id="sysNorthAlarmIndex" resultType="Map">
@@ -378,7 +379,8 @@ where 1=1
 	a.isCleared AS "alarmStatus",
 	w.WarningType AS "alarmType",
 	a.alarmlevel AS "origSeverity",
-	a.happenedtime AS "eventTime",
+	a.happenedtime,
+	a.clearedtime,  
 	a.id AS "alarmId",
 	w.WarningMayReason AS "specificProblem",
 	a.siteid AS "neUID",
@@ -393,42 +395,15 @@ INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.War
 AND w.Manufacturer = 1
 INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
 where a.id  &gt;= #{index}
-ORDER BY a.id asc
+ORDER BY a.id ASC
    </select>
    
    <select id="queryHisNorth" resultMap="HisAlarm">
    	SELECT * FROM `alarm_north` where siteid = #{siteId} and objectid = #{objectId} 
-   	and alarmcode = #{alarmCode} and alarmlevel =#{alarmLevel}
+   	and alarmcode = #{alarmCode} and alarmlevel =#{alarmLevel} and isCleared = 0
    	order by id desc 
    </select>
    
-   <select id="queryNorthRun" resultType="Map">
-   		SELECT 
-   		w.WarningNote AS "alarmTitle",
-	a.isCleared AS "alarmStatus",
-	w.WarningType AS "alarmType",
-	a.alarmlevel AS "origSeverity",
-	a.happenedtime AS "eventTime",
-	a.id AS "alarmId",
-	w.WarningMayReason AS "specificProblem",
-	a.siteid AS "neUID",
-	s.CellId AS "neName",
-	s.CellType AS "neType",
-	a.objectid AS "objectUID",
-	a.objecttype AS "objectType",
-	a.objectname AS "objectName"
-   		FROM `alarm_north`  a
-INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
-AND w.Manufacturer = 1
-INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
- where 1=1 and 
-   		<if test="alarmSeq>0">
-   			a.id &gt;#{alarmSeq}
-   		</if>
-   		<if test="time != null and time !=''">
-   			a.createTime &gt;=#{time}
-   		</if>
-   </select>
    
    <insert id ="insertNorthBatch" parameterType="java.util.List" >
                insert into 
