@@ -71,7 +71,6 @@ public class ServiceMainFrame extends JFrame {
 			}else{
 				this.setTitle("EMS-Server");// NBIServer
 			}
-			
 			this.initComponent();
 			this.setLayout();
 			this.initTreeData();

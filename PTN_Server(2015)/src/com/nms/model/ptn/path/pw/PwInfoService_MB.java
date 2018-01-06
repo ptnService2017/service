@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
-import com.nms.db.bean.equipment.port.PortInst;
 import com.nms.db.bean.ptn.Businessid;
 import com.nms.db.bean.ptn.LabelInfo;
+import com.nms.db.bean.ptn.SiteRoate;
 import com.nms.db.bean.ptn.oam.OamInfo;
 import com.nms.db.bean.ptn.oam.OamMepInfo;
 import com.nms.db.bean.ptn.oam.OamMipInfo;
@@ -40,6 +40,7 @@ import com.nms.db.enums.EServiceType;
 import com.nms.db.enums.OamTypeEnum;
 import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.ptn.LabelInfoService_MB;
+import com.nms.model.ptn.SiteRoateService_MB;
 import com.nms.model.ptn.oam.OamInfoService_MB;
 import com.nms.model.ptn.path.tunnel.TunnelService_MB;
 import com.nms.model.ptn.port.AcPortInfoService_MB;
@@ -462,6 +463,7 @@ public class PwInfoService_MB extends ObjectService_Mybatis{
 		List<QosRelevance> qosRelevanceList = null;
 		SiteService_MB siteService = null;
 		LabelInfoService_MB labelInfoService = null;
+		SiteRoateService_MB siteRoateService_MB = null;
 		try {
 			pwinfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
 			LabelInfoMapper labelInfoMapper = this.sqlSession.getMapper(LabelInfoMapper.class);
@@ -538,7 +540,21 @@ public class PwInfoService_MB extends ObjectService_Mybatis{
 			pwId = pwinfo.getPwId();
 //			pwId = this.mapper.queryPwIdByName(pwinfo.getPwName());
 //			pwinfo.setPwId(pwId);
-
+			// 添加倒换命令
+			siteRoateService_MB = (SiteRoateService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITEROATE, this.sqlSession);
+			SiteRoate siteRoate = new SiteRoate();
+			siteRoate.setType("pw");
+			siteRoate.setRoate(-1);
+			siteRoate.setTypeId(pwId);
+			if (pwinfo.getASiteId() > 0) {
+				siteRoate.setSiteId(pwinfo.getASiteId());
+				siteRoateService_MB.insert(siteRoate);
+			}
+			if (pwinfo.getZSiteId() > 0) {
+				siteRoate.setSiteId(pwinfo.getZSiteId());
+				siteRoateService_MB.insert(siteRoate);
+			}
+			
 			if (pwinfo.getApwServiceId() > 0) {
 				aPwnniInfo = this.getPwNniInfo(pwId, pwinfo.getASiteId(), pwinfo.getApwServiceId());
 				pwNniMapper.insert(aPwnniInfo);

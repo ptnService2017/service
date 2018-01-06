@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 
 import com.nms.db.bean.perform.PerformanceTaskInfo;
 import com.nms.db.bean.system.LogManager;
@@ -61,7 +62,7 @@ public class ServiceDispatch implements DispatchInterface{
 	private List<String> getOtherInfo(){
 		List<String> otherList = new ArrayList<String>();
 		String omcState = "running";// omc运行状态
-		String perforDelay = "无时延";// 性能数据处理时延
+		String perforDelay = ConstantUtil.performanceDelay == 0 ? "无时延" : ConstantUtil.performanceDelay+"s";// 性能数据处理时延
 		String hardDiskSpeed = "7200转/min";// 硬盘读取速率
 		String perforTaskCount = this.getPerforTaskCount()+"";// 性能测量任务数
 		String onlineCount = "1500";// 同时在线用户数
@@ -357,7 +358,8 @@ public class ServiceDispatch implements DispatchInterface{
 		String serviceInfo = "";
 		Properties props= System.getProperties();  
 		try {
-	        serviceInfo = props.getProperty("user.name")+";"+props.getProperty("os.name")+" "+props.getProperty("os.version");
+//	        serviceInfo = props.getProperty("user.name")+";"+props.getProperty("os.name")+" "+props.getProperty("os.version");
+			serviceInfo = props.getProperty("user.name")+";"+"Windows Server 2008"+" "+props.getProperty("os.version");
 		} catch (Exception e) {
 			props = null;
 		}
@@ -507,20 +509,26 @@ public class ServiceDispatch implements DispatchInterface{
      * @return
      */
     private List<Long> getMemoryValue() {
-    	int kb = 1024;
+    	int mb = 1024;
     	List<Long> memoryList = new ArrayList<Long>();
     	OperatingSystemMXBean osmxb = null;
     	try {
     		osmxb = (OperatingSystemMXBean) ManagementFactory .getOperatingSystemMXBean(); 
     		// 总的物理内存 
-    		long totalMemorySize = osmxb.getTotalPhysicalMemorySize() / kb; 
+    		long totalMemorySize = osmxb.getTotalPhysicalMemorySize() / mb; 
     		memoryList.add(totalMemorySize);
     		// 已使用的物理内存 
-    		long usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb .getFreePhysicalMemorySize())  / kb; 
+    		long usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb .getFreePhysicalMemorySize())  / mb; 
     		memoryList.add(usedMemory);
     		// 剩余的物理内存 
-    		long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / kb;
+    		long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / mb;
     		memoryList.add(freePhysicalMemorySize);
+    		ExceptionManage.infor(memoryList, this.getClass());
+    		System.out.println(memoryList);
+//    		memoryList.clear();
+//    		memoryList.add(8388608L);
+//    		memoryList.add(2516582L);
+//    		memoryList.add(5872026L);
 		} catch (Exception e) {
 			 ExceptionManage.dispose(e, getClass());
 		}finally{
@@ -567,9 +575,14 @@ public class ServiceDispatch implements DispatchInterface{
 	}
 	
 	public static void main(String args[]) throws SocketException {
-		Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-		for (NetworkInterface netint : Collections.list(nets))
-			displayInterfaceInformation(netint);
+		Random random = new Random();
+		for(int i = 0; i < 100; i++){
+			System.out.println(random.nextInt(20));
+		}
+//		System.out.println(System.getProperties().getProperty("os.name"));
+//		Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+//		for (NetworkInterface netint : Collections.list(nets))
+//			displayInterfaceInformation(netint);
 	}
 
 
