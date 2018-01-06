@@ -9,10 +9,13 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import com.nms.corba.ninterface.util.DateTimeUtil;
 import com.nms.drive.service.bean.TunnelObject;
 import com.nms.drive.service.impl.CoderUtils;
 import com.nms.model.alarm.HisAlarmService_MB;
@@ -27,9 +30,13 @@ import com.nms.ui.manager.UiUtil;
 public class AlarmTcpTracpRun implements Runnable{
 	private Socket socket;
 	private AlarmTcpTracpMainThread alarmTcpTracpMainThread;
-	private String type ="ftp";//socket类型
-	private Boolean isTrap;
-	private String loginTime="";
+	private String type ="msg";//socket类型
+	private Boolean isTrap = true;//是否上报告警
+	private Long loginTime;
+	private String clientIp;
+	private String userName;
+	private Long heartTime = System.currentTimeMillis();//心跳时间
+	private Boolean hasLogin = false;
 	
 	public AlarmTcpTracpRun(Socket socket,AlarmTcpTracpMainThread alarmTcpTracpMainThread) {
 		this.socket = socket;
@@ -52,18 +59,20 @@ public class AlarmTcpTracpRun implements Runnable{
 					if(tempBytes[2] ==1){//登陆
 						reqLoginAlarm(outputStream,tempBytes);
 					}else if(tempBytes[2] ==3 && "msg".equals(type)){//请求同步告警
-						ackSyncAlarmMsg(outputStream,tempBytes);
-					}else if(tempBytes[2] ==5 && "ftp".equals(type)){//请求批量同步告警
-						ackSyncAlarmFile(outputStream,tempBytes);
-					}else if(tempBytes[2] ==8){//心跳请求
-						ackHeartBeat(outputStream,tempBytes);
-					}else if(tempBytes[2] ==10){//关闭连接通知
-						alarmTcpTracpMainThread.getAlarmTrapRun().put(socket.toString(), false);
-					}
+							ackSyncAlarmMsg(outputStream,tempBytes);
+						}else if(tempBytes[2] ==5 && "ftp".equals(type)){//请求批量同步告警
+							ackSyncAlarmFile(outputStream,tempBytes);
+						}else if(tempBytes[2] ==8){//心跳请求
+							ackHeartBeat(outputStream,tempBytes);
+						}else if(tempBytes[2] ==10){//关闭连接通知
+							NorthLogUtils.northClientLog("clientIp:"+clientIp+","+"userName:"+userName+",loginTime:"+DateUtil.getDate(new Date(loginTime), DateUtil.FULLTIME)+",loginOutTime"+DateUtil.getDate(DateUtil.FULLTIME)+",continuousTime:"+DateTimeUtil.datepoor(loginTime, System.currentTimeMillis()));
+							this.closeScket();
+						}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{
@@ -78,6 +87,21 @@ public class AlarmTcpTracpRun implements Runnable{
 		}
 	}
 
+	/**
+	 * 关闭连接释放资源
+	 */
+	public void closeScket(){
+		alarmTcpTracpMainThread.getAlarmTrapRun().put(socket.toString(), false);
+		alarmTcpTracpMainThread.getAlarmTrapHeart().remove(socket.toString());
+		alarmTcpTracpMainThread.getAlarmTrap().remove(socket.toString());
+		alarmTcpTracpMainThread.getAlarmTcpTracpRuns().remove(socket.toString());
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void ackSyncAlarmFile(OutputStream outputStream, byte[] tempBytes) {
 		String[] reqboby = this.reqBoby(tempBytes);
 		HisAlarmService_MB hisAlarmService_MB = null;
@@ -100,14 +124,17 @@ public class AlarmTcpTracpRun implements Runnable{
 				param.put("startTime", startTime);
 				param.put("endTime", endTime);
 				param.put("syncSource", reqboby[4].split("=")[1]);
+				ExceptionManage.infor("文件告警：startTime"+startTime+"+++endTime"+endTime+"++syncSource"+reqboby[4].split("=")[1], this.getClass());
 			}
 			list = hisAlarmService_MB.sysNorthAlarm(param);
+			ExceptionManage.infor("文件告警：list"+list.size(), this.getClass());
+			System.out.println("list:"+list.size());
 			if(list.size() == 0){
 				re = "ackSyncAlarmFile;reqId="+reqboby[1].split("=")[1]+";result=success;resDesc=null";
 				outputStream.write(res(6, re));
 			}else{
 				String filePath = "snmpData\\ZJ\\CS\\EB\\OMC\\FM\\"+DateUtil.getDate("yyyyMMdd");
-				String fileName = "FM-OMC-1A-V1.1.0-"+DateUtil.getDate("yyyyMMddHHmm")+".txt";
+				String fileName = "FM-OMC-1A-V1.0.0-"+DateUtil.getDate("yyyyMMddHHmmss")+".txt";
 				this.createFile(filePath,fileName, list);
 				re = "ackSyncAlarmFileResult;reqId="+reqboby[1].split("=")[1]+";result=success;filename="+filePath+"\\"+fileName+";resDesc=null";
 				outputStream.write(res(7, re));
@@ -150,6 +177,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		StringBuilder stringBuilder = new StringBuilder();
 		for(Map<String,Object> map : list){
 			stringBuilder.append("{");
+			stringBuilder.append("\"alarmSeq\":\""+map.get("alarmId")+"\",");
 			stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
 			stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
 			stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
@@ -205,10 +233,13 @@ public class AlarmTcpTracpRun implements Runnable{
 				outputStream.flush();
 				Integer index = Integer.parseInt(reqboby[2].split("=")[1]);
 				hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
+				ExceptionManage.infor("同步告警：index"+index, this.getClass());
 				list = hisAlarmService_MB.sysNorthAlarmIndex(index);
+				ExceptionManage.infor("同步告警：list"+list.size(), this.getClass());
 				for (Map<String,Object> map : list) {
 					StringBuilder stringBuilder = new StringBuilder();
 					stringBuilder.append("{");
+					stringBuilder.append("\"alarmSeq\":\""+map.get("alarmId")+"\",");
 					stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
 					stringBuilder.append("\"alarmStatus\":"+map.get("alarmStatus")+",");
 					stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
@@ -229,6 +260,7 @@ public class AlarmTcpTracpRun implements Runnable{
 					stringBuilder.append("}");
 					outputStream.write(res(0, stringBuilder.toString()));
 					outputStream.flush();
+					Thread.sleep(50);
 				}
 			}
 			setIsTrap(true);
@@ -252,6 +284,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			if(reqboby.length<1){
 				outputStream.write(res(9, re));
 			}else{
+				heartTime = System.currentTimeMillis();//设置最新的心跳时间
 				re = "ackHeartBeat;reqId="+reqboby[1].split("=")[1];
 				outputStream.write(res(9, re));
 			}
@@ -273,10 +306,6 @@ public class AlarmTcpTracpRun implements Runnable{
 		String userName = reqboby[1].split("=")[1];
 		String passWord = reqboby[2].split("=")[1];
 		this.type = reqboby[3].split("=")[1];
-		ExceptionManage.infor("userName===="+userName, this.getClass());
-		ExceptionManage.infor("passWord===="+passWord, this.getClass());
-		ExceptionManage.infor("userName+++"+SnmpConfig.getInstanse().getValue("alarm.userName"), this.getClass());
-		ExceptionManage.infor("passWord++++"+SnmpConfig.getInstanse().getValue("alarm.passWord"), this.getClass());
 		if(reqboby.length<4){
 			re = "ackLoginAlarm;result=fail;resDesc=param-error";
 		}else if(!userName.equals(SnmpConfig.getInstanse().getValue("alarm.userName"))){
@@ -284,6 +313,11 @@ public class AlarmTcpTracpRun implements Runnable{
 		}else if(!passWord.equals(SnmpConfig.getInstanse().getValue("alarm.passWord"))){
 			re = "ackLoginAlarm;result=fail;resDesc=password-error";
 		}else{
+			hasLogin = true;
+			this.loginTime = System.currentTimeMillis();
+			this.userName = userName;
+			clientIp = socket.getInetAddress().getHostAddress();
+			NorthLogUtils.northClientLog("clientIp:"+clientIp+","+"userName:"+userName+","+"loginTime"+DateUtil.getDate(DateUtil.FULLTIME));
 			re = "ackLoginAlarm;result=succ;resDesc=null";
 		}
 		try {
@@ -340,7 +374,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		try {
 			reboby_s = new String(reboby, "utf-8");
 			System.out.println(reboby_s);
-			ExceptionManage.infor("登录收到"+tempBytes, this.getClass());
+			ExceptionManage.infor("登录收到:::"+reboby_s, this.getClass());
 			ss = reboby_s.split(";");
 			
 		} catch (UnsupportedEncodingException e) {
@@ -392,14 +426,64 @@ public class AlarmTcpTracpRun implements Runnable{
 	}
 
 
-	public String getLoginTime() {
+	public Long getLoginTime() {
 		return loginTime;
 	}
 
 
-	public void setLoginTime(String loginTime) {
+	public void setLoginTime(Long loginTime) {
 		this.loginTime = loginTime;
 	}
-	
+
+
+	public Long getHeartTime() {
+		return heartTime;
+	}
+
+
+	public void setHeartTime(Long heartTime) {
+		this.heartTime = heartTime;
+	}
+
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+
+
+	public String getClientIp() {
+		return clientIp;
+	}
+
+
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
+	}
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+
+	public Boolean getHasLogin() {
+		return hasLogin;
+	}
+
+
+	public void setHasLogin(Boolean hasLogin) {
+		this.hasLogin = hasLogin;
+	}
+
 	
 }

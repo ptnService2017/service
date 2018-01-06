@@ -18,7 +18,7 @@ import com.nms.snmp.ninteface.impl.config.ETHXml;
 import com.nms.snmp.ninteface.impl.config.EquipmentConvertXml;
 import com.nms.snmp.ninteface.impl.config.EquipmentHolderConvertXml;
 import com.nms.snmp.ninteface.impl.config.FDFrConvertXml;
-import com.nms.snmp.ninteface.impl.config.LSBXml;
+import com.nms.snmp.ninteface.impl.config.LBSXml;
 import com.nms.snmp.ninteface.impl.config.ManagedElementConvertXml;
 import com.nms.snmp.ninteface.impl.config.NELXml;
 import com.nms.snmp.ninteface.impl.config.OMCXml;
@@ -94,7 +94,7 @@ public class FtpTransTimerTask extends TimerTask {
 		new PRTXml().getPRTXml();
 		new PRBXml().getPRBXml();
 		new TNLXml().getTNLXml();
-		new LSBXml().getLSBXml();
+		new LBSXml().getLSBXml();
 		new TPIXml().getTPIXml();
 		new TPBXml().getTPBXml();
 		

@@ -147,11 +147,11 @@ public class ESIXml {
 		for (Map<String,Object> map :mapList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1ETH"+map.get("id"));
-			this.createElementNode(doc, "N", "3301EBCS1ETH"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1PSW"+map.get("pwId"), Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("aSiteId"), Object, "i", "3");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+map.get("zSiteId"), Object, "i", "4");
-			this.createElementNode(doc, "N", "NA", Object, "i", "5");
+			this.createElementNode(doc, "V", "3301EBCS1ETH"+map.get("id"), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1PSW"+map.get("pwId"), Object, "i", "2");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+map.get("aSiteId"), Object, "i", "3");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+map.get("zSiteId"), Object, "i", "4");
+			this.createElementNode(doc, "V", "NA", Object, "i", "5");
 			FieldValue.appendChild(Object);
 		}
 		

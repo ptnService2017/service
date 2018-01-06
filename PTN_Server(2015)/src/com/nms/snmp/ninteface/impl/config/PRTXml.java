@@ -155,20 +155,20 @@ public class PRTXml {
 		for (PortInst portInst :portInstList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1PRT"+portInst.getPortId());
-			this.createElementNode(doc, "N", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
-			this.createElementNode(doc, "N", "3301EBCS1CEQH"+portInst.getSlotNumber(), Object, "i", "4");
-			this.createElementNode(doc, "N", number(portInst), Object, "i", "5");
-			this.createElementNode(doc, "N", portInst.getPortName(), Object, "i", "6");
-			this.createElementNode(doc, "N", "ptp", Object, "i", "7");
-			this.createElementNode(doc, "N", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "8");
-			this.createElementNode(doc, "N", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "9");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
+			this.createElementNode(doc, "V", "3301EBCS1CEQH"+portInst.getSlotNumber(), Object, "i", "4");
+			this.createElementNode(doc, "V", number(portInst), Object, "i", "5");
+			this.createElementNode(doc, "V", portInst.getPortName(), Object, "i", "6");
+			this.createElementNode(doc, "V", "ptp", Object, "i", "7");
+			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "8");
+			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "9");
 			String type = "electrical";
 			if(portInst.getImagePath().contains("port_l.png") || portInst.getImagePath().contains("port_g.png")){
 				type = "optical";
 			}
-			this.createElementNode(doc, "N", type, Object, "i", "10");
+			this.createElementNode(doc, "V", type, Object, "i", "10");
 			
 			String speed = "GE";
 			if(portInst.getPortName().contains("e1.")){
@@ -176,13 +176,13 @@ public class PRTXml {
 			}else if(portInst.getPortName().contains("fe")){
 				speed = "FE";
 			}
-			this.createElementNode(doc, "N", speed, Object, "i", "11");
+			this.createElementNode(doc, "V", speed, Object, "i", "11");
 			
-			this.createElementNode(doc, "N", "D_BIDIRECTIONAL", Object, "i", "12");
-			this.createElementNode(doc, "N", role(portInst), Object, "i", "13");
-			this.createElementNode(doc, "N", ip(portInst), Object, "i", "14");
-			this.createElementNode(doc, "N", portInst.getCirCount() == 1?"255.255.255.0":"NA", Object, "i", "15");
-			this.createElementNode(doc, "N", "false", Object, "i", "16");
+			this.createElementNode(doc, "V", "D_BIDIRECTIONAL", Object, "i", "12");
+			this.createElementNode(doc, "V", role(portInst), Object, "i", "13");
+			this.createElementNode(doc, "V", ip(portInst), Object, "i", "14");
+			this.createElementNode(doc, "V", portInst.getCirCount() == 1?"255.255.255.0":"NA", Object, "i", "15");
+			this.createElementNode(doc, "V", "false", Object, "i", "16");
 			FieldValue.appendChild(Object);
 		}
 		

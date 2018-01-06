@@ -144,10 +144,10 @@ public class PWTXml {
 		for (PwInfo pwInfo :pwList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1PSW"+pwInfo.getPwId());
-			this.createElementNode(doc, "N", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1TNL"+pwInfo.getTunnelId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "1", Object, "i", "3");
-			this.createElementNode(doc, "N", "1", Object, "i", "4");
+			this.createElementNode(doc, "V", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1TNL"+pwInfo.getTunnelId(), Object, "i", "2");
+			this.createElementNode(doc, "V", "1", Object, "i", "3");
+			this.createElementNode(doc, "V", "1", Object, "i", "4");
 			FieldValue.appendChild(Object);
 		}
 		

@@ -38,7 +38,7 @@ public class TDMXml{
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TDM-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TDM-A1-" + version + "-" + XmlUtil.getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -159,31 +159,31 @@ public class TDMXml{
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1TDM" + cesInfo.getId());
-      createElementNode(doc, "N", "3301EBCS1TDM" + cesInfo.getId(), Object, "i", "1");
-      createElementNode(doc, "N", cesInfo.getName(), Object, "i", "2");
-      createElementNode(doc, "N", "2M", Object, "i", "3");
-      createElementNode(doc, "N", "CD_BI", Object, "i", "4");
-      createElementNode(doc, "N", cesInfo.getActiveStatus() == 1 ? "ACTIVE" : "PENDING", Object, "i", "5");
-      createElementNode(doc, "N", cesInfo.getName(), Object, "i", "6");
-      createElementNode(doc, "N", "", Object, "i", "7");
-      createElementNode(doc, "N", "3301EBCS1NEL" + cesInfo.getaSiteId(), Object, "i", "8");
-      createElementNode(doc, "N", "3301EBCS1NEL" + cesInfo.getaSiteId(), Object, "i", "9");
-      createElementNode(doc, "N", "3301EBCS1PRT" + cesInfo.getAxcId(), Object, "i", "10");
-      createElementNode(doc, "N", "", Object, "i", "11");
-      createElementNode(doc, "N", "", Object, "i", "12");
-      createElementNode(doc, "N", "", Object, "i", "13");
-      createElementNode(doc, "N", "", Object, "i", "14");
-      createElementNode(doc, "N", "", Object, "i", "15");
-      createElementNode(doc, "N", "3301EBCS1NEL" + cesInfo.getzSiteId(), Object, "i", "16");
-      createElementNode(doc, "N", "3301EBCS1NEL" + cesInfo.getzSiteId(), Object, "i", "17");
-      createElementNode(doc, "N", "3301EBCS1PRT" + cesInfo.getZxcId(), Object, "i", "18");
-      createElementNode(doc, "N", "", Object, "i", "19");
-      createElementNode(doc, "N", "", Object, "i", "20");
-      createElementNode(doc, "N", "", Object, "i", "21");
-      createElementNode(doc, "N", "", Object, "i", "22");
-      createElementNode(doc, "N", "", Object, "i", "23");
-      createElementNode(doc, "N", "3301EBCS1PSW" + cesInfo.getPwId(), Object, "i", "24");
-      createElementNode(doc, "N", "", Object, "i", "25");
+      createElementNode(doc, "V", "3301EBCS1TDM" + cesInfo.getId(), Object, "i", "1");
+      createElementNode(doc, "V", cesInfo.getName(), Object, "i", "2");
+      createElementNode(doc, "V", "2M", Object, "i", "3");
+      createElementNode(doc, "V", "CD_BI", Object, "i", "4");
+      createElementNode(doc, "V", cesInfo.getActiveStatus() == 1 ? "ACTIVE" : "PENDING", Object, "i", "5");
+      createElementNode(doc, "V", cesInfo.getName(), Object, "i", "6");
+      createElementNode(doc, "V", "", Object, "i", "7");
+      createElementNode(doc, "V", "3301EBCS1NEL" + cesInfo.getaSiteId(), Object, "i", "8");
+      createElementNode(doc, "V", "3301EBCS1NEL" + cesInfo.getaSiteId(), Object, "i", "9");
+      createElementNode(doc, "V", "3301EBCS1PRT" + cesInfo.getAxcId(), Object, "i", "10");
+      createElementNode(doc, "V", "", Object, "i", "11");
+      createElementNode(doc, "V", "", Object, "i", "12");
+      createElementNode(doc, "V", "", Object, "i", "13");
+      createElementNode(doc, "V", "", Object, "i", "14");
+      createElementNode(doc, "V", "", Object, "i", "15");
+      createElementNode(doc, "V", "3301EBCS1NEL" + cesInfo.getzSiteId(), Object, "i", "16");
+      createElementNode(doc, "V", "3301EBCS1NEL" + cesInfo.getzSiteId(), Object, "i", "17");
+      createElementNode(doc, "V", "3301EBCS1PRT" + cesInfo.getZxcId(), Object, "i", "18");
+      createElementNode(doc, "V", "", Object, "i", "19");
+      createElementNode(doc, "V", "", Object, "i", "20");
+      createElementNode(doc, "V", "", Object, "i", "21");
+      createElementNode(doc, "V", "", Object, "i", "22");
+      createElementNode(doc, "V", "", Object, "i", "23");
+      createElementNode(doc, "V", "3301EBCS1PSW" + cesInfo.getPwId(), Object, "i", "24");
+      createElementNode(doc, "V", "", Object, "i", "25");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

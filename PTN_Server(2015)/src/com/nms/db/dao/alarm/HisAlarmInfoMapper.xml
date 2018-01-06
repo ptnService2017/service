@@ -38,11 +38,11 @@
     insert into 
     alarm_north
     (siteid,slotId,objectid,objecttype,objectname ,alarmcode,alarmlevel,happenedtime,
-    confirmtime,clearedtime,ackuser,comments,alarmlevel_temp,isCleared,alarmId)
+    confirmtime,clearedtime,ackuser,comments,alarmlevel_temp,isCleared,alarmId,createTime)
     values(#{siteId},#{slotId},#{objectId},#{objectType,typeHandler=com.nms.db.enums.IntEnumTypeHandler},
     #{objectName},#{alarmCode},
     #{alarmLevel},#{happenedtime},#{confirmtime},#{cleanTime},#{ackUser},#{commonts},
-    #{warningLevel_temp},#{isClear},#{alarmId})
+    #{warningLevel_temp},#{isClear},#{alarmId},now())
   </insert>
   
   <update id="update" parameterType="HisAlarmInfo" >
@@ -346,7 +346,7 @@
 	a.objectname AS "objectName"
 FROM
 	alarm_north a
-INNER JOIN warninglevel w ON a.alarmlevel = w.WarningCode
+INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
 AND w.Manufacturer = 1
 INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
 where 1=1 
@@ -354,10 +354,10 @@ where 1=1
    	and a.id &gt;= #{params.alarmSeq}
    	</if>
    	<if test="params.syncSource !=null and params.syncSource==0">
-   	<if test="params.startTime != null">
+   	<if test="params.startTime != null and params.startTime != ''">
    		and a.happenedtime &gt;= #{params.startTime}
    	</if>
-   	<if test="params.endTime != null">
+   	<if test="params.endTime != null and params.endTime != ''">
    		and a.happenedtime &lt;= #{params.endTime}
    	</if>
    	</if>
@@ -389,10 +389,10 @@ where 1=1
 	a.objectname AS "objectName"
 FROM
 	alarm_north a
-INNER JOIN warninglevel w ON a.alarmlevel = w.WarningCode
+INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
 AND w.Manufacturer = 1
 INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
-where a.id  &gt;#{index}
+where a.id  &gt;= #{index}
 ORDER BY a.id asc
    </select>
    
@@ -401,4 +401,46 @@ ORDER BY a.id asc
    	and alarmcode = #{alarmCode} and alarmlevel =#{alarmLevel}
    	and happenedtime = #{alarmTime}
    </select>
+   
+   <select id="queryNorthRun" resultType="Map">
+   		SELECT 
+   		w.WarningNote AS "alarmTitle",
+	a.isCleared AS "alarmStatus",
+	w.WarningType AS "alarmType",
+	a.alarmlevel AS "origSeverity",
+	a.happenedtime AS "eventTime",
+	a.id AS "alarmId",
+	w.WarningMayReason AS "specificProblem",
+	a.siteid AS "neUID",
+	s.CellId AS "neName",
+	s.CellType AS "neType",
+	a.objectid AS "objectUID",
+	a.objecttype AS "objectType",
+	a.objectname AS "objectName"
+   		FROM `alarm_north`  a
+INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
+AND w.Manufacturer = 1
+INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
+ where 1=1 and 
+   		<if test="alarmSeq>0">
+   			a.id &gt;#{alarmSeq}
+   		</if>
+   		<if test="time != null and time !=''">
+   			a.createTime &gt;=#{time}
+   		</if>
+   </select>
+   
+   <insert id ="insertNorthBatch" parameterType="java.util.List" >
+               insert into 
+    alarm_north
+    (siteid,slotId,objectid,objecttype,objectname ,alarmcode,alarmlevel,happenedtime,
+    confirmtime,clearedtime,ackuser,comments,alarmlevel_temp,isCleared,alarmId,createTime)
+    values
+    <foreach collection ="list" item="north" index= "index" separator =",">
+    (#{north.siteId},#{north.slotId},#{north.objectId},#{north.objectType,typeHandler=com.nms.db.enums.IntEnumTypeHandler},
+    #{north.objectName},#{north.alarmCode},
+    #{north.alarmLevel},#{north.happenedtime},#{north.confirmtime},#{north.cleanTime},#{north.ackUser},#{north.commonts},
+    #{north.warningLevel_temp},#{north.isClear},#{north.alarmId},now())
+             </foreach >
+  </insert >
 </mapper>

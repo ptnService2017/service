@@ -39,7 +39,7 @@ public class EPGXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-EPG-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-EPG-A1-" + version + "-" + XmlUtil.getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {

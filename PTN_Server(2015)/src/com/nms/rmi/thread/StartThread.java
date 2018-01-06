@@ -139,7 +139,7 @@ public class StartThread implements Runnable {
 			}
 			try {
 				if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 1){
-					ApplicationBeanFactory.initBeanFactory("applicationContext-jms-serviceCourse.xml","targetConnectionFactory");
+//					ApplicationBeanFactory.initBeanFactory("applicationContext-jms-serviceCourse.xml","targetConnectionFactory");
 				}else{
 					Broker.init("applicationContext-jms-broker.xml");
 					ApplicationBeanFactory.initBeanFactory("applicationContext-jms-send.xml","targetConnectionFactory");

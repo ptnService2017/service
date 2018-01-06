@@ -30,12 +30,12 @@ import com.nms.ui.manager.UiUtil;
 import com.nms.ui.manager.keys.StringKeysLbl;
 import com.nms.util.Mybatis_DBManager;
 
-public class LSBXml {
+public class LBSXml {
 	public static void main(String[] args) {
 		Mybatis_DBManager.init("127.0.0.1");
 		ConstantUtil.serviceFactory = new ServiceFactory();
 		SnmpConfig.getInstanse().init();
-		new LSBXml().getLSBXml();
+		new LBSXml().getLSBXml();
 	}
 	
 	public String getLSBXml() {
@@ -146,22 +146,22 @@ public class LSBXml {
 		for (Lsp lsp :lspList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1LBS"+lsp.getId());
-			this.createElementNode(doc, "N", "3301EBCS1LBS"+lsp.getId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1TNL"+lsp.getTunnelId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "CD_BI", Object, "i", "3");
-			this.createElementNode(doc, "N", "1", Object, "i", "4");
-			this.createElementNode(doc, "N", "1", Object, "i", "5");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+lsp.getASiteId(), Object, "i", "6");
-			this.createElementNode(doc, "N", "3301EBCS1PRT"+lsp.getAPortId(), Object, "i", "7");
-			this.createElementNode(doc, "N", lsp.getFrontLabelValue()+"", Object, "i", "8");
-			this.createElementNode(doc, "N", lsp.getBackLabelValue()+"", Object, "i", "9");
-			this.createElementNode(doc, "N", "3301EBCS1LBS"+lsp.getId(), Object, "i", "10");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+lsp.getZSiteId(), Object, "i", "11");
-			this.createElementNode(doc, "N", "3301EBCS1PRT"+lsp.getZPortId(), Object, "i", "12");
-			this.createElementNode(doc, "N", lsp.getBackLabelValue()+"", Object, "i", "13");
-			this.createElementNode(doc, "N", lsp.getBackLabelValue()+"", Object, "i", "14");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+lsp.getASiteId(), Object, "i", "15");
-			this.createElementNode(doc, "N", "", Object, "i", "16");
+			this.createElementNode(doc, "V", "3301EBCS1LBS"+lsp.getId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1TNL"+lsp.getTunnelId(), Object, "i", "2");
+			this.createElementNode(doc, "V", "CD_BI", Object, "i", "3");
+			this.createElementNode(doc, "V", "1", Object, "i", "4");
+			this.createElementNode(doc, "V", "1", Object, "i", "5");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+lsp.getASiteId(), Object, "i", "6");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+lsp.getAPortId(), Object, "i", "7");
+			this.createElementNode(doc, "V", lsp.getFrontLabelValue()+"", Object, "i", "8");
+			this.createElementNode(doc, "V", lsp.getBackLabelValue()+"", Object, "i", "9");
+			this.createElementNode(doc, "V", "3301EBCS1LBS"+lsp.getId(), Object, "i", "10");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+lsp.getZSiteId(), Object, "i", "11");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+lsp.getZPortId(), Object, "i", "12");
+			this.createElementNode(doc, "V", lsp.getBackLabelValue()+"", Object, "i", "13");
+			this.createElementNode(doc, "V", lsp.getBackLabelValue()+"", Object, "i", "14");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+lsp.getASiteId(), Object, "i", "15");
+			this.createElementNode(doc, "V", "", Object, "i", "16");
 			FieldValue.appendChild(Object);
 		}
 		

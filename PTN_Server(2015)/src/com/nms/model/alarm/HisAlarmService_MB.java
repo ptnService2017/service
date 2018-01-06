@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.util.ObjectService_Mybatis;
 import com.nms.model.util.Services;
 import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.keys.StringKeysTip;
@@ -572,5 +574,14 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 	 */
 	public List<HisAlarmInfo>  queryHisNorth(HisAlarmInfo hisInfo){
 		return this.mapper.queryHisNorth(hisInfo);
+	}
+	
+	public List<Map<String, Object>> queryNorthRun(Integer alarmSeq,String time){
+		return this.mapper.queryNorthRun(alarmSeq,time);
+	}
+	
+	public void insertNorthBatch(List<HisAlarmInfo> list){
+		this.mapper.insertNorthBatch(list);
+		this.sqlSession.commit();
 	}
 }

@@ -65,4 +65,12 @@ public class DateTimeUtil {
 		return str;
 	}
 	
+	public static String datepoor(Long old,Long now){
+		long l=now-old;
+		long day=l/(24*60*60*1000);
+		long hour=(l/(60*60*1000)-day*24);
+		long min=((l/(60*1000))-day*24*60-hour*60);
+		long s=(l/1000-day*24*60*60-hour*60*60-min*60);
+		return ""+day+"天"+hour+"小时"+min+"分"+s+"秒";
+	}
 }

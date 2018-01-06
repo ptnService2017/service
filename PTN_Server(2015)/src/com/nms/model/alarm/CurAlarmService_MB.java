@@ -724,4 +724,9 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 		}
 		return currentAlarmInfos;
 	}
+	
+	public List<Map<String, Object>> queryNorthRun(Integer alarmSeq,String time){
+		ExceptionManage.infor("alarmSeq::"+alarmSeq+"time：："+time,this.getClass());
+		return this.mapper.queryNorthRun(alarmSeq,time);
+	}
 }

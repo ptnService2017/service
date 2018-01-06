@@ -148,18 +148,18 @@ public class NELXml {
 			getHardEdition(siteInst);
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1NEL"+siteInst.getSite_Inst_Id());
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+siteInst.getSite_Inst_Id(), Object, "i", "1");
-			this.createElementNode(doc, "N", siteInst.getCellId(), Object, "i", "2");
-			this.createElementNode(doc, "N", siteInst.getSiteLocation(), Object, "i", "3");
-			this.createElementNode(doc, "N", siteInst.getCellType(), Object, "i", "4");
-			this.createElementNode(doc, "N", "EBANG", Object, "i", "5");
-			this.createElementNode(doc, "N", siteInst.getSiteType()==369?"real":"virtual", Object, "i", "6");
-			this.createElementNode(doc, "N", siteInst.getCellDescribe(), Object, "i", "7");
-			this.createElementNode(doc, "N", "", Object, "i", "8");
-			this.createElementNode(doc, "N", siteInst.getHardEdition(), Object, "i", "9");
-			this.createElementNode(doc, "N", siteInst.getSoftEdition(), Object, "i", "10");
-			this.createElementNode(doc, "N", "", Object, "i", "11");
-			this.createElementNode(doc, "N", siteInst.getLoginstatus()==1?"available":"unavaliable", Object, "i", "12");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+siteInst.getSite_Inst_Id(), Object, "i", "1");
+			this.createElementNode(doc, "V", siteInst.getCellId(), Object, "i", "2");
+			this.createElementNode(doc, "V", siteInst.getSiteLocation(), Object, "i", "3");
+			this.createElementNode(doc, "V", siteInst.getCellType(), Object, "i", "4");
+			this.createElementNode(doc, "V", "EBANG", Object, "i", "5");
+			this.createElementNode(doc, "V", siteInst.getSiteType()==369?"real":"virtual", Object, "i", "6");
+			this.createElementNode(doc, "V", siteInst.getCellDescribe(), Object, "i", "7");
+			this.createElementNode(doc, "V", "", Object, "i", "8");
+			this.createElementNode(doc, "V", siteInst.getHardEdition(), Object, "i", "9");
+			this.createElementNode(doc, "V", siteInst.getSoftEdition(), Object, "i", "10");
+			this.createElementNode(doc, "V", "", Object, "i", "11");
+			this.createElementNode(doc, "V", siteInst.getLoginstatus()==1?"available":"unavaliable", Object, "i", "12");
 			FieldValue.appendChild(Object);
 		}
 		

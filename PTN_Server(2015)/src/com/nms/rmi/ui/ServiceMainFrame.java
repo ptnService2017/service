@@ -66,7 +66,12 @@ public class ServiceMainFrame extends JFrame {
 			}else if(codeConfigItem.getLanguage() == 2){
 				ResourceUtil.language = "en_US";
 			}
-			this.setTitle("EMS-Server");// NBIServer
+			if(codeConfigItem.getSnmpStartOrClose()==1){
+				this.setTitle("NBI-Server");// NBIServer
+			}else{
+				this.setTitle("EMS-Server");// NBIServer
+			}
+			
 			this.initComponent();
 			this.setLayout();
 			this.initTreeData();

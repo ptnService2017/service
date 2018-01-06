@@ -144,10 +144,10 @@ public class PGUXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1PGU" + map.get("portId"));
-      createElementNode(doc, "N", "3301EBCS1PGU" + map.get("portId"), Object, "i", "1");
-      createElementNode(doc, "N", "3301EBCS1PTG" + map.get("lagId"), Object, "i", "2");
-      createElementNode(doc, "N", "3301EBCS1PRT" + map.get("portId"), Object, "i", "3");
-      createElementNode(doc, "N", map.get("portId").toString().equals(map.get("master").toString())?"master":"backup", Object, "i", "4");
+      createElementNode(doc, "V", "3301EBCS1PGU" + map.get("portId"), Object, "i", "1");
+      createElementNode(doc, "V", "3301EBCS1PTG" + map.get("lagId"), Object, "i", "2");
+      createElementNode(doc, "V", "3301EBCS1PRT" + map.get("portId"), Object, "i", "3");
+      createElementNode(doc, "V", map.get("portId").toString().equals(map.get("master").toString())?"master":"backup", Object, "i", "4");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

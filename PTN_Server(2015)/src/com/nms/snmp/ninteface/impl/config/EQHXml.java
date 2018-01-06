@@ -139,13 +139,13 @@ public class EQHXml {
 		for (SlotInst slotInst :slotInstList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1EQH"+slotInst.getId());
-			this.createElementNode(doc, "N", "3301EBCS1EQH"+slotInst.getId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+slotInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "N", getSlotName(slotInst.getSlotType()), Object, "i", "3");
-			this.createElementNode(doc, "N", "INSTALLED_AND_NOT_EXPECTED", Object, "i", "4");
-			this.createElementNode(doc, "N", "EBANG", Object, "i", "5");
-			this.createElementNode(doc, "N", "slot", Object, "i", "6");
-			this.createElementNode(doc, "N", "1", Object, "i", "7");
+			this.createElementNode(doc, "V", "3301EBCS1EQH"+slotInst.getId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+slotInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "V", getSlotName(slotInst.getSlotType()), Object, "i", "3");
+			this.createElementNode(doc, "V", "INSTALLED_AND_NOT_EXPECTED", Object, "i", "4");
+			this.createElementNode(doc, "V", "EBANG", Object, "i", "5");
+			this.createElementNode(doc, "V", "slot", Object, "i", "6");
+			this.createElementNode(doc, "V", "1", Object, "i", "7");
 			FieldValue.appendChild(Object);
 		}
 		

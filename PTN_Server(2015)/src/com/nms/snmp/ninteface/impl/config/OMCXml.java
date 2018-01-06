@@ -16,20 +16,27 @@ import org.apache.log4j.xml.XMLLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.nms.model.util.ServiceFactory;
 import com.nms.rmi.ui.util.RmiKeys;
 import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
+import com.nms.snmp.ninteface.util.NorthConfig;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.DateUtil;
 import com.nms.ui.manager.DispatchUtil;
 import com.nms.ui.manager.ExceptionManage;
 import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.keys.StringKeysLbl;
+import com.nms.util.Mybatis_DBManager;
 
 public class OMCXml {
 	public static void main(String[] args) throws UnknownHostException {
-//		new OMCXml().getOMCXml();
+		Mybatis_DBManager.init("127.0.0.1");
+		ConstantUtil.serviceFactory = new ServiceFactory();
+		SnmpConfig.getInstanse().init();
+		OMCXml omcXml = new OMCXml();
+		omcXml.getOMCXml();
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
 	}
 	
@@ -102,7 +109,9 @@ public class OMCXml {
 	
 	private Element createFileContent(Document doc) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("OMC");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
 		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
@@ -116,20 +125,20 @@ public class OMCXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		Element Object = doc.createElement("Object");
 		Object.setAttribute("rmUID","3301EBCS1");
-		this.createElementNode(doc, "N", "3301EBCS1", Object, "i", "1");
-		this.createElementNode(doc, "N", "EBNG–EMS-Client", Object, "i", "2");
+		this.createElementNode(doc, "V", "3301EBCS1", Object, "i", "1");
+		this.createElementNode(doc, "V", "EBANG-EMS-Service", Object, "i", "2");
 		String ip = "";
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		this.createElementNode(doc, "N",ip , Object, "i", "3");
+		this.createElementNode(doc, "V",NorthConfig.northServiceIp, Object, "i", "3");
 		
-		this.createElementNode(doc, "N", "V2.1.6", Object, "i", "4");
-		this.createElementNode(doc, "N", "V1.0.1", Object, "i", "5");
-		this.createElementNode(doc, "N", "PTN", Object, "i", "6");
-		this.createElementNode(doc, "N", "EBANG", Object, "i", "7");
+		this.createElementNode(doc, "V", "V2.1.6", Object, "i", "4");
+		this.createElementNode(doc, "V", "V1.0.0", Object, "i", "5");
+		this.createElementNode(doc, "V", "PTN", Object, "i", "6");
+		this.createElementNode(doc, "V", "EBANG", Object, "i", "7");
 		FieldValue.appendChild(Object);
 		Objects.appendChild(FieldValue);
 		return Objects;

@@ -144,12 +144,12 @@ public class PTGXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1PTG" + info.getId());
-      createElementNode(doc, "N", "3301EBCS1PTG" + info.getId(), Object, "i", "1");
-      createElementNode(doc, "N", "3301EBCS1PTG" + info.getId(), Object, "i", "2");
-      createElementNode(doc, "N", "3301EBCS1NEL"+info.getSiteId(), Object, "i", "3");
-      createElementNode(doc, "N", "lag/"+info.getId(), Object, "i", "4");
-      createElementNode(doc, "N", "RM_REVERTIVE", Object, "i", "5");
-      createElementNode(doc, "N", "1:1", Object, "i", "6");
+      createElementNode(doc, "V", "3301EBCS1PTG" + info.getId(), Object, "i", "1");
+      createElementNode(doc, "V", "3301EBCS1PTG" + info.getId(), Object, "i", "2");
+      createElementNode(doc, "V", "3301EBCS1NEL"+info.getSiteId(), Object, "i", "3");
+      createElementNode(doc, "V", "lag/"+info.getId(), Object, "i", "4");
+      createElementNode(doc, "V", "RM_REVERTIVE", Object, "i", "5");
+      createElementNode(doc, "V", "1:1", Object, "i", "6");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

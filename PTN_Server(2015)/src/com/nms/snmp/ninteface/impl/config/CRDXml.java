@@ -148,17 +148,17 @@ public class CRDXml {
 			getsoftType(cardInst);
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1CRD"+cardInst.getId());
-			this.createElementNode(doc, "N", "3301EBCS1CRD"+cardInst.getId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "3301EBCS1NEL"+cardInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "3301EBCS1EQH"+cardInst.getSlotId(), Object, "i", "3");
-			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "4");
-			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "5");
-			this.createElementNode(doc, "N", "", Object, "i", "6");
-			this.createElementNode(doc, "N", cardInst.getSnmpName(), Object, "i", "7");
-			this.createElementNode(doc, "N", cardInst.getInstalledSerialNumber(), Object, "i", "8");
-			this.createElementNode(doc, "N", "", Object, "i", "9");
-			this.createElementNode(doc, "N", "IN_SERVICE", Object, "i", "10");
-			this.createElementNode(doc, "N", "NA", Object, "i", "11");
+			this.createElementNode(doc, "V", "3301EBCS1CRD"+cardInst.getId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+cardInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "V", "3301EBCS1EQH"+cardInst.getSlotId(), Object, "i", "3");
+			this.createElementNode(doc, "V", cardInst.getCardName(), Object, "i", "4");
+			this.createElementNode(doc, "V", cardInst.getCardName(), Object, "i", "5");
+			this.createElementNode(doc, "V", "", Object, "i", "6");
+			this.createElementNode(doc, "V", cardInst.getSnmpName(), Object, "i", "7");
+			this.createElementNode(doc, "V", cardInst.getInstalledSerialNumber(), Object, "i", "8");
+			this.createElementNode(doc, "V", "", Object, "i", "9");
+			this.createElementNode(doc, "V", "IN_SERVICE", Object, "i", "10");
+			this.createElementNode(doc, "V", "NA", Object, "i", "11");
 			FieldValue.appendChild(Object);
 		}
 		

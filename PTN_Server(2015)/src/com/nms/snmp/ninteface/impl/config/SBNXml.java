@@ -39,7 +39,7 @@ public class SBNXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-SBN-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-SBN-A1-" + version + "-" + XmlUtil.getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
@@ -140,11 +140,11 @@ public class SBNXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1SBN" + field.getId());
-      createElementNode(doc, "N", "3301EBCS1SBN" + field.getId(), Object, "i", "1");
-      createElementNode(doc, "N", field.getFieldName(), Object, "i", "2");
-      createElementNode(doc, "N", "", Object, "i", "3");
-      createElementNode(doc, "N", field.getFieldX()+"", Object, "i", "4");
-      createElementNode(doc, "N", field.getFieldY()+"", Object, "i", "5");
+      createElementNode(doc, "V", "3301EBCS1SBN" + field.getId(), Object, "i", "1");
+      createElementNode(doc, "V", field.getFieldName(), Object, "i", "2");
+      createElementNode(doc, "V", "", Object, "i", "3");
+      createElementNode(doc, "V", field.getFieldX()+"", Object, "i", "4");
+      createElementNode(doc, "V", field.getFieldY()+"", Object, "i", "5");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

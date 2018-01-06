@@ -39,23 +39,6 @@ public class XmlUtil {
 		CmVersion.setTextContent("V1.0.1");
 		FileHeader.appendChild(CmVersion);
 		
-		Element rmUID = doc.createElement("rmUID");
-		rmUID.setTextContent("");
-		FileHeader.appendChild(rmUID);
-		
-		Element Dn = doc.createElement("Dn");
-		Dn.setTextContent("");
-		FileHeader.appendChild(Dn);
-		
-		Element UserLabel = doc.createElement("UserLabel");
-		UserLabel.setTextContent("");
-		FileHeader.appendChild(UserLabel);
-		
-		
-		Element ObjectType = doc.createElement("ObjectType");
-		ObjectType.setTextContent(objectType);
-		FileHeader.appendChild(ObjectType);
-		
 		return FileHeader;
 	}
 	

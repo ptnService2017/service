@@ -476,7 +476,6 @@ public class AlarmTools {
 									northAlarm.setWarningLevel(warningLevel);
 									northAlarm.setAlarmTime(infoObject.getAlarmDate());
 									northAlarm.setWarningLevel(warningLevel);
-									northAlarm.setHappenedtime(infoObject.getAlarmDate());
 									setIdAndType(lineObject, northAlarm,slotInst.getNumber(),infoObject.getAlarmCode());// 确定告警类型
 									if (getAlarmStatus(infoObject.getAlarmStatus()) == 1) {// 判断是历史告警还是当前告警
 										info = new CurrentAlarmInfo();
@@ -565,12 +564,8 @@ public class AlarmTools {
 										}
 									}
 									if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 0){
+										northAlarm.setHappenedtime(infoObject.getAlarmDate());
 										hisAlarmService.saveNorth(northAlarm);//北向告警流水
-										OpviewMessage opviewMessage = new OpviewMessage();
-										opviewMessage.setOccuredTime(System.currentTimeMillis());
-										opviewMessage.setMessageSource("alarmNorth");
-										opviewMessage.setObject(northAlarm);
-										JmsUtil.sendNorthAlarm(opviewMessage);
 									}
 								}
 							}

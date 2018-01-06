@@ -74,4 +74,7 @@ public interface CurrentAlarmInfoMapper {
 	public List<CurrentAlarmInfo> selectCurrentAlarmByCond(Map<String, Object> map);
     
 	public void deleteBySiteId(int siteInstId);
+	
+	public List<Map<String, Object>> queryNorthRun(@Param("alarmSeq")Integer alarmSeq, @Param("time")String time);
+
 }

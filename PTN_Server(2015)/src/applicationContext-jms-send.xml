@@ -40,6 +40,5 @@
 		class="com.nms.jms.jmsMeanager.JmsSender">
 		<property name="template" ref="jmsTemplate" />
 		<property name="serverOtherNotify" ref="serverOtherNotify" />
-		<property name="alarmNotify" ref="alarmNotify" />
 	</bean>
 </beans>

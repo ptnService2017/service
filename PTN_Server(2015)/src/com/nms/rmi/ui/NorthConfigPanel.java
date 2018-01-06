@@ -29,6 +29,30 @@ import com.nms.rmi.ui.util.ServerConstant;
 import com.nms.rmi.ui.util.ThreadUtil;
 import com.nms.snmp.ninteface.framework.AgentServer;
 import com.nms.snmp.ninteface.impl.alarm.AlarmNorthconsumer;
+import com.nms.snmp.ninteface.impl.config.CRDXml;
+import com.nms.snmp.ninteface.impl.config.EPGXml;
+import com.nms.snmp.ninteface.impl.config.EPUXml;
+import com.nms.snmp.ninteface.impl.config.EQHXml;
+import com.nms.snmp.ninteface.impl.config.ESIXml;
+import com.nms.snmp.ninteface.impl.config.ESPXml;
+import com.nms.snmp.ninteface.impl.config.ETHXml;
+import com.nms.snmp.ninteface.impl.config.LBSXml;
+import com.nms.snmp.ninteface.impl.config.NELXml;
+import com.nms.snmp.ninteface.impl.config.OMCXml;
+import com.nms.snmp.ninteface.impl.config.PGUXml;
+import com.nms.snmp.ninteface.impl.config.PRBXml;
+import com.nms.snmp.ninteface.impl.config.PRTXml;
+import com.nms.snmp.ninteface.impl.config.PSWXml;
+import com.nms.snmp.ninteface.impl.config.PTGXml;
+import com.nms.snmp.ninteface.impl.config.PWPXml;
+import com.nms.snmp.ninteface.impl.config.PWTXml;
+import com.nms.snmp.ninteface.impl.config.SBNXml;
+import com.nms.snmp.ninteface.impl.config.SNNXml;
+import com.nms.snmp.ninteface.impl.config.TDMXml;
+import com.nms.snmp.ninteface.impl.config.TNLXml;
+import com.nms.snmp.ninteface.impl.config.TPBXml;
+import com.nms.snmp.ninteface.impl.config.TPIXml;
+import com.nms.snmp.ninteface.impl.config.TPLXml;
 import com.nms.snmp.ninteface.util.NorthConfig;
 import com.nms.ui.manager.CheckingUtil;
 import com.nms.ui.manager.ConstantUtil;
@@ -126,6 +150,41 @@ public class NorthConfigPanel extends JPanel {
 				 
 			}
 		});
+		createFile.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new OMCXml().getOMCXml();
+				new NELXml().getNELXml();
+				new EQHXml().getEQHXml();
+				new CRDXml().getCRDXml();
+				new PRTXml().getPRTXml();
+				new PRBXml().getPRBXml();
+				new TNLXml().getTNLXml();
+				new LBSXml().getLSBXml();
+				new TPIXml().getTPIXml();
+				new TPBXml().getTPBXml();
+				
+				new PSWXml().getPSWXml();
+				new PWPXml().getPWPXml();
+				new PWTXml().getPWTXml();
+				new ETHXml().getETHXml();
+				new ESPXml().getESPXml();
+				new ESIXml().getESIXml();
+				
+				new TDMXml().getTDMXml();
+//				new ETPXml().getETPXml();
+				new TPLXml().getTPLXml();
+				new SBNXml().getSBNXml();
+				new SNNXml().getSNNXml();
+				new EPGXml().getEPGXml();
+				new EPUXml().getEPUXml();
+				
+				new PTGXml().getPTGXml();
+				new PGUXml().getPGUXml();
+				DialogBoxUtil.succeedDialog(null, "生成成功");
+			}
+		});
 	}
 	
 
@@ -143,14 +202,15 @@ public class NorthConfigPanel extends JPanel {
 //	    new Thread(alarmNorthconsumer).start();
 		this.setBorder(BorderFactory.createTitledBorder("NORTHCONFIG"));
 		this.rimUid = new JLabel("serviceIP");
-		this.rimUidtext = new JTextField();
+		this.rimUidtext = new JTextField(NorthConfig.northServiceIp);
 		this.rimUidButton = new JButton(ResourceUtil.srcStr(StringKeysBtn.BTN_CONFIG));
 		this.provinces = new JLabel("alarmPort");
-		this.provincesText = new JTextField("31232");
+		this.provincesText = new JTextField(NorthConfig.northAlarmPort+"");
 		
 		this.manufacturer = new JLabel("telnetPort");
-		this.manufacturerText = new JTextField("31241");
+		this.manufacturerText = new JTextField(NorthConfig.northTelnetPort+"");
 		
+		createFile = new JButton("生成文件");
 		this.panel_select = new JPanel();
 		this.panel_select.setBorder(null);
 		
@@ -222,7 +282,12 @@ public class NorthConfigPanel extends JPanel {
 		componentLayout.setConstraints(this.rimUidButton, c);
 		this.panel_select.add(this.rimUidButton);
 		
-
+		c.gridx = 0;
+		c.gridy = 3;
+		c.fill = GridBagConstraints.CENTER;
+		c.insets = new Insets(5, 5, 5, 5);
+		componentLayout.setConstraints(this.createFile, c);
+		this.panel_select.add(this.createFile);
 	}
 
 
@@ -258,6 +323,8 @@ public class NorthConfigPanel extends JPanel {
 	private JTextField manufacturerText;
 	private JPanel panel_select;
 	private Map<String,String> map = new HashMap<String,String>();
+	private JButton createFile;//生成文件
+	
 	public static void main(String[] args) {
 		try {
 			FileOutputStream  fs = new FileOutputStream( System.getProperty("user.dir") + "license.xml");

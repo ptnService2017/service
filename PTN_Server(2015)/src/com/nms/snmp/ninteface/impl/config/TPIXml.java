@@ -40,7 +40,7 @@ public class TPIXml
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TPI-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\ZJ\\CS\\EB\\OMC\\CM\\"+DateUtil.getDate("yyyyMMdd"), "CM-PTN-TPI-A1-" +version+"-"+XmlUtil.getTime()+".xml" };
     FileTools fileTools = null;
     try
     {
@@ -145,10 +145,10 @@ public class TPIXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1TPI" + tunnel.getTunnelId());
-      createElementNode(doc, "N", "3301EBCS1TPI" + tunnel.getTunnelId(), Object, "i", "1");
-      createElementNode(doc, "N", tunnel.getTunnelName(), Object, "i", "2");
-      createElementNode(doc, "N", tunnel.getRotateMode().equals("MANUAL")?"RM_REVERTIVE":"RM_NON_REVERTIVE", Object, "i", "3");
-      createElementNode(doc, "N", "1:1", Object, "i", "4");
+      createElementNode(doc, "V", "3301EBCS1TPI" + tunnel.getTunnelId(), Object, "i", "1");
+      createElementNode(doc, "V", tunnel.getTunnelName(), Object, "i", "2");
+      createElementNode(doc, "V", tunnel.getRotateMode().equals("MANUAL")?"RM_REVERTIVE":"RM_NON_REVERTIVE", Object, "i", "3");
+      createElementNode(doc, "V", "1:1", Object, "i", "4");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

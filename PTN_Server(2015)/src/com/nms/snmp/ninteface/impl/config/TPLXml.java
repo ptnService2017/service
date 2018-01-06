@@ -48,9 +48,7 @@ public class TPLXml
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
       createXML(doc, segments);
-      fileTools = new FileTools();
-      fileTools.putFile(doc, filePath);
-      fileTools.zipFile(filePath, filePath.substring(0, filePath.length() - 5) + ".zip");
+      XmlUtil.createFile(doc, "CM-PTN-TPI-A1-",filePath);;
     }
     catch (Exception e)
     {
@@ -146,15 +144,15 @@ public class TPLXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1TPL" + segment.getId());
-      createElementNode(doc, "N", "3301EBCS1TPL" + segment.getId(), Object, "i", "1");
-      createElementNode(doc, "N", segment.getNAME(), Object, "i", "2");
-      createElementNode(doc, "N", "3301EBCS1NEL" + segment.getASITEID(), Object, "i", "3");
-      createElementNode(doc, "N", "3301EBCS1NEL" + segment.getZSITEID(), Object, "i", "4");
-      createElementNode(doc, "N", "3301EBCS1PRT" + segment.getAPORTID(), Object, "i", "5");
-      createElementNode(doc, "N", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "6");
-      createElementNode(doc, "N", segment.getNAME().contains("ge")?"GE":"FE", Object, "i", "7");
-      createElementNode(doc, "N", "CD_BI", Object, "i", "8");
-      createElementNode(doc, "N", "real", Object, "i", "9");
+      createElementNode(doc, "V", "3301EBCS1TPL" + segment.getId(), Object, "i", "1");
+      createElementNode(doc, "V", segment.getNAME(), Object, "i", "2");
+      createElementNode(doc, "V", "3301EBCS1NEL" + segment.getASITEID(), Object, "i", "3");
+      createElementNode(doc, "V", "3301EBCS1NEL" + segment.getZSITEID(), Object, "i", "4");
+      createElementNode(doc, "V", "3301EBCS1PRT" + segment.getAPORTID(), Object, "i", "5");
+      createElementNode(doc, "V", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "6");
+      createElementNode(doc, "V", segment.getNAME().contains("ge")?"GE":"FE", Object, "i", "7");
+      createElementNode(doc, "V", "CD_BI", Object, "i", "8");
+      createElementNode(doc, "V", "real", Object, "i", "9");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);
