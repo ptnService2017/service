@@ -559,12 +559,14 @@ public class AlarmTools {
 										hisAlarmService.saveOrUpdate(hisAlarmInfo);// 不存在，直接入库
 										List<HisAlarmInfo> northHis = hisAlarmService.queryHisNorth(northAlarm);
 										if(northHis.size()>0){
+											northAlarm.setCleanTime(infoObject.getAlarmDate());
+											northAlarm.setHappenedtime(northHis.get(0).getHappenedtime());
 											northAlarm.setAlarmId(northHis.get(0).getId());
 											northAlarm.setIsClear(1);
 										}
 									}
 									if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 0){
-										northAlarm.setHappenedtime(infoObject.getAlarmDate());
+										
 										hisAlarmService.saveNorth(northAlarm);//北向告警流水
 									}
 								}

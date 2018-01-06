@@ -399,7 +399,7 @@ ORDER BY a.id asc
    <select id="queryHisNorth" resultMap="HisAlarm">
    	SELECT * FROM `alarm_north` where siteid = #{siteId} and objectid = #{objectId} 
    	and alarmcode = #{alarmCode} and alarmlevel =#{alarmLevel}
-   	and happenedtime = #{alarmTime}
+   	order by id desc 
    </select>
    
    <select id="queryNorthRun" resultType="Map">
