@@ -36,7 +36,7 @@ public class AlarmTcpTracpRun implements Runnable{
 	private String clientIp;
 	private String userName;
 	private Long heartTime = System.currentTimeMillis();//心跳时间
-	private Boolean hasLogin = false;
+	private Boolean hasLogin = true;
 	
 	public AlarmTcpTracpRun(Socket socket,AlarmTcpTracpMainThread alarmTcpTracpMainThread) {
 		this.socket = socket;
@@ -108,6 +108,8 @@ public class AlarmTcpTracpRun implements Runnable{
 		Map<String,String> param = new HashMap<String,String>();
 		List<Map<String,Object>> list = null;
 		String re = "";
+		heartTime = System.currentTimeMillis();//设置最新的心跳时间
+		String sourceType = "";
 		try {
 			hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
 			if(reqboby[2].contains("alarmSeq")){
@@ -115,15 +117,16 @@ public class AlarmTcpTracpRun implements Runnable{
 			}else{
 				String startTime = "";
 				String endTime = "";
-				if(reqboby[2].split("=").length>1){
+				if(reqboby[2].split("=").length>1 && !reqboby[2].split("=")[1].equals("null")){
 					startTime = reqboby[2].split("=")[1];
 				}
-				if(reqboby[3].split("=").length>1){
+				if(reqboby[3].split("=").length>1&& !reqboby[3].split("=")[1].equals("null")){
 					endTime = reqboby[3].split("=")[1];
 				}
 				param.put("startTime", startTime);
 				param.put("endTime", endTime);
 				param.put("syncSource", reqboby[4].split("=")[1]);
+				sourceType = reqboby[4].split("=")[1];
 				ExceptionManage.infor("文件告警：startTime"+startTime+"+++endTime"+endTime+"++syncSource"+reqboby[4].split("=")[1], this.getClass());
 			}
 			list = hisAlarmService_MB.sysNorthAlarm(param);
@@ -135,7 +138,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			}else{
 				String filePath = "snmpData\\ZJ\\CS\\EB\\OMC\\FM\\"+DateUtil.getDate("yyyyMMdd");
 				String fileName = "FM-OMC-1A-V1.0.0-"+DateUtil.getDate("yyyyMMddHHmmss")+".txt";
-				this.createFile(filePath,fileName, list);
+				this.createFile(filePath,fileName, list,sourceType);
 				re = "ackSyncAlarmFileResult;reqId="+reqboby[1].split("=")[1]+";result=success;filename="+filePath+"\\"+fileName+";resDesc=null";
 				outputStream.write(res(7, re));
 			}
@@ -146,7 +149,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		}
 	}
 
-	private void createFile(String filePath,String fileName,List<Map<String,Object>> list){
+	private void createFile(String filePath,String fileName,List<Map<String,Object>> list,String sourceType){
 		OutputStreamWriter  output = null;
 		try {
 			System.out.println(filePath);
@@ -157,7 +160,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			System.out.println(filePath+File.separator+fileName);
 			new FileOutputStream(filePath+File.separator+fileName);
 			output = new OutputStreamWriter (new FileOutputStream(filePath+File.separator+fileName),"UTF-8");
-			output.write(this.alarmString(list));
+			output.write(this.alarmString(list,sourceType));
 			output.flush();
 			
 			FileTools fileTools = new FileTools();
@@ -173,7 +176,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		}
 	}
 	
-	private String alarmString(List<Map<String,Object>> list){
+	private String alarmString(List<Map<String,Object>> list,String sourceType){
 		StringBuilder stringBuilder = new StringBuilder();
 		for(Map<String,Object> map : list){
 			stringBuilder.append("{");
@@ -181,21 +184,53 @@ public class AlarmTcpTracpRun implements Runnable{
 			stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
 			Integer status = Integer.parseInt(map.get("alarmStatus").toString())==0?1:0;
 			stringBuilder.append("\"alarmStatus\":"+status+",");
-			stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
+			stringBuilder.append("\"alarmType\":\""+"通信告警"+"\",");
 			stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
 			stringBuilder.append("\"eventTime\":\""+(status ==1?map.get("happenedtime"):map.get("clearedtime"))+"\",");
 			stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
 			stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
 			stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
-			stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
-			stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
-			stringBuilder.append("\"neType\":\""+map.get("neType")+"\",");
-			stringBuilder.append("\"objectUID\":\""+map.get("objectUID")+"\",");
-			stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
-			stringBuilder.append("\"objectType\":\""+map.get("objectType")+"\",");
-			stringBuilder.append("\"locationInfo\":\""+map.get("locationInfo")+"\",");
-			stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
-			stringBuilder.append("\"holderType\":\""+map.get("holderType")+"\"");
+			Integer i = (Integer) map.get("objectType");
+			String str = "";
+			if(i==null ||i == 8|| i== 5 || i==0|| i==10|| i==7){
+				str = "NEL";
+			}else if(i == 0x3){
+				str = "PRT";
+			}else if(i == 0x40){
+				str = "PW";
+			}else if(i == 0x30){
+				str = "TNL";
+			}else if(i == 0x50 || i==0x60){
+				str = "ETH";
+			}else if(i == 0x70){
+				str = "TDM";
+			}
+			
+			if(map.get("neUID").toString().equals("0") && map.get("neName") == null){
+				stringBuilder.append("\"neUID\":\"\",");
+				stringBuilder.append("\"neName\":\"\",");
+				stringBuilder.append("\"neType\":\"PTN\",");
+				stringBuilder.append("\"objectUID\":\"3301EBCS1\",");
+				stringBuilder.append("\"objectName\":\"EMS服务器\",");
+				stringBuilder.append("\"objectType\":\"OMC\",");
+				stringBuilder.append("\"locationInfo\":\"OMC\",");
+				stringBuilder.append("\"addInfo\":\"\",");
+				stringBuilder.append("\"holderType\":\"\",");
+				stringBuilder.append("\"alarmCheck\":\"\",");
+				stringBuilder.append("\"layer\":");
+			}else{
+				stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
+				stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
+				stringBuilder.append("\"neType\":\"PTN\",");
+				stringBuilder.append("\"objectUID\":\"3301EBCS1"+str+map.get("objectUID")+"\",");
+				stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
+				stringBuilder.append("\"objectType\":\""+str+"\",");
+				stringBuilder.append("\"locationInfo\":\""+"slot:槽位1;card:主控"+"\",");
+				stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
+				stringBuilder.append("\"holderType\":\""+map.get("neType")+"\",");
+				stringBuilder.append("\"alarmCheck\":\"\",");
+				stringBuilder.append("\"layer\":2");
+			}
 			stringBuilder.append("}\r\n");
 		}
 		return stringBuilder.toString();
@@ -224,6 +259,7 @@ public class AlarmTcpTracpRun implements Runnable{
 		String re = "";
 		HisAlarmService_MB hisAlarmService_MB = null;
 		List<Map<String,Object>> list = null;
+		heartTime = System.currentTimeMillis();//设置最新的心跳时间
 		try {
 			if(reqboby.length<1){
 				re = "ackSyncAlarmMsg;reqId="+reqboby[1].split("=")[1]+";result=fail;resDesc=null";
@@ -244,21 +280,53 @@ public class AlarmTcpTracpRun implements Runnable{
 					stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
 					Integer status = Integer.parseInt(map.get("alarmStatus").toString())==0?1:0;
 					stringBuilder.append("\"alarmStatus\":"+status+",");
-					stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
+					stringBuilder.append("\"alarmType\":\""+"通信告警"+"\",");
 					stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
 					stringBuilder.append("\"eventTime\":\""+(status ==1?map.get("happenedtime"):map.get("clearedtime"))+"\",");
 					stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
 					stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
 					stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
-					stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
-					stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
-					stringBuilder.append("\"neType\":\""+map.get("neType")+"\",");
-					stringBuilder.append("\"objectUID\":\""+map.get("objectUID")+"\",");
-					stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
-					stringBuilder.append("\"objectType\":\""+map.get("objectType")+"\",");
-					stringBuilder.append("\"locationInfo\":\""+map.get("locationInfo")+"\",");
-					stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
-					stringBuilder.append("\"holderType\":\""+map.get("holderType")+"\"");
+					Integer i = (Integer) map.get("objectType");
+					String str = "";
+					if(i==null ||i == 8|| i== 5 || i==0|| i==10|| i==7){
+						str = "NEL";
+					}else if(i == 0x3){
+						str = "PRT";
+					}else if(i == 0x40){
+						str = "PW";
+					}else if(i == 0x30){
+						str = "TNL";
+					}else if(i == 0x50 || i==0x60){
+						str = "ETH";
+					}else if(i == 0x70){
+						str = "TDM";
+					}
+					
+					if(map.get("neUID").toString().equals("0") && map.get("neName") == null){
+						stringBuilder.append("\"neUID\":\"\",");
+						stringBuilder.append("\"neName\":\"\",");
+						stringBuilder.append("\"neType\":\"PTN\",");
+						stringBuilder.append("\"objectUID\":\"3301EBCS1\",");
+						stringBuilder.append("\"objectName\":\"EMS服务器\",");
+						stringBuilder.append("\"objectType\":\"OMC\",");
+						stringBuilder.append("\"locationInfo\":\"OMC\",");
+						stringBuilder.append("\"addInfo\":\"\",");
+						stringBuilder.append("\"holderType\":\"\",");
+						stringBuilder.append("\"alarmCheck\":\"\",");
+						stringBuilder.append("\"layer\":");
+					}else{
+						stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
+						stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
+						stringBuilder.append("\"neType\":\"PTN\",");
+						stringBuilder.append("\"objectUID\":\"3301EBCS1"+str+map.get("objectUID")+"\",");
+						stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
+						stringBuilder.append("\"objectType\":\""+str+"\",");
+						stringBuilder.append("\"locationInfo\":\""+"slot:槽位1;card:主控"+"\",");
+						stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
+						stringBuilder.append("\"holderType\":\""+map.get("neType")+"\",");
+						stringBuilder.append("\"alarmCheck\":\"\",");
+						stringBuilder.append("\"layer\":2");
+					}
 					stringBuilder.append("}");
 					outputStream.write(res(0, stringBuilder.toString()));
 					outputStream.flush();
@@ -316,6 +384,7 @@ public class AlarmTcpTracpRun implements Runnable{
 			re = "ackLoginAlarm;result=fail;resDesc=password-error";
 		}else{
 			hasLogin = true;
+			heartTime = System.currentTimeMillis();//设置最新的心跳时间
 			this.loginTime = System.currentTimeMillis();
 			this.userName = userName;
 			clientIp = socket.getInetAddress().getHostAddress();

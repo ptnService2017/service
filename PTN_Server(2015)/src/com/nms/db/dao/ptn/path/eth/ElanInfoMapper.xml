@@ -171,7 +171,7 @@
   </update>
   
   <select id="selectAll_ETHNorth" resultType="java.util.Map">
-  SELECT id,serviceId,pwId,serviceType,`name`,activeStatus FROM `serviceinfo` GROUP BY name;
+  SELECT id,serviceId,pwId,serviceType,`name`,activeStatus FROM `serviceinfo` where serviceType != 0 GROUP BY name;
   </select>
   
   <select id="selectAll_ESINorth" resultType="java.util.Map">

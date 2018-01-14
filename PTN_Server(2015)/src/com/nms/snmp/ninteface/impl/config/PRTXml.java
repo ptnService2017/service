@@ -131,44 +131,44 @@ public class PRTXml {
 	
 	private Element createFileContent(Document doc,List<PortInst> portInstList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("PRT");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "cardrmUID", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "holderrmUID", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "portNo", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "physicalOrLogical", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "portType", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "portSubType", FieldName, "i", "9");
-		this.createElementNode(doc, "N", "signalType", FieldName, "i", "10");
-		this.createElementNode(doc, "N", "portRate", FieldName, "i", "11");
-		this.createElementNode(doc, "N", "direction", FieldName, "i", "12");
-		this.createElementNode(doc, "N", "role", FieldName, "i", "13");
-		this.createElementNode(doc, "N", "IPAddress", FieldName, "i", "14");
-		this.createElementNode(doc, "N", "IPMask", FieldName, "i", "15");
-		this.createElementNode(doc, "N", "isOverLay", FieldName, "i", "16");
+		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "cardrmUID", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "holderrmUID", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "portNo", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "physicalOrLogical", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "portType", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "portSubType", FieldName, "i", "8");
+		this.createElementNode(doc, "N", "signalType", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "portRate", FieldName, "i", "10");
+		this.createElementNode(doc, "N", "direction", FieldName, "i", "11");
+		this.createElementNode(doc, "N", "role", FieldName, "i", "12");
+		this.createElementNode(doc, "N", "IPAddress", FieldName, "i", "13");
+		this.createElementNode(doc, "N", "IPMask", FieldName, "i", "14");
+		this.createElementNode(doc, "N", "isOverlay", FieldName, "i", "15");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PortInst portInst :portInstList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1PRT"+portInst.getPortId());
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "1");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
-			this.createElementNode(doc, "V", "3301EBCS1CEQH"+portInst.getSlotNumber(), Object, "i", "4");
-			this.createElementNode(doc, "V", number(portInst), Object, "i", "5");
-			this.createElementNode(doc, "V", portInst.getPortName(), Object, "i", "6");
-			this.createElementNode(doc, "V", "ptp", Object, "i", "7");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "2");
+			this.createElementNode(doc, "V", "3301EBCS1CEQH"+portInst.getSlotNumber(), Object, "i", "3");
+			this.createElementNode(doc, "V", number(portInst), Object, "i", "4");
+			this.createElementNode(doc, "V", portInst.getPortName(), Object, "i", "5");
+			this.createElementNode(doc, "V", "ptp", Object, "i", "6");
+			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "7");
 			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "8");
-			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "9");
 			String type = "electrical";
 			if(portInst.getImagePath().contains("port_l.png") || portInst.getImagePath().contains("port_g.png")){
 				type = "optical";
 			}
-			this.createElementNode(doc, "V", type, Object, "i", "10");
+			this.createElementNode(doc, "V", type, Object, "i", "9");
 			
 			String speed = "GE";
 			if(portInst.getPortName().contains("e1.")){
@@ -176,13 +176,13 @@ public class PRTXml {
 			}else if(portInst.getPortName().contains("fe")){
 				speed = "FE";
 			}
-			this.createElementNode(doc, "V", speed, Object, "i", "11");
+			this.createElementNode(doc, "V", speed, Object, "i", "10");
 			
-			this.createElementNode(doc, "V", "D_BIDIRECTIONAL", Object, "i", "12");
-			this.createElementNode(doc, "V", role(portInst), Object, "i", "13");
-			this.createElementNode(doc, "V", ip(portInst), Object, "i", "14");
-			this.createElementNode(doc, "V", portInst.getCirCount() == 1?"255.255.255.0":"NA", Object, "i", "15");
-			this.createElementNode(doc, "V", "false", Object, "i", "16");
+			this.createElementNode(doc, "V", "D_BIDIRECTIONAL", Object, "i", "11");
+			this.createElementNode(doc, "V", role(portInst), Object, "i", "12");
+			this.createElementNode(doc, "V", ip(portInst), Object, "i", "13");
+			this.createElementNode(doc, "V", portInst.getCirCount() == 1?"255.255.255.0":"--", Object, "i", "14");
+			this.createElementNode(doc, "V", "false", Object, "i", "15");
 			FieldValue.appendChild(Object);
 		}
 		
@@ -191,7 +191,7 @@ public class PRTXml {
 	}
 	
 	private String ip(PortInst portInst){
-		String ip = "NA";
+		String ip = "--";
 		portInst.setCirCount(0);
 		if(portInst.getPortName().equals("F1") || portInst.getPortName().equals("F2") 
 				|| portInst.getPortName().equals("NMS")){
@@ -220,6 +220,14 @@ public class PRTXml {
 			number = "31";
 		}else if(portInst.getPortName().equals("F2")){
 			number = "32";
+		}else if(portInst.getPortName().equals("TNT/CON")){
+			number = "33";
+		}else if(portInst.getPortName().equals("ALM")){
+			number = "34";
+		}else if(portInst.getPortName().equals("CLK")){
+			number = "35";
+		}else if(portInst.getPortName().equals("TOD")){
+			number = "36";
 		}
 		return number;
 	}

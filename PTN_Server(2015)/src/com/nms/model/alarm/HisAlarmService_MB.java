@@ -77,14 +77,12 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 				hisInfo.setWarningLevel_temp(warnList.get(0).getWarninglevel_temp());
 			}
 			this.bean2Db(hisInfo);
-			if(hisInfo != null){
-				if (hisInfo.getId() != 0) {
-					resultcesId = this.mapper.update(hisInfo);
-				} else {
-					resultcesId = this.mapper.insert(hisInfo);
-				}
-				this.sqlSession.commit();
+			if (hisInfo.getId() != 0) {
+				resultcesId = this.mapper.update(hisInfo);
+			} else {
+				resultcesId = this.mapper.insert(hisInfo);
 			}
+			this.sqlSession.commit();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -551,10 +549,8 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 		}
 		int resultcesId = 0;
 		try {
-			if(hisInfo.getObjectName() != null){
-				resultcesId = this.mapper.saveNorth(hisInfo);
-				this.sqlSession.commit();
-			}
+			resultcesId = this.mapper.saveNorth(hisInfo);
+			this.sqlSession.commit();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -583,5 +579,9 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 	public void insertNorthBatch(List<HisAlarmInfo> list){
 		this.mapper.insertNorthBatch(list);
 		this.sqlSession.commit();
+	}
+	
+	public HisAlarmInfo queryHisNorthIndex(){
+		return this.mapper.queryHisNorthIndex();
 	}
 }

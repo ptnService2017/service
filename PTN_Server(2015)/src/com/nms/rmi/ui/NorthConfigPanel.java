@@ -8,7 +8,11 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -20,15 +24,21 @@ import javax.swing.JTextField;
 import org.apache.poi.util.StringUtil;
 
 import com.mchange.lang.StringUtils;
+import com.nms.db.bean.alarm.CurrentAlarmInfo;
+import com.nms.db.bean.alarm.HisAlarmInfo;
 import com.nms.db.bean.system.SystemLog;
+import com.nms.drive.service.impl.CoderUtils;
 import com.nms.jms.common.OpviewMessage;
 import com.nms.jms.jmsMeanager.JmsUtil;
+import com.nms.model.alarm.CurAlarmService_MB;
+import com.nms.model.alarm.HisAlarmService_MB;
 import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.ServerConstant;
 import com.nms.rmi.ui.util.ThreadUtil;
 import com.nms.snmp.ninteface.framework.AgentServer;
 import com.nms.snmp.ninteface.impl.alarm.AlarmNorthconsumer;
+import com.nms.snmp.ninteface.impl.alarm.AlarmTcpTracpRun;
 import com.nms.snmp.ninteface.impl.config.CRDXml;
 import com.nms.snmp.ninteface.impl.config.EPGXml;
 import com.nms.snmp.ninteface.impl.config.EPUXml;
@@ -41,6 +51,7 @@ import com.nms.snmp.ninteface.impl.config.NELXml;
 import com.nms.snmp.ninteface.impl.config.OMCXml;
 import com.nms.snmp.ninteface.impl.config.PGUXml;
 import com.nms.snmp.ninteface.impl.config.PRBXml;
+import com.nms.snmp.ninteface.impl.config.PRTTestXml;
 import com.nms.snmp.ninteface.impl.config.PRTXml;
 import com.nms.snmp.ninteface.impl.config.PSWXml;
 import com.nms.snmp.ninteface.impl.config.PTGXml;
@@ -158,10 +169,10 @@ public class NorthConfigPanel extends JPanel {
 				new NELXml().getNELXml();
 				new EQHXml().getEQHXml();
 				new CRDXml().getCRDXml();
-				new PRTXml().getPRTXml();
+				new PRTTestXml().getPRTXml();
 				new PRBXml().getPRBXml();
 				new TNLXml().getTNLXml();
-				new LBSXml().getLSBXml();
+				new LBSXml().getLBSXml();
 				new TPIXml().getTPIXml();
 				new TPBXml().getTPBXml();
 				
@@ -185,12 +196,133 @@ public class NorthConfigPanel extends JPanel {
 				DialogBoxUtil.succeedDialog(null, "生成成功");
 			}
 		});
+		alarmTest.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Iterator<String> ii = NorthConfig.alarmTcpTracpMainThread.getAlarmTcpTracpRuns().keySet().iterator();
+				HisAlarmService_MB hisAlarmService_MB = null;
+				
+				try {
+					hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
+					Map<String,Object> map = hisAlarmService_MB.sysNorthAlarmIndex(1).get(0);
+					RunTestAlarm runTestAlarm = new RunTestAlarm();
+					new Thread(runTestAlarm).start();
+					while(ii.hasNext()){
+						String key = ii.next();
+						AlarmTcpTracpRun alarmTcpTracpRun = NorthConfig.alarmTcpTracpMainThread.getAlarmTcpTracpRuns().get(key);
+						for (int j = 1; j < 910000; j++) {
+							StringBuilder stringBuilder = new StringBuilder();
+							stringBuilder.append("{");
+							Integer alarmId = (Integer) map.get("alarmId")+j;
+							stringBuilder.append("\"alarmSeq\":\""+alarmId+"\",");
+							stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
+							Integer status = Integer.parseInt(map.get("alarmStatus").toString())==0?1:0;
+							stringBuilder.append("\"alarmStatus\":"+status+",");
+							stringBuilder.append("\"alarmType\":\""+"通信告警"+"\",");
+							stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
+							stringBuilder.append("\"eventTime\":\""+(status ==1?map.get("happenedtime"):map.get("clearedtime"))+"\",");
+							stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
+							stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
+							stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
+							Integer i = (Integer) map.get("objectType");
+							String str = "";
+							if(i==null ||i == 8|| i== 5 || i==0|| i==10|| i==7){
+								str = "NEL";
+							}else if(i == 0x3){
+								str = "PRT";
+							}else if(i == 0x40){
+								str = "PW";
+							}else if(i == 0x30){
+								str = "TNL";
+							}else if(i == 0x50 || i==0x60){
+								str = "ETH";
+							}else if(i == 0x70){
+								str = "TDM";
+							}
+							
+							if(map.get("neUID").toString().equals("0") && map.get("neName") == null){
+								stringBuilder.append("\"neUID\":\"\",");
+								stringBuilder.append("\"neName\":\"\",");
+								stringBuilder.append("\"neType\":\"PTN\",");
+								stringBuilder.append("\"objectUID\":\"3301EBCS1\",");
+								stringBuilder.append("\"objectName\":\"EMS服务器\",");
+								stringBuilder.append("\"objectType\":\"OMC\",");
+								stringBuilder.append("\"locationInfo\":\"OMC\",");
+								stringBuilder.append("\"addInfo\":\"\",");
+								stringBuilder.append("\"holderType\":\"\",");
+								stringBuilder.append("\"alarmCheck\":\"\",");
+								stringBuilder.append("\"layer\":");
+							}else{
+								stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
+								stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
+								stringBuilder.append("\"neType\":\"PTN\",");
+								stringBuilder.append("\"objectUID\":\"3301EBCS1"+str+map.get("objectUID")+"\",");
+								stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
+								stringBuilder.append("\"objectType\":\""+str+"\",");
+								stringBuilder.append("\"locationInfo\":\""+"slot:槽位1;card:主控"+"\",");
+								stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
+								stringBuilder.append("\"holderType\":\""+map.get("neType")+"\",");
+								stringBuilder.append("\"alarmCheck\":\"\",");
+								stringBuilder.append("\"layer\":2");
+							}
+							stringBuilder.append("}");
+							alarmTcpTracpRun.getSocket().getOutputStream().write(res(0, stringBuilder.toString()));
+							alarmTcpTracpRun.getSocket().getOutputStream().flush();
+							System.out.println(alarmId+j);
+							Thread.sleep(2);
+						}
+						
+					}
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}finally{
+					UiUtil.closeService_MB(hisAlarmService_MB);
+				}
+				
+			}
+		});
 	}
 	
-
 	
 	
-
+	private int getLevel(String origSeverity){
+		int l = 1;
+		if(origSeverity.equals("4")){
+			l=2;
+		}if(origSeverity.equals("3")){
+			l=3;
+		}if(origSeverity.equals("2")){
+			l=4;
+		}
+		return l;
+	}
+	
+	private byte[] res(int type,String bobys){
+		byte[] res = null;
+		try {
+			byte[] boby = bobys.getBytes("utf-8");
+			byte[] head = new byte[9];
+			head[0] = (byte) 0xff;
+			head[1] = (byte) 0xff;
+			head[2] = (byte) type;
+			this.getTime(head);
+			byte[] length = CoderUtils.intToBytes(boby.length);
+			head[7] = length[2];
+			head[8] = length[3];
+			res = CoderUtils.arraycopy(head, boby);
+		} catch (UnsupportedEncodingException e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return res;
+	}
+	
+	private void getTime(byte[] bs){
+		String s = Long.toHexString(System.currentTimeMillis()/1000);
+		for (int i = 3; i < 7; i++) {
+			bs[i] = (byte) Integer.parseInt(s.substring((i-3)*2, (i-2)*2), 16);
+		}
+	}
 
 	
 		
@@ -211,6 +343,8 @@ public class NorthConfigPanel extends JPanel {
 		this.manufacturerText = new JTextField(NorthConfig.northTelnetPort+"");
 		
 		createFile = new JButton("生成文件");
+		
+		alarmTest = new JButton("告警吞吐率");
 		this.panel_select = new JPanel();
 		this.panel_select.setBorder(null);
 		
@@ -288,6 +422,14 @@ public class NorthConfigPanel extends JPanel {
 		c.insets = new Insets(5, 5, 5, 5);
 		componentLayout.setConstraints(this.createFile, c);
 		this.panel_select.add(this.createFile);
+		
+		c.gridx = 0;
+		c.gridy = 4;
+		c.fill = GridBagConstraints.CENTER;
+		c.insets = new Insets(5, 5, 5, 5);
+		componentLayout.setConstraints(this.alarmTest, c);
+		this.panel_select.add(this.alarmTest);
+		
 	}
 
 
@@ -324,6 +466,7 @@ public class NorthConfigPanel extends JPanel {
 	private JPanel panel_select;
 	private Map<String,String> map = new HashMap<String,String>();
 	private JButton createFile;//生成文件
+	private JButton alarmTest;//告警吞吐率
 	
 	public static void main(String[] args) {
 		try {

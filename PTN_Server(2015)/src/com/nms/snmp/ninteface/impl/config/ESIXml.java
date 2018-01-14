@@ -134,7 +134,9 @@ public class ESIXml {
 	
 	private Element createFileContent(Document doc,List<Map<String,Object>> mapList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("ESI");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
 		this.createElementNode(doc, "N", "pwrmUID", FieldName, "i", "2");
@@ -146,12 +148,12 @@ public class ESIXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Map<String,Object> map :mapList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1ETH"+map.get("id"));
+			Object.setAttribute("rmUID","3301EBCS1ESI"+map.get("id"));
 			this.createElementNode(doc, "V", "3301EBCS1ETH"+map.get("id"), Object, "i", "1");
 			this.createElementNode(doc, "V", "3301EBCS1PSW"+map.get("pwId"), Object, "i", "2");
 			this.createElementNode(doc, "V", "3301EBCS1NEL"+map.get("aSiteId"), Object, "i", "3");
 			this.createElementNode(doc, "V", "3301EBCS1NEL"+map.get("zSiteId"), Object, "i", "4");
-			this.createElementNode(doc, "V", "NA", Object, "i", "5");
+			this.createElementNode(doc, "V", "NA", Object, "i", "4");
 			FieldValue.appendChild(Object);
 		}
 		

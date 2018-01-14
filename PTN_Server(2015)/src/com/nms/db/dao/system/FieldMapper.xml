@@ -314,6 +314,6 @@
    </select>
    
    <select id="select_SBN_north" resultMap="BaseResultMap">
-   select*from field where objectType = 'subnet'
+   select*from field
    </select>
 </mapper>

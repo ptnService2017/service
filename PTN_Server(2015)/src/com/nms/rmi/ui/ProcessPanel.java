@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -18,12 +17,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.nms.db.bean.alarm.CurrentAlarmInfo;
-import com.nms.db.bean.alarm.HisAlarmInfo;
 import com.nms.db.bean.alarm.WarningLevel;
 import com.nms.db.bean.system.SystemLog;
 import com.nms.db.enums.EObjectType;
 import com.nms.model.alarm.CurAlarmService_MB;
-import com.nms.model.alarm.HisAlarmService_MB;
 import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.ServerConstant;
@@ -332,7 +329,7 @@ public class ProcessPanel extends JPanel {
 			UiUtil.closeService_MB(alarmServiceMB);
 		}
 	}
-	
+		
 	/**
 	 * 初始化控件
 	 */

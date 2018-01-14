@@ -120,6 +120,7 @@ import com.nms.snmp.ninteface.commandline.CommandLineStart;
 import com.nms.snmp.ninteface.impl.alarm.AlarmNorthconsumer;
 import com.nms.snmp.ninteface.impl.alarm.AlarmTcpTracpMainThread;
 import com.nms.snmp.ninteface.impl.ftp.FtpTransThread;
+import com.nms.snmp.ninteface.util.NorthConfig;
 import com.nms.ui.PerforTaskThreadFactory;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.ExceptionManage;
@@ -162,10 +163,12 @@ public class ServiceInitUtil {
 	
 	private void initNorth(){
 		ConstantUtil.serviceFactory = new ServiceFactory();
-		FtpTransThread ftpTransThread = new FtpTransThread();
+		FtpTransThread ftpTransThread = new FtpTransThread(1);
 	    new Thread(ftpTransThread).start();
-	    AlarmTcpTracpMainThread alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
-		new Thread(alarmTcpTracpMainThread).start();
+//	    FtpTransThread ftpTransThread2 = new FtpTransThread(2);
+//	    new Thread(ftpTransThread2).start();
+	    NorthConfig.alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
+		new Thread(NorthConfig.alarmTcpTracpMainThread).start();
 	}
 	public ServiceInitUtil(Registry registry,int label) throws Exception {
 		this.registry = registry;

@@ -56,7 +56,7 @@ public class PWPXml {
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
-			List<PwInfo> pwList = new ArrayList<PwInfo>();
+			List<PwInfo> pwList = getPwList();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,pwList);//生成xml文件内容
@@ -132,7 +132,9 @@ public class PWPXml {
 	
 	private Element createFileContent(Document doc,List<PwInfo> pwList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("PWP");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
 		this.createElementNode(doc, "N", "carriePwrmUID", FieldName, "i", "2");
@@ -140,7 +142,15 @@ public class PWPXml {
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
-		
+		for (int i = 0; i < pwList.size(); i++) {
+			PwInfo pwInfo = pwList.get(i);
+			Element Object = doc.createElement("Object");
+			Object.setAttribute("rmUID","3301EBCS1PWP"+pwInfo.getPwId());
+			this.createElementNode(doc, "V", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "2");
+			this.createElementNode(doc, "V", i+1+"", Object, "i", "3");
+			FieldValue.appendChild(Object);
+		}
 		Objects.appendChild(FieldValue);
 		return Objects;
 	}

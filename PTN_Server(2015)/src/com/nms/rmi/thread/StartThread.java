@@ -9,13 +9,18 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Date;
 
 import com.champor.license.Features;
+import com.nms.db.bean.system.SystemLog;
 import com.nms.jms.common.ApplicationBeanFactory;
 import com.nms.jms.jmsMeanager.Broker;
+import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.util.CodeConfigItem;
+import com.nms.model.util.Services;
 import com.nms.rmi.ui.ServiceStartPanel;
 import com.nms.rmi.ui.util.LicenseClientUtil;
 import com.nms.rmi.ui.util.ServerConstant;
 import com.nms.rmi.ui.util.ServiceInitUtil;
+import com.nms.snmp.ninteface.framework.AgentServer;
+import com.nms.snmp.ninteface.impl.alarm.AlarmNorthconsumer;
 import com.nms.snmp.ninteface.util.NorthConfig;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.DialogBoxUtil;
@@ -41,47 +46,51 @@ public class StartThread implements Runnable {
 
 	@Override
 	public void run() {
-		try{
-			//测试用户是否在管理权限下执行的
-			try {
-				isRootManager(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME);
-			} catch (Exception e) {
-				serviceStartPanel.buttonResult(true, false, ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_MANAGER_IMPORT_FAIL));
-				return;
-			}
-			
-			LicenseClientUtil licenseClientUtil=null;
-			Features features=null;
-			EquimentDataUtil equimentDataUtil=new EquimentDataUtil();
-			// 获取数据库连接，如果获取到了，flag=false 并且结束循环
-			boolean flag = true;
-			String resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_RUN); // 返回启动结果
-			CodeConfigItem	codeConfigItem = CodeConfigItem.getInstance();
-			if(codeConfigItem.getSnmpStartOrClose() == 0){
-				try {
-					   licenseClientUtil = new LicenseClientUtil();
-				        features = licenseClientUtil.getFeatures(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME,ConstantUtil.serviceIp);			     
-						if(null != features){							
-							Date currTime = new Date();
-							Date licenseTime=features.getFeatureList().get(0).getExpiresDate();
-							//如果许可的时间正常即可使用，如过期则提示
-							if(currTime.getTime() < licenseTime.getTime())
-							{
-								ServerConstant.features=features;
-							}
-							else //过期
-							{
-								resultStr = ResourceUtil.srcStr(StringKeysLbl.TIP_RMI_ROOTKEY);
-								serviceStartPanel.buttonResult(true, false, resultStr);
-								return;
-							}
-								
-							}
-				} catch (IOException e) {
-					DialogBoxUtil.errorDialog(null ,ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_IMPORT_FAIL));
-				}
-			}
 		
+		//测试用户是否在管理权限下执行的
+		try {
+			isRootManager(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME);
+		} catch (Exception e) {
+			serviceStartPanel.buttonResult(true, false, ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_MANAGER_IMPORT_FAIL));
+			return;
+		}
+		
+		LicenseClientUtil licenseClientUtil=null;
+		Features features=null;
+		EquimentDataUtil equimentDataUtil=new EquimentDataUtil();
+		// 获取数据库连接，如果获取到了，flag=false 并且结束循环
+		boolean flag = true;
+		try {
+			String resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_RUN); // 返回启动结果
+			try {
+//				   licenseClientUtil = new LicenseClientUtil();
+//			        features = licenseClientUtil.getFeatures(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME,ConstantUtil.serviceIp);			     
+//					if(null != features){							
+//						Date currTime = new Date();
+//						Date licenseTime=features.getFeatureList().get(0).getExpiresDate();
+//						//如果许可的时间正常即可使用，如过期则提示
+//						if(currTime.getTime() < licenseTime.getTime())
+//						{
+//							ServerConstant.features=features;
+//						}
+//						else //过期
+//						{
+//							resultStr = ResourceUtil.srcStr(StringKeysLbl.TIP_RMI_ROOTKEY);
+//							serviceStartPanel.buttonResult(true, false, resultStr);
+//							return;
+//						}
+//						
+//					}
+
+//		} catch (IOException e) {
+//			DialogBoxUtil.errorDialog(null ,ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_IMPORT_FAIL));
+//		} 
+				}
+			catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+
+			
 			try {
 				//执行启动mysql命令
 				String command = "net start MySQL5";
@@ -94,8 +103,7 @@ public class StartThread implements Runnable {
 						if(CodeConfigItem.getInstance().getSnmpStartOrClose() == 1){
 							Mybatis_DBManager.init(NorthConfig.northServiceIp);
 						}else{
-//							Mybatis_DBManager.init(ServerConstant.localhostIp);
-							Mybatis_DBManager.init(CodeConfigItem.getInstance().getMainIp());
+							Mybatis_DBManager.init(ServerConstant.localhostIp);
 						}
 						
 						flag = false;

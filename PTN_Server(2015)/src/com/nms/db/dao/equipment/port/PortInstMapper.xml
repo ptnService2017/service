@@ -24,7 +24,7 @@
     <result column="lagNumber" property="lagNumber" jdbcType="INTEGER" />
     <result column="linecoding" property="linecoding" jdbcType="VARCHAR" />
     <result column="impedance" property="impedance" jdbcType="INTEGER" />
-    <result column="macAddress" property="macAddress" jdbcType="VARCHAR" />
+    <result column="macAddress" property="macaddress" jdbcType="VARCHAR" />
     <result column="qinqEnabled" property="isEnabled_QinQ" jdbcType="INTEGER" />
     <result column="expMappingLLspInput" property="expMappingLLspInput" jdbcType="INTEGER" />
     <result column="expMappingLLspOutput" property="expMappingLLspOutput" jdbcType="INTEGER" />

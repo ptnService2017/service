@@ -411,7 +411,7 @@ SELECT
 	s.id AS "servicermUID",
 	a.siteId,
 	a.portId,
-	a.vlanId,
+	ac.vlanId,
 ac.cir,
 ac.pir
 FROM

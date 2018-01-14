@@ -1,6 +1,7 @@
 package com.nms.snmp.ninteface.commandline;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nms.db.bean.equipment.card.CardInst;
 import com.nms.db.bean.equipment.shelf.SiteInst;
@@ -90,6 +91,25 @@ public class CommandSite {
 				}else{//失败
 					buffer.append("result:1");
 				}
+			}else if("inspection".equals(param[1])){
+				List<Map<String,Object>> list = null;
+				if(page){
+					list = siteService_MB.alarmInspection((Integer.parseInt(param[3])-1)*size,size);
+				}else{
+					list = siteService_MB.alarmInspection(0,Integer.MAX_VALUE);
+				}
+				buffer.append("result:success"+"\r\n");
+				for(Map<String, Object> map : list){
+					buffer.append("siteId:"+map.get("site_inst_id")+" ");
+					buffer.append("loginstatus:"+map.get("loginstatus")+" ");
+					Long i = (Long) map.get("alarmstatus");
+					if(i!= null && i>1){
+						buffer.append("alarmstatus:"+1+"\r\n");
+					}else{
+						buffer.append("alarmstatus:"+0+"\r\n");
+					}
+					
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,7 +117,7 @@ public class CommandSite {
 			UiUtil.closeService_MB(cardService);
 			UiUtil.closeService_MB(siteService_MB);
 		}
-		
+		buffer.append(">");
 		return buffer.toString();
 	}
 	

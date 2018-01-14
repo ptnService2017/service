@@ -33,4 +33,6 @@ public interface CardInstMapper {
     public int deleteBySiteId(@Param("siteId")int siteId);
 
 	List<CardInst> select_north();
+
+	List<CardInst> selectEPG();
 }

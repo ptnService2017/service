@@ -126,13 +126,14 @@ public class SBNXml
   private Element createFileContent(Document doc, List<Field> mapList)
   {
     Element Objects = doc.createElement("Objects");
-    
+    Element ObjectType = doc.createElement("ObjectType");
+	ObjectType.setTextContent("SBN");
+	Objects.appendChild(ObjectType);
     Element FieldName = doc.createElement("FieldName");
-    createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-    createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-    createElementNode(doc, "N", "parentSubnetrmUID", FieldName, "i", "3");
-    createElementNode(doc, "N", "xPos", FieldName, "i", "4");
-    createElementNode(doc, "N", "yPos", FieldName, "i", "5");
+    createElementNode(doc, "N", "nativeName", FieldName, "i", "1");
+    createElementNode(doc, "N", "parentSubnetrmUID", FieldName, "i", "2");
+    createElementNode(doc, "N", "xPos", FieldName, "i", "3");
+    createElementNode(doc, "N", "yPos", FieldName, "i", "4");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
@@ -140,11 +141,10 @@ public class SBNXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1SBN" + field.getId());
-      createElementNode(doc, "V", "3301EBCS1SBN" + field.getId(), Object, "i", "1");
-      createElementNode(doc, "V", field.getFieldName(), Object, "i", "2");
-      createElementNode(doc, "V", "", Object, "i", "3");
-      createElementNode(doc, "V", field.getFieldX()+"", Object, "i", "4");
-      createElementNode(doc, "V", field.getFieldY()+"", Object, "i", "5");
+      createElementNode(doc, "V", field.getFieldName(), Object, "i", "1");
+      createElementNode(doc, "V", field.getParentId()==null?"--":"3301EBCS1SBN"+field.getParentId(), Object, "i", "2");
+      createElementNode(doc, "V", field.getFieldX()+"", Object, "i", "3");
+      createElementNode(doc, "V", field.getFieldY()+"", Object, "i", "4");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

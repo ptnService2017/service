@@ -373,8 +373,8 @@
 	a.isCleared AS "alarmStatus",
 	w.WarningType AS "alarmType",
 	a.alarmlevel AS "origSeverity",
-	a.happenedtime,
-	a.clearedtime,
+	DATE_FORMAT(a.happenedtime,'%Y-%m-%d %H:%i:%s') as happenedtime,
+	DATE_FORMAT(a.clearedtime,'%Y-%m-%d %H:%i:%s') as clearedtime,
 	a.id AS "alarmId",
 	w.WarningMayReason AS "specificProblem",
 	a.siteid AS "neUID",
@@ -382,11 +382,13 @@
 	s.CellType AS "neType",
 	a.objectid AS "objectUID",
 	a.objecttype AS "objectType",
-	a.objectname AS "objectName"
+	a.objectname AS "objectName",
+	w.id as "specificProblemID",
+	w.WarningAdvice as "addInfo"
    		FROM `alarm_north`  a
 INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
 AND w.Manufacturer = 1
-INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
+LEFT JOIN site_inst s ON a.siteid = s.site_inst_id 
  where 1=1 and 
    		<if test="alarmSeq>0">
    			a.id &gt;#{alarmSeq}
@@ -396,4 +398,28 @@ INNER JOIN site_inst s ON a.siteid = s.site_inst_id
    		</if>
    		ORDER BY a.id ASC
    </select>
+   
+   <select id="queryNorthTest" resultMap="CurrentAlarm">
+   	SELECT * FROM `current_alarm` order by id desc limit 0,1
+   </select>
+   
+   <insert id ="insertNorthBatch" parameterType="java.util.List" >
+               insert into current_alarm (siteid, slotId, 
+      objectid, objecttype, objectname, 
+      alarmcode, alarmlevel, happenedtime, 
+      confirmtime, clearedtime, ackuser, 
+      comments, 
+      alarmlevel_temp, isCleared)
+    values
+    <foreach collection ="list" item="north" index= "index" separator =",">
+    ( #{north.siteId,jdbcType=INTEGER}, #{north.slotId,jdbcType=INTEGER}, 
+      #{north.objectId,jdbcType=INTEGER}, #{north.objectType,jdbcType=INTEGER,typeHandler=com.nms.db.enums.IntEnumTypeHandler},
+       #{north.objectName,jdbcType=VARCHAR}, 
+      #{north.alarmCode,jdbcType=INTEGER}, #{north.alarmLevel,jdbcType=INTEGER}, #{north.happenedtime,jdbcType=VARCHAR}, 
+      #{north.confirmtime,jdbcType=VARCHAR}, #{north.cleanTime,jdbcType=VARCHAR}, #{north.ackUser,jdbcType=VARCHAR}, 
+      #{north.commentS,jdbcType=VARCHAR}, 
+      #{north.warningLevel_temp,jdbcType=INTEGER}, #{north.isClear,jdbcType=INTEGER})
+             </foreach >
+  </insert >
+  
 </mapper>

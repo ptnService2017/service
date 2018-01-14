@@ -132,12 +132,13 @@ public class TPIXml
   private Element createFileContent(Document doc, List<Tunnel> tunnelList)
   {
     Element Objects = doc.createElement("Objects");
-    
+    Element ObjectType = doc.createElement("ObjectType");
+	ObjectType.setTextContent("TPI");
+	Objects.appendChild(ObjectType);
     Element FieldName = doc.createElement("FieldName");
-    createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-    createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-    createElementNode(doc, "N", "reversionMode", FieldName, "i", "3");
-    createElementNode(doc, "N", "type", FieldName, "i", "4");
+    createElementNode(doc, "N", "nativeName", FieldName, "i", "1");
+    createElementNode(doc, "N", "reversionMode", FieldName, "i", "2");
+    createElementNode(doc, "N", "type", FieldName, "i", "3");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
@@ -145,10 +146,9 @@ public class TPIXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1TPI" + tunnel.getTunnelId());
-      createElementNode(doc, "V", "3301EBCS1TPI" + tunnel.getTunnelId(), Object, "i", "1");
-      createElementNode(doc, "V", tunnel.getTunnelName(), Object, "i", "2");
-      createElementNode(doc, "V", tunnel.getRotateMode().equals("MANUAL")?"RM_REVERTIVE":"RM_NON_REVERTIVE", Object, "i", "3");
-      createElementNode(doc, "V", "1:1", Object, "i", "4");
+      createElementNode(doc, "V", tunnel.getTunnelName(), Object, "i", "1");
+      createElementNode(doc, "V", tunnel.getRotateMode().equals("MANUAL")?"RM_REVERTIVE":"RM_NON_REVERTIVE", Object, "i", "2");
+      createElementNode(doc, "V", "1:1", Object, "i", "3");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

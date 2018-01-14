@@ -132,52 +132,53 @@ public class PSWXml {
 	
 	private Element createFileContent(Document doc,List<PwInfo> pwList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("PSW");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "direction", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "aEndTprmUID", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "zEndTprmUID", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "9");
-		this.createElementNode(doc, "N", "activeState", FieldName, "i", "10");
-		this.createElementNode(doc, "N", "aEndIngressCIR", FieldName, "i", "11");
-		this.createElementNode(doc, "N", "aEndIngressPIR", FieldName, "i", "12");
-		this.createElementNode(doc, "N", "aEndEgressCIR", FieldName, "i", "13");
-		this.createElementNode(doc, "N", "aEndEgressPIR", FieldName, "i", "14");
-		this.createElementNode(doc, "N", "zEndIngressCIR", FieldName, "i", "15");
-		this.createElementNode(doc, "N", "zEndIngressPIR", FieldName, "i", "16");
-		this.createElementNode(doc, "N", "zEndEgressCIR", FieldName, "i", "17");
-		this.createElementNode(doc, "N", "zEndEgressPIR", FieldName, "i", "18");
+		this.createElementNode(doc, "N", "direction", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "aEndTprmUID", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "zEndTprmUID", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "8");
+		this.createElementNode(doc, "N", "activeState", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "aEndIngressCIR", FieldName, "i", "10");
+		this.createElementNode(doc, "N", "aEndIngressPIR", FieldName, "i", "11");
+		this.createElementNode(doc, "N", "aEndEgressCIR", FieldName, "i", "12");
+		this.createElementNode(doc, "N", "aEndEgressPIR", FieldName, "i", "13");
+		this.createElementNode(doc, "N", "zEndIngressCIR", FieldName, "i", "14");
+		this.createElementNode(doc, "N", "zEndIngressPIR", FieldName, "i", "15");
+		this.createElementNode(doc, "N", "zEndEgressCIR", FieldName, "i", "16");
+		this.createElementNode(doc, "N", "zEndEgressPIR", FieldName, "i", "17");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PwInfo pwInfo :pwList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1PSW"+pwInfo.getPwId());
-			this.createElementNode(doc, "V", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
-			this.createElementNode(doc, "V", "CD_BI", Object, "i", "2");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowaSiteName(), Object, "i", "3");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+pwInfo.getASiteId(), Object, "i", "4");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowzSiteName(), Object,"i", "5");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+pwInfo.getZSiteId(), Object, "i", "6");
-			this.createElementNode(doc, "V", pwInfo.getPwName(), Object, "i", "7");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowaSiteName(), Object, "i", "8");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowzSiteName(), Object, "i", "9");
-			this.createElementNode(doc, "V", pwInfo.getPwStatus()==1?"ACTIVE":"PENDING", Object, "i", "10");
+			this.createElementNode(doc, "V", "CD_BI", Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowaSiteName(), Object, "i", "2");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+pwInfo.getASiteId(), Object, "i", "3");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowzSiteName(), Object,"i", "4");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+pwInfo.getZSiteId(), Object, "i", "5");
+			this.createElementNode(doc, "V", pwInfo.getPwName(), Object, "i", "6");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowaSiteName(), Object, "i", "7");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+pwInfo.getShowzSiteName(), Object, "i", "8");
+			this.createElementNode(doc, "V", pwInfo.getPwStatus()==1?"ACTIVE":"PENDING", Object, "i", "9");
 			if(pwInfo.getQosList() != null && pwInfo.getQosList().size()>0){
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"",  Object, "i", "11");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"",  Object, "i", "12");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"", Object, "i", "13");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"", Object, "i", "14");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"", Object, "i", "15");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"", Object, "i", "16");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"", Object, "i", "17");
-				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"", Object, "i", "18");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"",  Object, "i", "10");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"",  Object, "i", "11");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"", Object, "i", "12");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"", Object, "i", "13");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"", Object, "i", "14");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"", Object, "i", "15");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getCir()+"", Object, "i", "16");
+				this.createElementNode(doc, "V",pwInfo.getQosList().get(0).getPir()+"", Object, "i", "17");
 			}else{
+				this.createElementNode(doc, "V", "0", Object, "i", "10");
 				this.createElementNode(doc, "V", "0", Object, "i", "11");
 				this.createElementNode(doc, "V", "0", Object, "i", "12");
 				this.createElementNode(doc, "V", "0", Object, "i", "13");
@@ -185,7 +186,6 @@ public class PSWXml {
 				this.createElementNode(doc, "V", "0", Object, "i", "15");
 				this.createElementNode(doc, "V", "0", Object, "i", "16");
 				this.createElementNode(doc, "V", "0", Object, "i", "17");
-				this.createElementNode(doc, "V", "0", Object, "i", "18");
 			}
 			
 			FieldValue.appendChild(Object);

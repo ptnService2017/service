@@ -253,8 +253,7 @@ public class AlarmTools {
 						info.setObjectName(name+" DYING_GASP");
 					}
 				}else{
-//					info.setObjectName("未知端口号:"+(lineObject.getLine()%256 + 1));
-					info.setObjectName(null);
+					info.setObjectName("未知端口号:"+(lineObject.getLine()%256 + 1));
 				}
 			} else if (codeType == 0x3) {// 段层(TMS)
 				info.setObjectType(EObjectType.TMS_OAM);
@@ -308,8 +307,7 @@ public class AlarmTools {
 				info.setObjectId(lineObject.getLine()%256 + 1);
 			} else if (codeType == 0x70) {// 1731线路(ETHOAM)
 				info.setObjectType(EObjectType.ETHOAM);
-//				info.setObjectId(Integer.parseInt(lineCode.substring(0, 1)) + 1);
-				info.setObjectId(lineObject.getLine()%256 + 1);
+				info.setObjectId(Integer.parseInt(lineCode.substring(0, 1)) + 1);
 				info.setObjectName("ETHOAM("+(lineObject.getLine()%256 + 1)+")");
 			} else if (codeType == 0x80) {// E1
 				info.setObjectType(EObjectType.E1);
@@ -478,6 +476,7 @@ public class AlarmTools {
 									northAlarm.setWarningLevel(warningLevel);
 									northAlarm.setAlarmTime(infoObject.getAlarmDate());
 									northAlarm.setWarningLevel(warningLevel);
+									northAlarm.setHappenedtime(infoObject.getAlarmDate());
 									setIdAndType(lineObject, northAlarm,slotInst.getNumber(),infoObject.getAlarmCode());// 确定告警类型
 									if (getAlarmStatus(infoObject.getAlarmStatus()) == 1) {// 判断是历史告警还是当前告警
 										info = new CurrentAlarmInfo();

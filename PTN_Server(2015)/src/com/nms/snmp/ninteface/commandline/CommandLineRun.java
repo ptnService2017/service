@@ -30,15 +30,15 @@ public class CommandLineRun implements Runnable{
             String clientRequestString = null;
             CommandLineConfig commandLineConfig = new CommandLineConfig();
             while((clientRequestString = br.readLine()) != null){
-            	String reslut = "no param\r\n";
+            	String reslut = "no param\r\n>";
             	System.out.println("接收到客户端 " + clientIp + " 的信息:" + clientRequestString);
             	if(hasLogin){
             		if("setpage;1".equals(clientRequestString)){
                 		page = true;
-                		reslut ="success\r\n";
+                		reslut ="success\r\n>";
                 	}else if("setpage;0".equals(clientRequestString)){
                 		page = false;
-                		reslut ="success\r\n";
+                		reslut ="success\r\n>";
                 	}else if(clientRequestString.contains(";")){
                 		reslut = commandLineConfig.parsingCommand(clientRequestString,page);
                 	}else if("exit".equals(clientRequestString)){
@@ -49,17 +49,17 @@ public class CommandLineRun implements Runnable{
             		if(clientRequestString.contains("username") && clientRequestString.contains("password")){
             			String[] str = clientRequestString.split(";");
             			if(str.length != 2){
-            				reslut ="param error \r\n";
+            				reslut ="param error \r\n>";
             			}else{
             				if(str[0].equals("username-admin") && str[1].equals("password-admin")){
             					hasLogin = true;
-            					reslut ="success\r\n";
+            					reslut ="success\r\n>";
             				}else{
-            					reslut ="username or passwor error \r\n";
+            					reslut ="username or passwor error \r\n>";
             				}
             			}
             		}else{
-            			reslut ="need login\r\n";
+            			reslut ="need login\r\n>";
             		}
             	}
             	

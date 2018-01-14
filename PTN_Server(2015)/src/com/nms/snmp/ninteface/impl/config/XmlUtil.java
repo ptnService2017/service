@@ -36,7 +36,7 @@ public class XmlUtil {
 		FileHeader.appendChild(ElementType);
 		
 		Element CmVersion = doc.createElement("CmVersion");
-		CmVersion.setTextContent("V1.0.1");
+		CmVersion.setTextContent("V1.0.0");
 		FileHeader.appendChild(CmVersion);
 		
 		return FileHeader;
@@ -50,7 +50,7 @@ public class XmlUtil {
 //			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
 		    fileTools = new FileTools();
 		    fileTools.putFile(doc, filePath);//根据xml文件内容生成对应的文件
-		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length())+".zip");
+		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length())+".tmp");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, XmlUtil.class);
 		}

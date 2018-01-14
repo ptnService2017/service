@@ -244,4 +244,8 @@
     <update id="updateMasterAddress" parameterType="SlotInst" >
     update slot_inst set masterCardAddress=#{masterCardAddress} where id=#{id}
   </update>
+  
+  <select id="northSlot" resultType="SlotInst">
+  SELECT s.id,s.bestCardName,s.number,s.siteId, si.shelf as 'snmpName' ,s.slotType FROM `slot_inst` s INNER JOIN site_inst si on s.siteId = si.site_inst_id; 
+  </select>
 </mapper>

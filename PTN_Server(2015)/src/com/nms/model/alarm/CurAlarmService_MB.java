@@ -328,15 +328,13 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 			}
 
 			this.bean2Db(curInfo);
-			if(curInfo.getObjectName() != null){
-				if (curInfo.getId() != 0) {
-					resultcesId = this.mapper.update(curInfo);
-				} else {
-					resultcesId = this.mapper.insert(curInfo);
-					curInfo.setId(resultcesId);
-				}
-				this.sqlSession.commit();
+			if (curInfo.getId() != 0) {
+				resultcesId = this.mapper.update(curInfo);
+			} else {
+				resultcesId = this.mapper.insert(curInfo);
+				curInfo.setId(resultcesId);
 			}
+			this.sqlSession.commit();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -661,11 +659,9 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 					curInfo.setWarningLevel(warningLevel);
 				}
 				this.bean2Db(curInfo);
-				if(curInfo != null){
-					this.mapper.insert(curInfo);
-					this.sqlSession.commit();
-				}
+				this.mapper.insert(curInfo);
 			} 
+			this.sqlSession.commit();
 		}catch (Exception e) {
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -733,4 +729,14 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 		ExceptionManage.infor("alarmSeq::"+alarmSeq+"time：："+time,this.getClass());
 		return this.mapper.queryNorthRun(alarmSeq,time);
 	}
+	
+	public CurrentAlarmInfo queryNorthTest(){
+		return this.mapper.queryNorthTest();
+	}
+	
+	public void insertNorthBatch(List<CurrentAlarmInfo> list){
+		this.mapper.insertNorthBatch(list);
+		this.sqlSession.commit();
+	}
+	
 }

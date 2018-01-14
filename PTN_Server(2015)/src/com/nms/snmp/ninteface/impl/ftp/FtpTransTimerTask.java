@@ -71,6 +71,7 @@ public class FtpTransTimerTask extends TimerTask {
 	@Override
 	public void run() {
 		try {
+			System.out.println("zhixing");
 			this.getCollectTime();
 			//生成配置文件
 			this.createNRMFile();
@@ -94,7 +95,7 @@ public class FtpTransTimerTask extends TimerTask {
 		new PRTXml().getPRTXml();
 		new PRBXml().getPRBXml();
 		new TNLXml().getTNLXml();
-		new LBSXml().getLSBXml();
+		new LBSXml().getLBSXml();
 		new TPIXml().getTPIXml();
 		new TPBXml().getTPBXml();
 		

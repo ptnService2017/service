@@ -132,7 +132,9 @@ public class PWTXml {
 	
 	private Element createFileContent(Document doc,List<PwInfo> pwList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("PWT");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
 		this.createElementNode(doc, "N", "tunnelrmUID", FieldName, "i", "2");
@@ -143,8 +145,8 @@ public class PWTXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PwInfo pwInfo :pwList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1PSW"+pwInfo.getPwId());
-			this.createElementNode(doc, "V", "3301EBCS1PSW"+pwInfo.getPwId(), Object, "i", "1");
+			Object.setAttribute("rmUID","3301EBCS1PWT"+pwInfo.getPwId());
+			this.createElementNode(doc, "V", "3301EBCS1PSW"+pwInfo.getTunnelId(), Object, "i", "1");
 			this.createElementNode(doc, "V", "3301EBCS1TNL"+pwInfo.getTunnelId(), Object, "i", "2");
 			this.createElementNode(doc, "V", "1", Object, "i", "3");
 			this.createElementNode(doc, "V", "1", Object, "i", "4");

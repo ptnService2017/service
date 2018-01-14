@@ -2,6 +2,7 @@ package com.nms.db.dao.equipment.shelf;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -47,7 +48,9 @@ public interface SiteInstMapper {
 
 	public void updateOnline(SiteInst siteInst);
 
-	public List<SiteInst> selectPage(Integer size, Integer index);
+	public List<SiteInst> selectPage(@Param("size")Integer size, @Param("index")Integer index);
+
+	public List<Map<String, Object>> alarmInspection(@Param("size")Integer size, @Param("index")Integer index);
     
     
 }

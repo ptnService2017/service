@@ -469,4 +469,5 @@ public class HisPerformanceService_Mb extends ObjectService_Mybatis {
 		}
 		return hisList;
 	}
+	
 }

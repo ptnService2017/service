@@ -40,11 +40,6 @@ public class QueryCurrAlarmBySitesTask extends Thread{
 	
 	@Override
 	public void run() {
-		try {
-			Thread.sleep(60*1000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
 		while(isRun){
 			SiteService_MB siteService = null;
 			AlarmWHServiceImpl alarmWHServiceImpl = null;
@@ -61,7 +56,7 @@ public class QueryCurrAlarmBySitesTask extends Thread{
 				UiUtil.closeService_MB(siteService);
 			}
 			try {
-				Thread.sleep(1*60*1000);
+				Thread.sleep(15*60*1000);
 			} catch (InterruptedException e) {
 				ExceptionManage.dispose(e, this.getClass());
 			}

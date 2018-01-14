@@ -104,7 +104,7 @@ public class AlarmTcpTracpMainThread extends Thread{
 	}
 	
 	public static void main(String[] args) {
-		 Mybatis_DBManager.init("199.199.13.198");
+		 Mybatis_DBManager.init("127.0.0.1");
 		 ConstantUtil.serviceFactory = new ServiceFactory();
 		 SnmpConfig.getInstanse().init();
 		AlarmTcpTracpMainThread alarmTcpTracpMainThread = new AlarmTcpTracpMainThread();
@@ -113,27 +113,27 @@ public class AlarmTcpTracpMainThread extends Thread{
 		HisAlarmService_MB hisAlarmService_MB = null;
 		try {
 			hisAlarmService_MB = (HisAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.HisAlarm);
-//			for (int i = 0; i < 15*60; i++) {
-//				List<HisAlarmInfo> list = new ArrayList<HisAlarmInfo>();
-//				for (int j = 0; j <3; j++) {
-//					HisAlarmInfo northAlarm = new HisAlarmInfo();
-//					northAlarm.setRaisedTime(new Date());
-//					northAlarm.setClearedTime(new Date());
-//					northAlarm.setConfirmtime(DateUtil.getDate(DateUtil.FULLTIME));
-//					northAlarm.setAlarmTime(DateUtil.getDate(DateUtil.FULLTIME));
-//					northAlarm.setHappenedtime(DateUtil.getDate(DateUtil.FULLTIME));
-//					northAlarm.setSiteId(13);
-//					WarningLevel warningLevel = new WarningLevel();
-//					warningLevel.setWarninglevel(4);
-//					warningLevel.setWarningcode(17);
-//					northAlarm.setWarningLevel(warningLevel);
-//					northAlarm.setAlarmLevel(4);
-//					northAlarm.setAlarmCode(17);
-//					list.add(northAlarm);
-//					hisAlarmService_MB.insertNorthBatch(list);
-//				}
-//				Thread.sleep(50);
-//			}
+			for (int i = 0; i < 1000; i++) {
+				List<HisAlarmInfo> list = new ArrayList<HisAlarmInfo>();
+				for (int j = 0; j <2; j++) {
+					HisAlarmInfo northAlarm = new HisAlarmInfo();
+					northAlarm.setRaisedTime(new Date());
+					northAlarm.setClearedTime(new Date());
+					northAlarm.setConfirmtime(DateUtil.getDate(DateUtil.FULLTIME));
+					northAlarm.setAlarmTime(DateUtil.getDate(DateUtil.FULLTIME));
+					northAlarm.setHappenedtime(DateUtil.getDate(DateUtil.FULLTIME));
+					northAlarm.setSiteId(13);
+					WarningLevel warningLevel = new WarningLevel();
+					warningLevel.setWarninglevel(4);
+					warningLevel.setWarningcode(17);
+					northAlarm.setWarningLevel(warningLevel);
+					northAlarm.setAlarmLevel(4);
+					northAlarm.setAlarmCode(17);
+					list.add(northAlarm);
+					hisAlarmService_MB.insertNorthBatch(list);
+				}
+				Thread.sleep(50);
+			}
 			System.out.println("charu wan");
 		} catch (Exception e) {
 			e.printStackTrace();

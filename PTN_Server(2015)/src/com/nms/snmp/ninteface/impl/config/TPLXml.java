@@ -126,17 +126,18 @@ public class TPLXml
   private Element createFileContent(Document doc, List<Segment> segments)
   {
     Element Objects = doc.createElement("Objects");
-    
+    Element ObjectType = doc.createElement("ObjectType");
+	ObjectType.setTextContent("TPL");
+	Objects.appendChild(ObjectType);
     Element FieldName = doc.createElement("FieldName");
-    createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-    createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-    createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "3");
-    createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "4");
-    createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "5");
-    createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "6");
-    createElementNode(doc, "N", "rate", FieldName, "i", "7");
-    createElementNode(doc, "N", "direction", FieldName, "i", "8");
-    createElementNode(doc, "N", "reality", FieldName, "i", "9");
+    createElementNode(doc, "N", "nativeName", FieldName, "i", "1");
+    createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "2");
+    createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "3");
+    createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "4");
+    createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "5");
+    createElementNode(doc, "N", "rate", FieldName, "i", "6");
+    createElementNode(doc, "N", "direction", FieldName, "i", "7");
+    createElementNode(doc, "N", "reality", FieldName, "i", "8");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
@@ -144,15 +145,14 @@ public class TPLXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1TPL" + segment.getId());
-      createElementNode(doc, "V", "3301EBCS1TPL" + segment.getId(), Object, "i", "1");
-      createElementNode(doc, "V", segment.getNAME(), Object, "i", "2");
-      createElementNode(doc, "V", "3301EBCS1NEL" + segment.getASITEID(), Object, "i", "3");
-      createElementNode(doc, "V", "3301EBCS1NEL" + segment.getZSITEID(), Object, "i", "4");
-      createElementNode(doc, "V", "3301EBCS1PRT" + segment.getAPORTID(), Object, "i", "5");
-      createElementNode(doc, "V", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "6");
-      createElementNode(doc, "V", segment.getNAME().contains("ge")?"GE":"FE", Object, "i", "7");
-      createElementNode(doc, "V", "CD_BI", Object, "i", "8");
-      createElementNode(doc, "V", "real", Object, "i", "9");
+      createElementNode(doc, "V", segment.getNAME(), Object, "i", "1");
+      createElementNode(doc, "V", "3301EBCS1NEL" + segment.getASITEID(), Object, "i", "2");
+      createElementNode(doc, "V", "3301EBCS1NEL" + segment.getZSITEID(), Object, "i", "3");
+      createElementNode(doc, "V", "3301EBCS1PRT" + segment.getAPORTID(), Object, "i", "4");
+      createElementNode(doc, "V", "3301EBCS1PRT" + segment.getZPORTID(), Object, "i", "5");
+      createElementNode(doc, "V", segment.getNAME().contains("ge")?"GE":"FE", Object, "i", "6");
+      createElementNode(doc, "V", "CD_BI", Object, "i", "7");
+      createElementNode(doc, "V", "real", Object, "i", "8");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

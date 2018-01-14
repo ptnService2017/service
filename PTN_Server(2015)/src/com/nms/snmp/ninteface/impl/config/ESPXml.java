@@ -138,34 +138,34 @@ public class ESPXml {
 	
 	private Element createFileContent(Document doc,List<Map<String,Object>> list) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("ESP");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "servicermUID", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "portrmUID", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "CVID", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "SVID", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "ingressCIR", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "ingressPIR", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "egressCIR", FieldName, "i", "9");
-		this.createElementNode(doc, "N", "egressPIR", FieldName, "i", "10");
+		this.createElementNode(doc, "N", "servicermUID", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "portrmUID", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "CVID", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "SVID", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "ingressCIR", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "ingressPIR", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "egressCIR", FieldName, "i", "8");
+		this.createElementNode(doc, "N", "egressPIR", FieldName, "i", "9");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Map<String,Object> map :list) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1ESP"+map.get("id"));
-			this.createElementNode(doc, "V", "3301EBCS1ESP"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "V", "3301EBCS1ETH"+map.get("servicermUID"), Object, "i", "2");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+map.get("siteId"), Object, "i", "3");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+map.get("portId"), Object, "i", "4");
-			this.createElementNode(doc, "V", "", Object, "i", "5");
-			this.createElementNode(doc, "V", "", Object, "i", "6");
-			this.createElementNode(doc, "V", map.get("cir").toString(), Object, "i", "7");
-			this.createElementNode(doc, "V", map.get("pir").toString(), Object, "i", "8");
-			this.createElementNode(doc, "V", map.get("cir").toString(), Object, "i", "9");
-			this.createElementNode(doc, "V", map.get("pir").toString(), Object, "i", "10");
+			this.createElementNode(doc, "V", "3301EBCS1ETH"+map.get("servicermUID"), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+map.get("siteId"), Object, "i", "2");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+map.get("portId"), Object, "i", "3");
+			this.createElementNode(doc, "V", map.get("vlanId").toString(), Object, "i", "4");
+			this.createElementNode(doc, "V", map.get("vlanId").toString(), Object, "i", "5");
+			this.createElementNode(doc, "V", map.get("cir").toString(), Object, "i", "6");
+			this.createElementNode(doc, "V", map.get("pir").toString(), Object, "i", "7");
+			this.createElementNode(doc, "V", map.get("cir").toString(), Object, "i", "8");
+			this.createElementNode(doc, "V", map.get("pir").toString(), Object, "i", "9");
 			
 			FieldValue.appendChild(Object);
 		}
