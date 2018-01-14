@@ -70,8 +70,7 @@ public class PRBXml {
 		List<PortInst> portList = new ArrayList<PortInst>();
 		try {
 			portService = (PortService_MB)ConstantUtil.serviceFactory.newService_MB(Services.PORT);
-			PortInst portInst = new PortInst();
-			portList = portService.select(portInst);
+			portList = portService.northPort();
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		} finally {
@@ -131,7 +130,9 @@ public class PRBXml {
 	
 	private Element createFileContent(Document doc,List<PortInst> portInstList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("PRB");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
 		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "2");
@@ -143,35 +144,12 @@ public class PRBXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PortInst portInst :portInstList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1PRT"+portInst.getPortId());
+			Object.setAttribute("rmUID","3301EBCS1PRB"+portInst.getPortId());
 			this.createElementNode(doc, "V", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "1");
 			this.createElementNode(doc, "V", "3301EBCS1NEL"+portInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "3");
-			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getEquipId(), Object, "i", "4");
-			this.createElementNode(doc, "V", portInst.getNumber()+"", Object, "i", "5");
-			this.createElementNode(doc, "V", portInst.getPortName(), Object, "i", "6");
-			this.createElementNode(doc, "V", "ptp", Object, "i", "7");
-			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "8");
-			this.createElementNode(doc, "V", portInst.getPortName().contains("e1")?"TDM":"ETH", Object, "i", "9");
-			String type = "electrical";
-			if(portInst.getImagePath().contains("port_l.png") || portInst.getImagePath().contains("port_g.png")){
-				type = "optical";
-			}
-			this.createElementNode(doc, "V", type, Object, "i", "10");
-			
-			String speed = "GE";
-			if(portInst.getPortName().contains("e1.")){
-				speed = "2M";
-			}else if(portInst.getPortName().contains("fe")){
-				speed = "FE";
-			}
-			this.createElementNode(doc, "V", speed, Object, "i", "11");
-			
-			this.createElementNode(doc, "V", "D_BIDIRECTIONAL", Object, "i", "12");
-			this.createElementNode(doc, "V", "NA", Object, "i", "13");
-			this.createElementNode(doc, "V", "", Object, "i", "14");
-			this.createElementNode(doc, "V", "", Object, "i", "15");
-			this.createElementNode(doc, "V", "false", Object, "i", "16");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+portInst.getPortId(), Object, "i", "3");
+			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "4");
+			this.createElementNode(doc, "V", "3301EBCS1CRD"+portInst.getCardId(), Object, "i", "5");
 			FieldValue.appendChild(Object);
 		}
 		

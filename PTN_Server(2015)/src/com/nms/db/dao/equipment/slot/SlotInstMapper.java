@@ -33,4 +33,6 @@ public interface SlotInstMapper {
 	public int deleteBySiteId(@Param("siteId")int siteId);
 	
 	public int updateMasterAddress(SlotInst record);
+
+	List<SlotInst> northSlot();
 }

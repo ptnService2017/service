@@ -27,6 +27,7 @@ import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.ptn.path.eth.ElanInfoService_MB;
 import com.nms.model.ptn.path.pw.PwInfoService_MB;
 import com.nms.model.ptn.path.tunnel.TunnelService_MB;
+import com.nms.model.ptn.port.AcPortInfoService_MB;
 import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
 import com.nms.rmi.ui.util.RmiKeys;
@@ -134,38 +135,54 @@ public class ETHXml {
 	
 	private Element createFileContent(Document doc,List<Map<String,Object>> mapList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("ETH");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "serviceType", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "direction", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "owner", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "owneSserviceType", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "activeState", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "CIR", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "PIR", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "serviceType", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "direction", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "owner", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "owneSserviceType", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "activeState", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "CIR", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "PIR", FieldName, "i", "8");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Map<String,Object> map :mapList) {
+			AcPortInfoService_MB acPortInfoService_MB = null;
+	    	ElanInfoService_MB elanInfoService_MB = null;
+	    	List<Map<String,Object>> list = null;
+	    	try {
+	    		acPortInfoService_MB = (AcPortInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.AcInfo);
+	    		list = acPortInfoService_MB.northList();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally{
+				UiUtil.closeService_MB(elanInfoService_MB);
+			}
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1ETH"+map.get("id"));
-			this.createElementNode(doc, "V", "3301EBCS1ETH"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "V", map.get("name").toString(), Object, "i", "2");
+			this.createElementNode(doc, "V", map.get("name").toString(), Object, "i", "1");
 			String type = "E-LINE";
 			if("2".equals(map.get("serviceType").toString())){
 				type = "E-LAN";
 			}else if("3".equals(map.get("serviceType").toString())){
 				type = "E-TREE";
 			}
-			this.createElementNode(doc, "V", type, Object, "i", "3");
-			this.createElementNode(doc, "V", "CD_BI", Object, "i", "4");
-			this.createElementNode(doc, "V", map.get("name").toString(), Object, "i", "5");
-			this.createElementNode(doc, "V", "", Object, "i", "6");
-			this.createElementNode(doc, "V", map.get("activeStatus").toString().equals("1")?"ACTIVE":"PENDING", Object, "i", "7");
-			this.createElementNode(doc, "V", "", Object, "i", "8");
-			this.createElementNode(doc, "V", "", Object, "i", "9");
+			this.createElementNode(doc, "V", type, Object, "i", "2");
+			this.createElementNode(doc, "V", "CD_BI", Object, "i", "3");
+			this.createElementNode(doc, "V", map.get("name").toString(), Object, "i", "4");
+			this.createElementNode(doc, "V", "--", Object, "i", "5");
+			this.createElementNode(doc, "V", map.get("activeStatus").toString().equals("1")?"ACTIVE":"PENDING", Object, "i", "6");
+			for (int i = 0; i < list.size(); i++) {
+				if(list.get(i).get("servicermUID").toString().equals(map.get("id").toString())){
+					this.createElementNode(doc, "V", list.get(i).get("cir").toString(), Object, "i", "7");
+					this.createElementNode(doc, "V", list.get(i).get("pir").toString(), Object, "i", "8");
+				}
+			}
+			
 			FieldValue.appendChild(Object);
 		}
 		

@@ -135,12 +135,13 @@ public class TPBXml {
 	
 	private Element createFileContent(Document doc,List<Tunnel> tunnelList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("TPB");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
 		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "reversionMode", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "type", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "tunnelrmUID", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "role", FieldName, "i", "3");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
@@ -148,14 +149,14 @@ public class TPBXml {
 			
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getTunnelId());
-			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getTunnelId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1TPI"+tunnel.getTunnelId(), Object, "i", "1");
 			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getTunnelId(), Object, "i", "2");
 			this.createElementNode(doc, "N", "Master", Object, "i", "3");
 			FieldValue.appendChild(Object);
 			
 			Element ObjectPro = doc.createElement("Object");
 			ObjectPro.setAttribute("rmUID","3301EBCS1TPB"+tunnel.getTunnelId());
-			this.createElementNode(doc, "N", "3301EBCS1TPB"+tunnel.getTunnelId(), ObjectPro, "i", "1");
+			this.createElementNode(doc, "N", "3301EBCS1TPI"+tunnel.getTunnelId(), ObjectPro, "i", "1");
 			this.createElementNode(doc, "N", "3301EBCS1TNL"+tunnel.getProtectTunnelId(), ObjectPro, "i", "2");
 			this.createElementNode(doc, "N", "Backup", ObjectPro, "i", "3"); 
 			FieldValue.appendChild(ObjectPro);

@@ -20,7 +20,7 @@ public class Field extends ViewDataObj{
 	private List<SiteInst> siteInstList;
 	private int mSiteId;
 	private String objectType;
-	private int parentId;
+	private Integer parentId;
 	private String parentName;
 	private List<String> workIP;
 	private WorkIps workIps;
@@ -133,11 +133,11 @@ public class Field extends ViewDataObj{
 		this.parentName = parentName;
 	}
 
-	public int getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(int parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 

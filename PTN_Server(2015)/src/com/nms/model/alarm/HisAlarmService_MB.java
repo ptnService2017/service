@@ -580,4 +580,8 @@ public class HisAlarmService_MB extends ObjectService_Mybatis {
 		this.mapper.insertNorthBatch(list);
 		this.sqlSession.commit();
 	}
+	
+	public HisAlarmInfo queryHisNorthIndex(){
+		return this.mapper.queryHisNorthIndex();
+	}
 }

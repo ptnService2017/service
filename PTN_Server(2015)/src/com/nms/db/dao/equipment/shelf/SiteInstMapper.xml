@@ -466,4 +466,19 @@
        <include refid="Base_Column_List" />
        from site_inst limit #{size},#{index}
   </select>
+  
+  <select id="alarmInspection" resultType="java.util.Map">
+  	SELECT
+	s.site_inst_id,
+	s.loginstatus,
+	COUNT(*) AS alarmstatus
+FROM
+	`site_inst` s
+INNER JOIN current_alarm c ON s.site_inst_id = c.siteid
+GROUP BY
+	s.site_inst_id
+ORDER BY
+	s.site_inst_id
+LIMIT #{size},#{index}
+  </select>
 </mapper>

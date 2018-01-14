@@ -77,4 +77,8 @@ public interface CurrentAlarmInfoMapper {
 	
 	public List<Map<String, Object>> queryNorthRun(@Param("alarmSeq")Integer alarmSeq, @Param("time")String time);
 
+	public CurrentAlarmInfo queryNorthTest();
+	
+	public void insertNorthBatch(@Param("list")List<CurrentAlarmInfo> list);
+
 }

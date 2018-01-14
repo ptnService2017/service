@@ -324,6 +324,19 @@ public class FileTools {
 	 * 
 	 */
 	public void zipFile(String srcFilePath, String zipFilePath) {
+		createZip(srcFilePath, zipFilePath);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		File file = new File(zipFilePath);
+	    System.out.println(file.renameTo(new File(zipFilePath.replace("tmp", "zip"))));
+	}	
+	
+	private void createZip(String srcFilePath, String zipFilePath){
+
 		if(srcFilePath == null){
 			throw new RuntimeException("需要压缩的文件的完整路径不能为空!");
 		}
@@ -349,7 +362,8 @@ public class FileTools {
 		}
 		
 		try {
-			zout = new ZipOutputStream(new FileOutputStream(new File(zipFilePath)));
+			File zipFile = new File(zipFilePath);
+			zout = new ZipOutputStream(new FileOutputStream(zipFile));
 			File srcFile = new File(srcFilePath);
 			fin = new FileInputStream(srcFile);
 			byte[] bb = new byte[4096];
@@ -373,5 +387,6 @@ public class FileTools {
 				ExceptionManage.dispose(e,FileTools.class);
 			}
 		}
-	}	
+	
+	}
 }

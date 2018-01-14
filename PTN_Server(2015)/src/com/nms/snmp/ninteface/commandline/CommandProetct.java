@@ -54,7 +54,7 @@ public class CommandProetct {
 		}finally{
 			UiUtil.closeService_MB(tunnelService_MB);
 		}
-		
+		buffer.append(">");
 		return buffer.toString();
 		
 	}

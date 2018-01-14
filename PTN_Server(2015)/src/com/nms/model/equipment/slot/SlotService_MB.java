@@ -136,4 +136,8 @@ public class SlotService_MB extends ObjectService_Mybatis {
 			ExceptionManage.dispose(e,this.getClass());
 		}
 	}
+	
+	public List<SlotInst> northSlot(){
+		return this.mapper.northSlot();
+	}
 }

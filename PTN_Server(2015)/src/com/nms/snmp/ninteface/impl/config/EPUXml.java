@@ -1,8 +1,11 @@
 package com.nms.snmp.ninteface.impl.config;
 
+import com.nms.db.bean.equipment.card.CardInst;
 import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.model.equipment.card.CardService_MB;
 import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.util.ServiceFactory;
+import com.nms.model.util.Services;
 import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
 import com.nms.snmp.ninteface.util.FileTools;
@@ -44,10 +47,10 @@ public class EPUXml
     try
     {
       filePath = xmlPath[0] + File.separator + xmlPath[1];
-      List<SiteInst> siteList = getAllSites();
+      List<CardInst> list = getAllEPG();
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
-      createXML(doc, siteList);
+      createXML(doc, list);
       XmlUtil.createFile(doc, "CM-PTN-EPU-A1-",filePath);
     }
     catch (Exception e)
@@ -57,14 +60,14 @@ public class EPUXml
     return filePath;
   }
   
-  private List<SiteInst> getAllSites()
+  private List<CardInst> getAllEPG()
   {
-    List<SiteInst> siteList = null;
-    SiteService_MB siteService = null;
+    List<CardInst> list = null;
+    CardService_MB cardService_MB = null;
     try
     {
-      siteService = (SiteService_MB)ConstantUtil.serviceFactory.newService_MB(1);
-      siteList = siteService.select();
+      cardService_MB = (CardService_MB)ConstantUtil.serviceFactory.newService_MB(Services.CARD);
+      list = cardService_MB.selectEPG();
     }
     catch (Exception e)
     {
@@ -72,9 +75,9 @@ public class EPUXml
     }
     finally
     {
-      UiUtil.closeService_MB(siteService);
+      UiUtil.closeService_MB(cardService_MB);
     }
-    return siteList;
+    return list;
   }
   
   private String getTime()
@@ -109,7 +112,7 @@ public class EPUXml
     return null;
   }
   
-  private void createXML(Document doc, List<SiteInst> siteList)
+  private void createXML(Document doc, List<CardInst> list)
   {
     doc.setXmlVersion("1.0");
     doc.setXmlStandalone(true);
@@ -118,23 +121,41 @@ public class EPUXml
     root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
     root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
     root.appendChild(XmlUtil.fileHeader(doc,"EProtectGroupUnit"));
-    Element emsList = createFileContent(doc, siteList);
+    Element emsList = createFileContent(doc, list);
     root.appendChild(emsList);
     doc.appendChild(root);
   }
   
-  private Element createFileContent(Document doc, List<SiteInst> siteList)
+  private Element createFileContent(Document doc, List<CardInst> list)
   {
     Element Objects = doc.createElement("Objects");
-    
+    Element ObjectType = doc.createElement("ObjectType");
+	ObjectType.setTextContent("EPU");
+	Objects.appendChild(ObjectType);
     Element FieldName = doc.createElement("FieldName");
-    createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-    createElementNode(doc, "N", "grouprmUID", FieldName, "i", "2");
-    createElementNode(doc, "N", "cardrmUID", FieldName, "i", "3");
-    createElementNode(doc, "N", "role", FieldName, "i", "4");
+    createElementNode(doc, "N", "grouprmUID", FieldName, "i", "1");
+    createElementNode(doc, "N", "cardrmUID", FieldName, "i", "2");
+    createElementNode(doc, "N", "role", FieldName, "i", "3");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
+    for (int i = 0; i < list.size(); i++) {
+    	 Element Object = doc.createElement("Object");
+    	 if((i>0&& list.get(i).getSiteId() != list.get(i-1).getSiteId()) || i==0){
+    		 Object.setAttribute("rmUID", "3301EBCS1EPU" + list.get(i).getId());
+    	     createElementNode(doc, "V", "3301EBCS1EPG"+list.get(i).getId(), Object, "i", "1");
+    	     createElementNode(doc, "V", "3301EBCS1CRD"+list.get(i).getId(), Object, "i", "2");
+    	     createElementNode(doc, "V", "Master", Object, "i", "3");
+    	     FieldValue.appendChild(Object);
+    	 }else{
+    		 Object.setAttribute("rmUID", "3301EBCS1EPU" + list.get(i).getId());
+    	     createElementNode(doc, "V", "3301EBCS1EPG"+list.get(i-1).getId(), Object, "i", "1");
+    	     createElementNode(doc, "V", "3301EBCS1CRD"+list.get(i).getId(), Object, "i", "2");
+    	     createElementNode(doc, "V", "Backup", Object, "i", "3");
+    	     FieldValue.appendChild(Object);
+    	 }
+       
+	}
 //    for (SiteInst siteInst : siteList)
 //    {
 //      Element Object = doc.createElement("Object");

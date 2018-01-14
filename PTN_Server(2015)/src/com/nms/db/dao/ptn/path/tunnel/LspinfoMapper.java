@@ -53,4 +53,6 @@ public interface LspinfoMapper {
 	List<Lsp> selectBusinessId(int siteId);
 	
 	public List<Lsp> queryBySiteIdAndTunnelserviceid(@Param("siteId")int siteId,@Param("tunnelServiceId")int tunnelServiceId,@Param("type")String type);
+
+	List<Lsp> north();
 }

@@ -2,6 +2,7 @@ package com.nms.model.equipment.shlef;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -1658,4 +1659,7 @@ public class SiteService_MB extends ObjectService_Mybatis{
 		return this.siteInstMapper.selectPage(size*(index-1),size);
 	}
 	
+	public List<Map<String,Object>> alarmInspection(Integer size,Integer index){
+		return this.siteInstMapper.alarmInspection(size,index);
+	}
 }

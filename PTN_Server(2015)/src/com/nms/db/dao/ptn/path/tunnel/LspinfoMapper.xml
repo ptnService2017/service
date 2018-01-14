@@ -365,4 +365,22 @@
    </if>
   
   </select>
+  
+  
+  <select id="north" resultType="Lsp">
+  	SELECT
+	l.aPortId,
+	l.aSiteId,
+	l.id,
+	l.tunnelId,
+	l.frontLabelValue,
+	l.backLabelValue,
+	l.zSiteId,
+l.zPortId,
+	t.aOutVlanValue AS alspbusinessid,
+	t.zOutVlanValue as zlspbusinessid
+FROM
+	`lspinfo` l
+INNER JOIN tunnel t ON l.tunnelId = t.tunnelId;
+  </select>
 </mapper>

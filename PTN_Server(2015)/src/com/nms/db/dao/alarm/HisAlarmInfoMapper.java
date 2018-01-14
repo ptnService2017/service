@@ -68,4 +68,7 @@ public interface HisAlarmInfoMapper {
 
 
 	public void insertNorthBatch(@Param("list")List<HisAlarmInfo> list);
+
+	public HisAlarmInfo queryHisNorthIndex();
+
 }

@@ -130,61 +130,61 @@ public class TNLXml {
 	
 	private Element createFileContent(Document doc,List<Tunnel> tunnelList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("TNL");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "direction", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "activeState", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "aEndTprmUID", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "aEndOutLabel", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "aEndRevInLabel", FieldName, "i", "9");
-		this.createElementNode(doc, "N", "zEndTprmUID", FieldName, "i", "10");
-		this.createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "11");
-		this.createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "12");
-		this.createElementNode(doc, "N", "zEndInLabel", FieldName, "i", "13");
-		this.createElementNode(doc, "N", "zEndRevOutLabel", FieldName, "i", "14");
-		this.createElementNode(doc, "N", "CIR", FieldName, "i", "15");
-		this.createElementNode(doc, "N", "RevCIR", FieldName, "i", "16");
-		this.createElementNode(doc, "N", "PIR", FieldName, "i", "17");
-		this.createElementNode(doc, "N", "RevPIR", FieldName, "i", "18");
-		this.createElementNode(doc, "N", "isOverlay", FieldName, "i", "19");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "direction", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "activeState", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "aEndTprmUID", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "aEndNermUID", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "aEndPortrmUID", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "aEndOutLabel", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "aEndRevInLabel", FieldName, "i", "8");
+		this.createElementNode(doc, "N", "zEndTprmUID", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "zEndNermUID", FieldName, "i", "10");
+		this.createElementNode(doc, "N", "zEndPortrmUID", FieldName, "i", "11");
+		this.createElementNode(doc, "N", "zEndInLabel", FieldName, "i", "12");
+		this.createElementNode(doc, "N", "zEndRevOutLabel", FieldName, "i", "13");
+		this.createElementNode(doc, "N", "CIR", FieldName, "i", "14");
+		this.createElementNode(doc, "N", "RevCIR", FieldName, "i", "15");
+		this.createElementNode(doc, "N", "PIR", FieldName, "i", "16");
+		this.createElementNode(doc, "N", "RevPIR", FieldName, "i", "17");
+		this.createElementNode(doc, "N", "isOverlay", FieldName, "i", "18");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Tunnel tunnel :tunnelList) {
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1TNL"+tunnel.getTunnelId());
-			this.createElementNode(doc, "V", "3301EBCS1TNL"+tunnel.getTunnelId(), Object, "i", "1");
-			this.createElementNode(doc, "V", tunnel.getTunnelName(), Object, "i", "2");
-			this.createElementNode(doc, "V", "CD_BI", Object, "i", "3");
-			this.createElementNode(doc, "V", tunnel.getTunnelStatus()==1?"ACTIVE":"PENDING", Object, "i", "4");
+			this.createElementNode(doc, "V", tunnel.getTunnelName(), Object, "i", "1");
+			this.createElementNode(doc, "V", "CD_BI", Object, "i", "2");
+			this.createElementNode(doc, "V", tunnel.getTunnelStatus()==1?"ACTIVE":"PENDING", Object, "i", "3");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "4");
 			this.createElementNode(doc, "V", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "5");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+tunnel.getASiteId(), Object, "i", "6");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+tunnel.getAPortId(), Object, "i", "7");
-			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getFrontLabelValue()+"", Object, "i", "8");
-			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getBackLabelValue()+"", Object, "i", "9");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+tunnel.getAPortId(), Object, "i", "6");
+			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getFrontLabelValue()+"", Object, "i", "7");
+			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getBackLabelValue()+"", Object, "i", "8");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "9");
 			this.createElementNode(doc, "V", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "10");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+tunnel.getZSiteId(), Object, "i", "11");
-			this.createElementNode(doc, "V", "3301EBCS1PRT"+tunnel.getZPortId(), Object, "i", "12");
-			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getBackLabelValue()+"", Object, "i", "13");
-			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getFrontLabelValue()+"", Object, "i", "14");
+			this.createElementNode(doc, "V", "3301EBCS1PRT"+tunnel.getZPortId(), Object, "i", "11");
+			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getBackLabelValue()+"", Object, "i", "12");
+			this.createElementNode(doc, "V", tunnel.getLspParticularList().get(0).getFrontLabelValue()+"", Object, "i", "13");
 			if(tunnel.getQosList() != null && tunnel.getQosList().size()>0){
+				this.createElementNode(doc, "V", tunnel.getQosList().get(0).getCir()+"", Object, "i", "14");
 				this.createElementNode(doc, "V", tunnel.getQosList().get(0).getCir()+"", Object, "i", "15");
-				this.createElementNode(doc, "V", tunnel.getQosList().get(0).getCir()+"", Object, "i", "16");
+				this.createElementNode(doc, "V", tunnel.getQosList().get(0).getPir()+"", Object, "i", "16");
 				this.createElementNode(doc, "V", tunnel.getQosList().get(0).getPir()+"", Object, "i", "17");
-				this.createElementNode(doc, "V", tunnel.getQosList().get(0).getPir()+"", Object, "i", "18");
 			}else{
+				this.createElementNode(doc, "V", "0", Object, "i", "14");
 				this.createElementNode(doc, "V", "0", Object, "i", "15");
 				this.createElementNode(doc, "V", "0", Object, "i", "16");
 				this.createElementNode(doc, "V", "0", Object, "i", "17");
-				this.createElementNode(doc, "V", "0", Object, "i", "18");
 			}
 			
 			
-			this.createElementNode(doc, "V", "false", Object, "i", "19");
+			this.createElementNode(doc, "V", tunnel.getaVlanEnable()==0?"false":"true", Object, "i", "18");
 			FieldValue.appendChild(Object);
 		}
 		

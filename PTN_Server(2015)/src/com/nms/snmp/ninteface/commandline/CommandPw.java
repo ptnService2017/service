@@ -96,7 +96,7 @@ public class CommandPw {
 		}finally{
 			UiUtil.closeService_MB(pwService_MB);
 		}
-		
+		buffer.append(">");
 		return buffer.toString();
 	}
 }

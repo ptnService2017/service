@@ -131,12 +131,13 @@ public class PGUXml
   private Element createFileContent(Document doc, List<Map<String,Object>> list)
   {
     Element Objects = doc.createElement("Objects");
-    
+    Element ObjectType = doc.createElement("ObjectType");
+	ObjectType.setTextContent("PGU");
+	Objects.appendChild(ObjectType);
     Element FieldName = doc.createElement("FieldName");
-    createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-    createElementNode(doc, "N", "grouprmUID", FieldName, "i", "2");
-    createElementNode(doc, "N", "portrmUID", FieldName, "i", "3");
-    createElementNode(doc, "N", "role", FieldName, "i", "4");
+    createElementNode(doc, "N", "grouprmUID", FieldName, "i", "1");
+    createElementNode(doc, "N", "portrmUID", FieldName, "i", "2");
+    createElementNode(doc, "N", "role", FieldName, "i", "3");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
@@ -144,10 +145,9 @@ public class PGUXml
     {
       Element Object = doc.createElement("Object");
       Object.setAttribute("rmUID", "3301EBCS1PGU" + map.get("portId"));
-      createElementNode(doc, "V", "3301EBCS1PGU" + map.get("portId"), Object, "i", "1");
-      createElementNode(doc, "V", "3301EBCS1PTG" + map.get("lagId"), Object, "i", "2");
-      createElementNode(doc, "V", "3301EBCS1PRT" + map.get("portId"), Object, "i", "3");
-      createElementNode(doc, "V", map.get("portId").toString().equals(map.get("master").toString())?"master":"backup", Object, "i", "4");
+      createElementNode(doc, "V", "3301EBCS1PTG" + map.get("lagId"), Object, "i", "1");
+      createElementNode(doc, "V", "3301EBCS1PRT" + map.get("portId"), Object, "i", "2");
+      createElementNode(doc, "V", map.get("portId").toString().equals(map.get("master").toString())?"master":"backup", Object, "i", "3");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

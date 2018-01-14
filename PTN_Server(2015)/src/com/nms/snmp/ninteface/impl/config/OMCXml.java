@@ -113,32 +113,30 @@ public class OMCXml {
 		ObjectType.setTextContent("OMC");
 		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "commuAddress", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "omcVersion", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "interfaceVersion", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "equipmemtDomain", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "vendor", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "commuAddress", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "omcVersion", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "interfaceVersion", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "equipmentDomain", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "vendor", FieldName, "i", "6");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		Element Object = doc.createElement("Object");
 		Object.setAttribute("rmUID","3301EBCS1");
-		this.createElementNode(doc, "V", "3301EBCS1", Object, "i", "1");
-		this.createElementNode(doc, "V", "EBANG-EMS-Service", Object, "i", "2");
+		this.createElementNode(doc, "V", "EBANG-EMS-Service", Object, "i", "1");
 		String ip = "";
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		this.createElementNode(doc, "V",NorthConfig.northServiceIp, Object, "i", "3");
+		this.createElementNode(doc, "V",NorthConfig.northServiceIp, Object, "i", "2");
 		
-		this.createElementNode(doc, "V", "V2.1.6", Object, "i", "4");
-		this.createElementNode(doc, "V", "V1.0.0", Object, "i", "5");
-		this.createElementNode(doc, "V", "PTN", Object, "i", "6");
-		this.createElementNode(doc, "V", "EBANG", Object, "i", "7");
+		this.createElementNode(doc, "V", "V2.1.6", Object, "i", "3");
+		this.createElementNode(doc, "V", "V1.0.0", Object, "i", "4");
+		this.createElementNode(doc, "V", "PTN", Object, "i", "5");
+		this.createElementNode(doc, "V", "EBANG", Object, "i", "6");
 		FieldValue.appendChild(Object);
 		Objects.appendChild(FieldValue);
 		return Objects;

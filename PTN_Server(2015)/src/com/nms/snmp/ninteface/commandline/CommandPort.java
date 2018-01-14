@@ -52,7 +52,7 @@ public class CommandPort {
 		}finally{
 			UiUtil.closeService_MB(portService_MB);
 		}
-		
+		buffer.append(">");
 		return buffer.toString();
 	}
 }

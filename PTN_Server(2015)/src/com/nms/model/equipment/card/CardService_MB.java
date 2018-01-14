@@ -456,4 +456,8 @@ public class CardService_MB extends ObjectService_Mybatis {
 	public List<CardInst> select_north(){
 		return this.mapper.select_north();
 	}
+
+	public List<CardInst> selectEPG() {
+		return this.mapper.selectEPG();
+	}
 }

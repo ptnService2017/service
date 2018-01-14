@@ -425,4 +425,8 @@ public class LspInfoService_MB extends ObjectService_Mybatis{
 		}
 		return lsp;
 	}
+	
+	public List<Lsp> north(){
+		return this.mapper.north();
+	}
 }

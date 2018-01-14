@@ -126,7 +126,9 @@ public class SNNXml
   private Element createFileContent(Document doc, List<SiteInst> siteList)
   {
     Element Objects = doc.createElement("Objects");
-    
+    Element ObjectType = doc.createElement("ObjectType");
+	ObjectType.setTextContent("SNN");
+	Objects.appendChild(ObjectType);
     Element FieldName = doc.createElement("FieldName");
     createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
     createElementNode(doc, "N", "subnetrmUID", FieldName, "i", "2");

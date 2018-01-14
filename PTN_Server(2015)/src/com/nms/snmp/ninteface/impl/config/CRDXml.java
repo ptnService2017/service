@@ -128,19 +128,20 @@ public class CRDXml {
 	
 	private Element createFileContent(Document doc,List<CardInst> cardList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("CRD");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "holderrmUID", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "cardType", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "cardSubType", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "softwareVersion", FieldName, "i", "7");
-		this.createElementNode(doc, "N", "hardwareVersion", FieldName, "i", "8");
-		this.createElementNode(doc, "N", "serialNumber", FieldName, "i", "9");
-		this.createElementNode(doc, "N", "serviceState", FieldName, "i", "10");
-		this.createElementNode(doc, "N", "role", FieldName, "i", "11");
+		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "holderrmUID", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "cardType", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "cardSubType", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "softwareVersion", FieldName, "i", "6");
+		this.createElementNode(doc, "N", "hardwareVersion", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "serialNumber", FieldName, "i", "8");
+		this.createElementNode(doc, "N", "serviceState", FieldName, "i", "9");
+		this.createElementNode(doc, "N", "role", FieldName, "i", "10");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
@@ -148,17 +149,16 @@ public class CRDXml {
 			getsoftType(cardInst);
 			Element Object = doc.createElement("Object");
 			Object.setAttribute("rmUID","3301EBCS1CRD"+cardInst.getId());
-			this.createElementNode(doc, "V", "3301EBCS1CRD"+cardInst.getId(), Object, "i", "1");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+cardInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "V", "3301EBCS1EQH"+cardInst.getSlotId(), Object, "i", "3");
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+cardInst.getSiteId(), Object, "i", "1");
+			this.createElementNode(doc, "V", "3301EBCS1EQH"+(2000+cardInst.getSlotId()), Object, "i", "2");
+			this.createElementNode(doc, "V", cardInst.getCardName(), Object, "i", "3");
 			this.createElementNode(doc, "V", cardInst.getCardName(), Object, "i", "4");
 			this.createElementNode(doc, "V", cardInst.getCardName(), Object, "i", "5");
-			this.createElementNode(doc, "V", "", Object, "i", "6");
-			this.createElementNode(doc, "V", cardInst.getSnmpName(), Object, "i", "7");
-			this.createElementNode(doc, "V", cardInst.getInstalledSerialNumber(), Object, "i", "8");
-			this.createElementNode(doc, "V", "", Object, "i", "9");
-			this.createElementNode(doc, "V", "IN_SERVICE", Object, "i", "10");
-			this.createElementNode(doc, "V", "NA", Object, "i", "11");
+			this.createElementNode(doc, "V", cardInst.getSnmpName(), Object, "i", "6");
+			this.createElementNode(doc, "V", cardInst.getInstalledSerialNumber(), Object, "i", "7");
+			this.createElementNode(doc, "V", sn(cardInst.getId()+""), Object, "i", "8");
+			this.createElementNode(doc, "V", "IN_SERVICE", Object, "i", "9");
+			this.createElementNode(doc, "V", "NA", Object, "i", "10");
 			FieldValue.appendChild(Object);
 		}
 		
@@ -166,9 +166,23 @@ public class CRDXml {
 		return Objects;
 	}
 
+	private String sn(String cardId){
+		String sn = "";
+		for (int i = 0; i < 12-cardId.length(); i++) {
+			sn+="0";
+		}
+		if(cardId.length()==1){
+			sn ="12345678900"+cardId;
+		}else if(cardId.length()==2){
+			sn ="1234567890"+cardId;
+		}else if(cardId.length()==3){
+			sn ="123456789"+cardId;
+		}
+		return sn;
+	}
 	private void getsoftType(CardInst cardInst){
-		String type = "";
-		String hid = "";
+		String type = "--";
+		String hid = "--";
 		if("ETN-200-204E".equals(cardInst.getCardName())){
 			type = "V2.1.3";
 			hid = "EB204E.002V03";

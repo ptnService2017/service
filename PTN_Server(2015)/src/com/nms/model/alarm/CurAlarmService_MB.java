@@ -729,4 +729,14 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 		ExceptionManage.infor("alarmSeq::"+alarmSeq+"time：："+time,this.getClass());
 		return this.mapper.queryNorthRun(alarmSeq,time);
 	}
+	
+	public CurrentAlarmInfo queryNorthTest(){
+		return this.mapper.queryNorthTest();
+	}
+	
+	public void insertNorthBatch(List<CurrentAlarmInfo> list){
+		this.mapper.insertNorthBatch(list);
+		this.sqlSession.commit();
+	}
+	
 }

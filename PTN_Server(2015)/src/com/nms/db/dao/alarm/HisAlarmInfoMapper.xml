@@ -335,8 +335,9 @@
 	a.isCleared AS "alarmStatus",
 	w.WarningType AS "alarmType",
 	a.alarmlevel AS "origSeverity",
-	a.happenedtime,
-	a.clearedtime, 
+	DATE_FORMAT(a.happenedtime,'%Y-%m-%d %H:%i:%s') as happenedtime,
+	DATE_FORMAT(a.clearedtime,'%Y-%m-%d %H:%i:%s') as clearedtime,
+	DATE_FORMAT(a.confirmtime,'%Y-%m-%d %H:%i:%s') as confirmtime,
 	a.id AS "alarmId",
 	w.WarningMayReason AS "specificProblem",
 	a.siteid AS "neUID",
@@ -344,17 +345,20 @@
 	s.CellType AS "neType",
 	a.objectid AS "objectUID",
 	a.objecttype AS "objectType",
-	a.objectname AS "objectName"
+	a.objectname AS "objectName",
+	w.id as "specificProblemID",
+	w.WarningAdvice as "addInfo"
 FROM
 	alarm_north a
 INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
 AND w.Manufacturer = 1
-INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
+left JOIN site_inst s ON a.siteid = s.site_inst_id 
 where 1=1 
    	<if test="params.alarmSeq != null ">
    	and a.id &gt;= #{params.alarmSeq}
    	</if>
    	<if test="params.syncSource !=null and params.syncSource==0">
+   	and a.isCleared=0
    	<if test="params.startTime != null and params.startTime != ''">
    		and a.happenedtime &gt;= #{params.startTime}
    	</if>
@@ -363,10 +367,10 @@ where 1=1
    	</if>
    	</if>
    	<if test="params.syncSource !=null and params.syncSource==1">
-   	<if test="params.startTime != null">
+   	<if test="params.startTime != null and params.startTime != ''" >
    		and a.confirmtime &gt;= #{params.startTime}
    	</if>
-   	<if test="params.endTime != null">
+   	<if test="params.endTime != null and params.endTime != ''">
    		and a.confirmtime &lt;= #{params.endTime}
    	</if>
    	</if>
@@ -379,8 +383,8 @@ where 1=1
 	a.isCleared AS "alarmStatus",
 	w.WarningType AS "alarmType",
 	a.alarmlevel AS "origSeverity",
-	a.happenedtime,
-	a.clearedtime,  
+	DATE_FORMAT(a.happenedtime,'%Y-%m-%d %H:%i:%s') as happenedtime,
+	DATE_FORMAT(a.clearedtime,'%Y-%m-%d %H:%i:%s') as clearedtime, 
 	a.id AS "alarmId",
 	w.WarningMayReason AS "specificProblem",
 	a.siteid AS "neUID",
@@ -388,12 +392,14 @@ where 1=1
 	s.CellType AS "neType",
 	a.objectid AS "objectUID",
 	a.objecttype AS "objectType",
-	a.objectname AS "objectName"
+	a.objectname AS "objectName",
+	w.id as "specificProblemID",
+	w.WarningAdvice as "addInfo"
 FROM
 	alarm_north a
 INNER JOIN warninglevel w ON a.alarmcode = w.WarningCode and a.alarmlevel= w.WarningLevel
 AND w.Manufacturer = 1
-INNER JOIN site_inst s ON a.siteid = s.site_inst_id 
+left JOIN site_inst s ON a.siteid = s.site_inst_id 
 where a.id  &gt;= #{index}
 ORDER BY a.id ASC
    </select>
@@ -418,4 +424,8 @@ ORDER BY a.id ASC
     #{north.warningLevel_temp},#{north.isClear},#{north.alarmId},now())
              </foreach >
   </insert >
+  
+  <select id="queryHisNorthIndex" resultMap="HisAlarm">
+  	SELECT * FROM `alarm_north` order by id desc limit 0,1
+  </select>
 </mapper>

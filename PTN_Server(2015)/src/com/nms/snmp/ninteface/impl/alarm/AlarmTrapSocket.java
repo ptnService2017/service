@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.nms.corba.ninterface.util.DateTimeUtil;
 import com.nms.drive.service.impl.CoderUtils;
 import com.nms.model.alarm.CurAlarmService_MB;
 import com.nms.model.alarm.HisAlarmService_MB;
@@ -30,7 +31,7 @@ public class AlarmTrapSocket extends Thread{
 		try {
 			while(true){
 				curAlarmService_MB = (CurAlarmService_MB) ConstantUtil.serviceFactory.newService_MB(Services.CurrentAlarm);
-				List<Map<String, Object>> list = curAlarmService_MB.queryNorthRun(alarmSeq, alarmSeq>0?"":DateUtil.getDate(new Date(System.currentTimeMillis()-4000), DateUtil.FULLTIME));
+				List<Map<String, Object>> list = curAlarmService_MB.queryNorthRun(alarmSeq, alarmSeq>0?"":DateUtil.getDate(new Date(System.currentTimeMillis()-15000), DateUtil.FULLTIME));
 				System.out.println(System.currentTimeMillis()+"alarmSeq::"+alarmSeq+"实时告警：："+list.size());
 				for (Map<String,Object> map:list) {
 					alarmSeq = Integer.parseInt(map.get("alarmId").toString());
@@ -41,26 +42,59 @@ public class AlarmTrapSocket extends Thread{
 					stringBuilder.append("\"alarmTitle\":\""+map.get("alarmTitle")+"\",");
 					Integer status = Integer.parseInt(map.get("alarmStatus").toString())==0?1:0;
 					stringBuilder.append("\"alarmStatus\":"+status+",");
-					stringBuilder.append("\"alarmType\":\""+map.get("alarmType")+"\",");
+					stringBuilder.append("\"alarmType\":\""+"通信告警"+"\",");
 					stringBuilder.append("\"origSeverity\":"+getLevel(map.get("origSeverity").toString())+",");
 					stringBuilder.append("\"eventTime\":\""+(status ==1?map.get("happenedtime"):map.get("clearedtime"))+"\",");
 					stringBuilder.append("\"alarmId\":\""+map.get("alarmId")+"\",");
 					stringBuilder.append("\"specificProblemID\":\""+map.get("specificProblemID")+"\",");
 					stringBuilder.append("\"specificProblem\":\""+map.get("specificProblem")+"\",");
-					stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
-					stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
-					stringBuilder.append("\"neType\":\""+map.get("neType")+"\",");
-					stringBuilder.append("\"objectUID\":\""+map.get("objectUID")+"\",");
-					stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
-					stringBuilder.append("\"objectType\":\""+map.get("objectType")+"\",");
-					stringBuilder.append("\"locationInfo\":\""+map.get("locationInfo")+"\",");
-					stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
-					stringBuilder.append("\"holderType\":\""+map.get("holderType")+"\"");
+					Integer i = (Integer) map.get("objectType");
+					String str = "";
+					if(i==null ||i == 8|| i== 5 || i==0|| i==10|| i==7){
+						str = "NEL";
+					}else if(i == 0x3){
+						str = "PRT";
+					}else if(i == 0x40){
+						str = "PW";
+					}else if(i == 0x30){
+						str = "TNL";
+					}else if(i == 0x50 || i==0x60){
+						str = "ETH";
+					}else if(i == 0x70){
+						str = "TDM";
+					}
+					
+					if(map.get("neUID").toString().equals("0") && map.get("neName") == null){
+						stringBuilder.append("\"neUID\":\"\",");
+						stringBuilder.append("\"neName\":\"\",");
+						stringBuilder.append("\"neType\":\"PTN\",");
+						stringBuilder.append("\"objectUID\":\"3301EBCS1\",");
+						stringBuilder.append("\"objectName\":\"EMS服务器\",");
+						stringBuilder.append("\"objectType\":\"OMC\",");
+						stringBuilder.append("\"locationInfo\":\"OMC\",");
+						stringBuilder.append("\"addInfo\":\"\",");
+						stringBuilder.append("\"holderType\":\"\",");
+						stringBuilder.append("\"alarmCheck\":\"\",");
+						stringBuilder.append("\"layer\":");
+					}else{
+						stringBuilder.append("\"neUID\":\"3301EBCS1NEL"+map.get("neUID")+"\",");
+						stringBuilder.append("\"neName\":\""+map.get("neName")+"\",");
+						stringBuilder.append("\"neType\":\"PTN\",");
+						stringBuilder.append("\"objectUID\":\"3301EBCS1"+str+map.get("objectUID")+"\",");
+						stringBuilder.append("\"objectName\":\""+map.get("objectName")+"\",");
+						stringBuilder.append("\"objectType\":\""+str+"\",");
+						stringBuilder.append("\"locationInfo\":\""+"slot:槽位1;card:主控"+"\",");
+						stringBuilder.append("\"addInfo\":\""+map.get("addInfo")+"\",");
+						stringBuilder.append("\"holderType\":\""+map.get("neType")+"\",");
+						stringBuilder.append("\"alarmCheck\":\"\",");
+						stringBuilder.append("\"layer\":2");
+					}
+					
 					stringBuilder.append("}");
 					while(is.hasNext()){
 						Socket s = alarmTcpTracpMainThread.getAlarmTrap().get(is.next());
 						AlarmTcpTracpRun alarmTcpTracpRun = alarmTcpTracpMainThread.getAlarmTcpTracpRuns().get(s.toString());
-						if(alarmTcpTracpRun.getIsTrap() && alarmTcpTracpRun.getHasLogin()){
+						if(alarmTcpTracpRun.getIsTrap() && alarmTcpTracpRun.getHasLogin() && "msg".equals(alarmTcpTracpRun.getType())){
 							s.getOutputStream().write(res(0, stringBuilder.toString()));
 							s.getOutputStream().flush();
 							NorthLogUtils.alarmrealtimeLog("clientIp:"+alarmTcpTracpRun.getClientIp()+","+"userName:"+alarmTcpTracpRun.getUserName()+",alarmSeq:"+map.get("alarmId")+",sendTime:"+DateUtil.getDate(DateUtil.FULLTIME));
@@ -79,9 +113,10 @@ public class AlarmTrapSocket extends Thread{
 					Socket s = alarmTcpTracpMainThread.getAlarmTrap().get(is.next());
 					AlarmTcpTracpRun alarmTcpTracpRun = alarmTcpTracpMainThread.getAlarmTcpTracpRuns().get(s.toString());
 					System.out.println(alarmTcpTracpRun.getHeartTime()+"====="+System.currentTimeMillis());
-					if(System.currentTimeMillis()-alarmTcpTracpRun.getHeartTime()>180*1000){
+					if(System.currentTimeMillis()-alarmTcpTracpRun.getHeartTime()>70*60*1000){
 						System.out.println("心跳没有");
 						alarmTcpTracpRun.closeScket();
+						NorthLogUtils.northClientLog("clientIp:"+alarmTcpTracpRun.getClientIp()+","+"userName:"+alarmTcpTracpRun.getUserName()+",loginTime:"+DateUtil.getDate(new Date(alarmTcpTracpRun.getLoginTime()), DateUtil.FULLTIME)+",loginOutTime"+DateUtil.getDate(DateUtil.FULLTIME)+",continuousTime:"+DateTimeUtil.datepoor(alarmTcpTracpRun.getLoginTime(), System.currentTimeMillis()));
 					}
 					
 				}

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -13,7 +14,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.nms.db.bean.equipment.shelf.SiteInst;
 import com.nms.db.bean.equipment.slot.SlotInst;
+import com.nms.model.equipment.shlef.SiteService_MB;
 import com.nms.model.equipment.slot.SlotService_MB;
 import com.nms.model.util.ServiceFactory;
 import com.nms.model.util.Services;
@@ -63,7 +66,7 @@ public class EQHXml {
 		SlotService_MB siteService = null;
 		try {
 			siteService = (SlotService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SLOT);
-			siteList = siteService.select();
+			siteList = siteService.northSlot();
 		}
 	 catch (Exception e) {
 		 ExceptionManage.dispose(e, this.getClass());
@@ -124,28 +127,64 @@ public class EQHXml {
 	
 	private Element createFileContent(Document doc,List<SlotInst> slotInstList) {
 		Element Objects = doc.createElement("Objects");
-		
+		Element ObjectType = doc.createElement("ObjectType");
+		ObjectType.setTextContent("EQH");
+		Objects.appendChild(ObjectType);
 		Element FieldName = doc.createElement("FieldName");
-		this.createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
-		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "2");
-		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "3");
-		this.createElementNode(doc, "N", "holderNumber", FieldName, "i", "4");
-		this.createElementNode(doc, "N", "holderState", FieldName, "i", "5");
-		this.createElementNode(doc, "N", "holderType", FieldName, "i", "6");
-		this.createElementNode(doc, "N", "parentHolderrmUID", FieldName, "i", "7");
+		this.createElementNode(doc, "N", "nermUID", FieldName, "i", "1");
+		this.createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
+		this.createElementNode(doc, "N", "holderNumber", FieldName, "i", "3");
+		this.createElementNode(doc, "N", "holderState", FieldName, "i", "4");
+		this.createElementNode(doc, "N", "holderType", FieldName, "i", "5");
+		this.createElementNode(doc, "N", "parentHolderrmUID", FieldName, "i", "6");
 		Objects.appendChild(FieldName);
 		
 		Element FieldValue = doc.createElement("FieldValue");
+		List<SiteInst> siteInsts = new ArrayList<SiteInst>();
+		SiteService_MB siteService_MB = null;
+		try {
+			siteService_MB = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE);
+			siteInsts = siteService_MB.select();
+			for (SiteInst inst : siteInsts) {//机架
+				Element Object = doc.createElement("Object");
+				Object.setAttribute("rmUID","3301EBCS1EQH"+inst.getRack());
+				this.createElementNode(doc, "V", "3301EBCS1NEL"+inst.getSite_Inst_Id(), Object, "i", "1");
+				this.createElementNode(doc, "V", "EBANG-"+inst.getRack(), Object, "i", "2");
+				this.createElementNode(doc, "V", inst.getRack()+"", Object, "i", "3");
+				this.createElementNode(doc, "V", "INSTALLED_AND_EXPECTED", Object, "i", "4");
+				this.createElementNode(doc, "V", "rack", Object, "i", "5");
+				this.createElementNode(doc, "V", "--", Object, "i", "6");
+				FieldValue.appendChild(Object);
+			}
+			
+			for (SiteInst inst : siteInsts) {//机框
+				Element Object = doc.createElement("Object");
+				Object.setAttribute("rmUID","3301EBCS1EQH"+(1000+inst.getSite_Inst_Id()));
+				this.createElementNode(doc, "V", "3301EBCS1NEL"+inst.getSite_Inst_Id(), Object, "i", "1");
+				this.createElementNode(doc, "V", inst.getCellType(), Object, "i", "2");
+				this.createElementNode(doc, "V", inst.getSite_Hum_Id(), Object, "i", "3");
+				this.createElementNode(doc, "V", "INSTALLED_AND_EXPECTED", Object, "i", "4");
+				this.createElementNode(doc, "V", "shelf", Object, "i", "5");
+				this.createElementNode(doc, "V", "3301EBCS1EQH"+inst.getRack(), Object, "i", "6");
+				FieldValue.appendChild(Object);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			UiUtil.closeService_MB(siteService_MB);
+		}
+		
+		
+		
 		for (SlotInst slotInst :slotInstList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","3301EBCS1EQH"+slotInst.getId());
-			this.createElementNode(doc, "V", "3301EBCS1EQH"+slotInst.getId(), Object, "i", "1");
-			this.createElementNode(doc, "V", "3301EBCS1NEL"+slotInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "V", getSlotName(slotInst.getSlotType()), Object, "i", "3");
-			this.createElementNode(doc, "V", "INSTALLED_AND_NOT_EXPECTED", Object, "i", "4");
-			this.createElementNode(doc, "V", "EBANG", Object, "i", "5");
-			this.createElementNode(doc, "V", "slot", Object, "i", "6");
-			this.createElementNode(doc, "V", "1", Object, "i", "7");
+			Object.setAttribute("rmUID","3301EBCS1EQH"+(2000+slotInst.getId()));
+			this.createElementNode(doc, "V", "3301EBCS1NEL"+slotInst.getSiteId(), Object, "i", "1");
+			this.createElementNode(doc, "V", getSlotName(slotInst.getSlotType()), Object, "i", "2");
+			this.createElementNode(doc, "V", slotInst.getNumber()+"", Object, "i", "3");
+			this.createElementNode(doc, "V", "INSTALLED_AND_EXPECTED", Object, "i", "4");
+			this.createElementNode(doc, "V", "slot", Object, "i", "5");
+			this.createElementNode(doc, "V", "3301EBCS1EQH"+(1000+slotInst.getSiteId()), Object, "i", "6");
 			FieldValue.appendChild(Object);
 		}
 		
@@ -154,11 +193,11 @@ public class EQHXml {
 	}
 
 	private String getSlotName(String oldName){
-		String name = "ETN-200-204E";
-		if("703-2C".equals(oldName)){
+		String name = "ETN-200-204";
+		if("703-2A".equals(oldName)){
 			name = "ETN-200-204E";
 		}else if(oldName.contains("710")){
-			name.replace("710", "ETN-5000");
+			name = oldName.replace("710", "ETN-5000");
 		}
 		return name;
 	}
