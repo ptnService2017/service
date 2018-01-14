@@ -178,10 +178,10 @@ public class DatabaseRecoverPanel extends JPanel {
 	
 	public static void main(String[] args) throws SQLException, Exception {
 		Mybatis_DBManager.init("199.199.10.198");
-		Mybatis_DBManager.init("127.0.0.1");
+//		Mybatis_DBManager.init("127.0.0.1");
 		ConstantUtil.serviceFactory = new ServiceFactory();
 		DataBaseUtil dbUtil = new DataBaseUtil();
-		String path = "D:\\Users\\EBANGTest2\\Desktop\\ptn.sql";
+		String path = "D:\\Users\\EBANGTest2\\Desktop\\north3.sql";
 		Connection conn = Mybatis_DBManager.getInstance().getConnection();
 		boolean flag = dbUtil.recover(path, conn);
 		System.out.println("flag="+flag);

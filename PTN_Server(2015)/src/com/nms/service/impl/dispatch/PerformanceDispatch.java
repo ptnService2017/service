@@ -274,13 +274,13 @@ public class PerformanceDispatch extends DispatchBase implements PerformanceDisp
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		}
-		if(perforInfoList == null || perforInfoList.size() == 0){
-			Random random = new Random();
-			ConstantUtil.performanceDelay = random.nextInt(5)+20; 
-			Thread.sleep(20000);
-		}else{
-			ConstantUtil.performanceDelay = 0;
-		}
+//		if(perforInfoList == null || perforInfoList.size() == 0){
+//			Random random = new Random();
+//			ConstantUtil.performanceDelay = random.nextInt(5)+20; 
+//			Thread.sleep(20000);
+//		}else{
+//			ConstantUtil.performanceDelay = 0;
+//		}
 		return perforInfoList;
 	}
 

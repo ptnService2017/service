@@ -388,26 +388,26 @@ public class UiUtil {
 			Mybatis_DBManager.init("127.0.0.1");
 			ConstantUtil.serviceFactory = new ServiceFactory();
 			service = (HisPerformanceService_Mb) ConstantUtil.serviceFactory.newService_MB(Services.HisPerformance);
-			int size = 700000;
-			List<HisPerformanceInfo> list = new ArrayList<HisPerformanceInfo>();
-			HisPerformanceInfo info = new HisPerformanceInfo();
-			info.setSlotId(37);
-			info.setStartTime("2018-01-03 10:00:00");
-			info.setPerformanceEndTime("2018-01-03 10:20:00");
-			info.setPerformanceCode(116);// 性能类型
-			info.setPerformanceValue(10);// 性能值
-			info.setPerformanceTime("2018-01-03 10:10:00");//结束时间
-			info.setMonitorCycle(EMonitorCycle.forms(1));//只有15min
-			info.setSiteId(7);
-			info.setSiteName("7");
-			info.setObjectType(EObjectType.CPURATIO);
-			info.setObjectName("cpuRatio");
-			// 用于标记查询的历史性能是网元或板卡的
-			// 1：网元的历史系能；2:板卡的历史性能
-			info.setIsCardOrSite(1);
-			for(int i = 0; i < size; i++){
-				service.saveOrUpdate(info);
-			}
+//			int size = 700000;
+//			List<HisPerformanceInfo> list = new ArrayList<HisPerformanceInfo>();
+//			HisPerformanceInfo info = new HisPerformanceInfo();
+//			info.setSlotId(37);
+//			info.setStartTime("2018-01-03 10:00:00");
+//			info.setPerformanceEndTime("2018-01-03 10:20:00");
+//			info.setPerformanceCode(116);// 性能类型
+//			info.setPerformanceValue(10);// 性能值
+//			info.setPerformanceTime("2018-01-03 10:10:00");//结束时间
+//			info.setMonitorCycle(EMonitorCycle.forms(1));//只有15min
+//			info.setSiteId(7);
+//			info.setSiteName("7");
+//			info.setObjectType(EObjectType.CPURATIO);
+//			info.setObjectName("cpuRatio");
+//			// 用于标记查询的历史性能是网元或板卡的
+//			// 1：网元的历史系能；2:板卡的历史性能
+//			info.setIsCardOrSite(1);
+//			for(int i = 0; i < size; i++){
+//				service.saveOrUpdate(info);
+//			}
 		} catch (Exception e) {
 		} finally {
 			UiUtil.closeService_MB(service);

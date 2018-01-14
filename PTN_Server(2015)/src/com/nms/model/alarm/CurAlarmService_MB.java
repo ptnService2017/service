@@ -328,13 +328,15 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 			}
 
 			this.bean2Db(curInfo);
-			if (curInfo.getId() != 0) {
-				resultcesId = this.mapper.update(curInfo);
-			} else {
-				resultcesId = this.mapper.insert(curInfo);
-				curInfo.setId(resultcesId);
+			if(curInfo.getObjectName() != null){
+				if (curInfo.getId() != 0) {
+					resultcesId = this.mapper.update(curInfo);
+				} else {
+					resultcesId = this.mapper.insert(curInfo);
+					curInfo.setId(resultcesId);
+				}
+				this.sqlSession.commit();
 			}
-			this.sqlSession.commit();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -659,9 +661,11 @@ public class CurAlarmService_MB extends ObjectService_Mybatis {
 					curInfo.setWarningLevel(warningLevel);
 				}
 				this.bean2Db(curInfo);
-				this.mapper.insert(curInfo);
+				if(curInfo != null){
+					this.mapper.insert(curInfo);
+					this.sqlSession.commit();
+				}
 			} 
-			this.sqlSession.commit();
 		}catch (Exception e) {
 			ExceptionManage.dispose(e, this.getClass());
 		}

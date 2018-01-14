@@ -174,6 +174,7 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 										info.setPerformanceEndTime(lineObject.getEndTime());
 										info.setPerformanceTime(time);
 										if(info.getObjectId() != 0){
+											if(info.getObjectName() != null)
 											currentPerforInfoList.add(info);
 										}
 									}
@@ -497,6 +498,7 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 												info.setIsCardOrSite(2);
 											}
 											if(info.getObjectId() != 0){
+												if(info.getObjectName() != null)
 												currentPerforInfoList.add(info);
 											}
 										}
@@ -809,7 +811,7 @@ public class PerformanceWHServiceImpl extends WHOperationBase {
 				if(portName != null){
 					info.setObjectName(portName);
 				}else{
-					info.setObjectName("未知端口号:"+(performanceLineObject.getLine() % 256 + 1));
+//					info.setObjectName("未知端口号:"+(performanceLineObject.getLine() % 256 + 1));
 				}
 			} else if (codeType == 3) {// 段层(TMS)
 				int number = performanceLineObject.getLine() % 256 + 1;
